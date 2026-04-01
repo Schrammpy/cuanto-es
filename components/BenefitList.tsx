@@ -6,7 +6,7 @@ import { Zap, ChevronRight, CreditCard, ShoppingBag, Fuel, Utensils, Pill, Coffe
 export default function BenefitList() {
   const [groupedBenefits, setGroupedBenefits] = useState<Record<string, Benefit[]>>({});
   const [dayName, setDayName] = useState('');
-  const [fullDate, setFullDate] = useState(''); // Estado para la fecha (ej: 22 MAY)
+  const [fullDate, setFullDate] = useState('');
 
   useEffect(() => {
     const days = ["DOMINGO", "LUNES", "MARTES", "MIÉRCOLES", "JUEVES", "VIERNES", "SÁBADO"];
@@ -18,7 +18,7 @@ export default function BenefitList() {
     const monthName = months[now.getMonth()];
 
     setDayName(days[dayIndex]);
-    setFullDate(`${dayNumber} ${monthName}`); // Formato: 22 MAY
+    setFullDate(`${dayNumber} ${monthName}`);
 
     const today = BENEFITS.filter(b => b.day === dayIndex);
 
@@ -48,14 +48,14 @@ export default function BenefitList() {
           <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest">Ahorros del día</p>
         </div>
 
-        {/* BADGE ROJO CON FECHA DINÁMICA */}
+        {/* BADGE ROJO CORREGIDO */}
         <div className="bg-red-500 text-white flex flex-col items-center justify-center px-4 py-1.5 rounded-2xl italic shadow-lg shadow-red-100 border-b-2 border-red-700 active:scale-95 transition-all">
           <span className="text-[10px] font-black uppercase tracking-widest leading-none">
             {dayName}
           </span>
           <span className="text-[8px] font-bold opacity-80 mt-0.5 not-italic tracking-tighter">
             {fullDate}
-          </p>
+          </span>
         </div>
       </div>
 
@@ -98,13 +98,19 @@ export default function BenefitList() {
           </div>
         ))
       ) : (
-        <div className="bg-white p-10 rounded-[3rem] text-center border-2 border-dashed border-slate-100 flex flex-col items-center gap-3">
+        /* ESTADO VACÍO SOCIABLE */
+        <div className="bg-white p-10 rounded-[3rem] text-center border-2 border-dashed border-slate-100 flex flex-col items-center gap-3 animate-in fade-in zoom-in-95 duration-500">
             <div className="bg-slate-50 p-4 rounded-full">
                 <Coffee className="w-6 h-6 text-slate-300" />
             </div>
-            <div>
-                <p className="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Hoy la billetera descansa</p>
-                <p className="text-[9px] text-slate-300 mt-1 uppercase font-bold tracking-tighter italic text-pretty px-4">No hay ahorros destacados cargados para hoy.</p>
+            <div className="px-4">
+                <p className="text-[11px] font-[800] text-slate-500 uppercase tracking-widest leading-tight">
+                    Hoy la billetera está de permiso
+                </p>
+                <p className="text-[9px] text-slate-400 mt-2 uppercase font-bold tracking-tighter italic leading-relaxed">
+                    E'a, no hay promos destacadas hoy. <br/> 
+                    ¡Igual las cuentas claras hacen amistades largas!
+                </p>
             </div>
         </div>
       )}
