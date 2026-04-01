@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react'; // Agregamos useRef
 import { User, Fingerprint, PlusCircle, Users, Send, MessageSquare, Copy, FileText, Smartphone, Landmark } from 'lucide-react';
 
 interface Gasto {
@@ -17,7 +17,9 @@ export default function Calculator() {
   const [resultado, setResultado] = useState<string | null>(null);
   const [cuotaFinal, setCuotaFinal] = useState('');
 
-  // Cargar datos de localStorage al inicio
+  // Referencia para frenar el scroll justo en el resultado
+  const resultadoRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     setTitular(localStorage.getItem('titular') || '');
     setBanco(localStorage.getItem('banco') || '');
@@ -42,11 +44,10 @@ export default function Calculator() {
 
   const handleTipoAliasChange = (tipo: string) => {
     setTipoAlias(tipo);
-    // Lógica para +595 automático si es celular
     if (tipo === 'CELULAR') {
       if (!alias.startsWith('+595')) setAlias('+595');
-    } else {
-      if (alias === '+595') setAlias('');
+    } else if (alias === '+595') {
+      setAlias('');
     }
   };
 
@@ -75,7 +76,6 @@ export default function Calculator() {
     const cuotaStr = formatMiles(cuota.toString());
     setCuotaFinal(cuotaStr);
 
-    // Formato exacto solicitado para WhatsApp
     const msg = `📊 *RESUMEN DE GASTOS*\n` +
                 `━━━━━━━━━━━━━━━━━━\n` +
                 `${desgloseTexto}` +
@@ -93,15 +93,15 @@ export default function Calculator() {
 
     setResultado(msg);
     
-    // Guardar en memoria local para la próxima vez
     localStorage.setItem('titular', titular);
     localStorage.setItem('banco', banco);
     localStorage.setItem('tipoAlias', tipoAlias);
     localStorage.setItem('alias', alias);
     
-    // Scroll suave al resultado
+    // --- SCROLL INTELIGENTE ---
+    // En lugar de ir al final de la página, vamos al inicio del resultado
     setTimeout(() => {
-        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+      resultadoRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }, 100);
   };
 
@@ -111,7 +111,6 @@ export default function Calculator() {
 
   const copiarTexto = (texto: string, aviso: string) => {
     navigator.clipboard.writeText(texto);
-    // Podrías usar un Toast aquí, pero mantenemos el alert por ahora
     alert(aviso);
   };
 
@@ -121,8 +120,6 @@ export default function Calculator() {
       {/* SECCIÓN COBRO */}
       <div className="space-y-3">
         <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-1">Donde recibís la plata</p>
-        
-        {/* Titular */}
         <div className="bg-[#F1F5F9] p-3 rounded-2xl flex items-center border-2 border-transparent focus-within:border-blue-600 focus-within:bg-white transition-all">
           <User className="w-4 h-4 text-slate-400 mr-3" />
           <input 
@@ -132,8 +129,6 @@ export default function Calculator() {
             className="bg-transparent w-full outline-none font-semibold text-sm" 
           />
         </div>
-
-        {/* Banco y Tipo de Alias */}
         <div className="grid grid-cols-2 gap-2">
           <div className="bg-[#F1F5F9] p-3 rounded-2xl flex items-center border-2 border-transparent focus-within:border-blue-600 focus-within:bg-white transition-all">
             <Landmark className="w-4 h-4 text-slate-400 mr-2 shrink-0" />
@@ -143,20 +138,12 @@ export default function Calculator() {
                 className="bg-transparent w-full outline-none font-semibold text-sm text-slate-600 appearance-none cursor-pointer"
             >
                 <option value="">¿Banco?</option>
-                <option value="Ueno">Ueno</option>
-                <option value="Itaú">Itaú</option>
-                <option value="Continental">Continental</option>
-                <option value="Eko">Eko</option>
-                <option value="Atlas">Atlas</option>
-                <option value="GNB">GNB</option>
-                <option value="Familiar">Familiar</option>
-                <option value="Sudameris">Sudameris</option>
-                <option value="Basa">Basa</option>
-                <option value="Vision">Vision</option>
-                <option value="BNF">BNF</option>
+                <option value="Ueno">Ueno</option><option value="Itaú">Itaú</option><option value="Continental">Continental</option>
+                <option value="Eko">Eko</option><option value="Atlas">Atlas</option><option value="GNB">GNB</option>
+                <option value="Familiar">Familiar</option><option value="Sudameris">Sudameris</option><option value="Basa">Basa</option>
+                <option value="Vision">Vision</option><option value="BNF">BNF</option>
             </select>
           </div>
-
           <div className="bg-[#F1F5F9] p-3 rounded-2xl flex items-center border-2 border-transparent focus-within:border-blue-600 focus-within:bg-white transition-all">
             <Smartphone className="w-4 h-4 text-slate-400 mr-2 shrink-0" />
             <select 
@@ -171,8 +158,6 @@ export default function Calculator() {
             </select>
           </div>
         </div>
-
-        {/* Input del Alias con Placeholder Dinámico */}
         <div className="bg-[#F1F5F9] p-3 rounded-2xl flex items-center border-2 border-transparent focus-within:border-blue-600 focus-within:bg-white transition-all">
           <Fingerprint className="w-4 h-4 text-slate-400 mr-3" />
           <input 
@@ -236,15 +221,14 @@ export default function Calculator() {
         </div>
       </div>
 
-      {/* BOTÓN PRINCIPAL */}
       <button onClick={generarResumen} className="w-full bg-blue-600 text-white font-bold py-4 rounded-2xl shadow-xl shadow-blue-100 active:scale-95 transition-all flex justify-center items-center gap-2">
           <span>Generar Resumen</span>
           <Send className="w-4 h-4" />
       </button>
 
-      {/* ÁREA DE RESULTADOS */}
+      {/* ÁREA DE RESULTADOS CON LA NUEVA REFERENCIA */}
       {resultado && (
-        <div id="resultado" className="space-y-4 pt-6 border-t border-slate-100 animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <div ref={resultadoRef} id="resultado" className="space-y-4 pt-6 border-t border-slate-100 animate-in fade-in slide-in-from-bottom-4 duration-500">
           <div className="bg-slate-900 p-6 rounded-[2rem] text-center shadow-xl shadow-slate-200">
             <p className="text-slate-400 text-[10px] font-bold uppercase mb-1 tracking-widest">Cada uno pone</p>
             <p className="text-3xl font-black text-white">{cuotaFinal} Gs.</p>
