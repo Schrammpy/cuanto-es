@@ -7,6 +7,7 @@ export interface Benefit {
   discount: string;      // El texto grande (30%, 2x1, Gs. 1.000)
   type: string;          // El texto chiquito (AHORRO, REINTEGRO)
   paymentMethod: string; // El método (Tarjeta de Crédito, QR, etc.)
+  link: string; // <-- NUEVO: Link a las bases y condiciones
   color: string;         // Clase de Tailwind para el fondo del círculo
   textColor: string;     // Clase de Tailwind para el color del texto
 }
@@ -21,6 +22,7 @@ export const BENEFITS: Benefit[] = [
     discount: "40%",
     type: "REINTEGRO",
     paymentMethod: "QR ueno (Duo)",
+    link: "https://www.ueno.com.py/beneficios", // Ejemplo
     color: "bg-green-100",
     textColor: "text-green-700"
   },
@@ -29,35 +31,12 @@ export const BENEFITS: Benefit[] = [
     day: 2,
     bank: "Itaú",
     brand: "Supermercados Stock",
-    category: 'PHARMA',
+    category: 'SUPER',
     discount: "30%",
     type: "AHORRO",
     paymentMethod: "Tarjeta de Crédito",
+    link: "https://www.itau.com.py/beneficios", // Ejemplo
     color: "bg-blue-100",
     textColor: "text-blue-700"
-  },
-  {
-    id: '3',
-    day: 2, // Supongamos que hoy es martes
-    bank: "ueno",
-    brand: "Petrobras",
-    category: 'FUEL',
-    discount: "Gs. 1.000",
-    type: "DESC x LITRO",
-    paymentMethod: "QR ueno",
-    color: "bg-yellow-100",
-    textColor: "text-yellow-700"
-  },
-  {
-    id: '4',
-    day: 2,
-    bank: "Continental",
-    brand: "Pizzerías Varias",
-    category: 'FOOD',
-    discount: "2x1",
-    type: "BENEFICIO",
-    paymentMethod: "Tarjeta de Crédito",
-    color: "bg-red-100",
-    textColor: "text-red-700"
   }
 ];

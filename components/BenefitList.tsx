@@ -48,7 +48,6 @@ export default function BenefitList() {
           <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest">Ahorros del día</p>
         </div>
 
-        {/* BADGE ROJO CORREGIDO */}
         <div className="bg-red-500 text-white flex flex-col items-center justify-center px-4 py-1.5 rounded-2xl italic shadow-lg shadow-red-100 border-b-2 border-red-700 active:scale-95 transition-all">
           <span className="text-[10px] font-black uppercase tracking-widest leading-none">
             {dayName}
@@ -73,7 +72,14 @@ export default function BenefitList() {
 
             <div className="space-y-2">
               {items.map((b) => (
-                <div key={b.id} className="bg-white border border-slate-100 p-4 rounded-[2rem] shadow-sm flex items-center gap-4 active:scale-95 transition-transform">
+                /* CAMBIO: Ahora es una etiqueta <a> clickeable */
+                <a 
+                  key={b.id} 
+                  href={b.link} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="bg-white border border-slate-100 p-4 rounded-[2rem] shadow-sm flex items-center gap-4 active:scale-95 transition-transform hover:border-blue-200 block"
+                >
                   <div className={`${b.color} w-12 h-12 rounded-2xl flex flex-col items-center justify-center shrink-0`}>
                     <span className={`font-black ${b.textColor} text-xs leading-none`}>{b.discount}</span>
                     <span className={`${b.textColor} text-[7px] font-black tracking-tighter uppercase mt-0.5`}>{b.type}</span>
@@ -91,14 +97,14 @@ export default function BenefitList() {
                         </div>
                     </div>
                   </div>
-                  <ChevronRight className="w-4 h-4 text-slate-100" />
-                </div>
+                  {/* Flechita azul sutil para indicar que es un link */}
+                  <ChevronRight className="w-4 h-4 text-blue-300" />
+                </a>
               ))}
             </div>
           </div>
         ))
       ) : (
-        /* ESTADO VACÍO SOCIABLE */
         <div className="bg-white p-10 rounded-[3rem] text-center border-2 border-dashed border-slate-100 flex flex-col items-center gap-3 animate-in fade-in zoom-in-95 duration-500">
             <div className="bg-slate-50 p-4 rounded-full">
                 <Coffee className="w-6 h-6 text-slate-300" />
