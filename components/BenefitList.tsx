@@ -1,18 +1,24 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { BENEFITS, Benefit } from '@/data/data';
-// Agregamos "Pill" al import de Lucide:
-import { Zap, ChevronRight, CreditCard, ShoppingBag, Fuel, Utensils, Pill } from 'lucide-react';
+import { Zap, ChevronRight, CreditCard, ShoppingBag, Fuel, Utensils, Pill, Coffee } from 'lucide-react';
 
 export default function BenefitList() {
   const [groupedBenefits, setGroupedBenefits] = useState<Record<string, Benefit[]>>({});
   const [dayName, setDayName] = useState('');
+  const [fullDate, setFullDate] = useState(''); // Estado para la fecha (ej: 22 MAY)
 
   useEffect(() => {
-    const days = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+    const days = ["DOMINGO", "LUNES", "MARTES", "MIÉRCOLES", "JUEVES", "VIERNES", "SÁBADO"];
+    const months = ["ENE", "FEB", "MAR", "ABR", "MAY", "JUN", "JUL", "AGO", "SEP", "OCT", "NOV", "DIC"];
+    
     const now = new Date();
     const dayIndex = now.getDay();
+    const dayNumber = now.getDate();
+    const monthName = months[now.getMonth()];
+
     setDayName(days[dayIndex]);
+    setFullDate(`${dayNumber} ${monthName}`); // Formato: 22 MAY
 
     const today = BENEFITS.filter(b => b.day === dayIndex);
 
@@ -25,12 +31,11 @@ export default function BenefitList() {
     setGroupedBenefits(grouped);
   }, []);
 
-  // Configuramos la nueva categoría aquí:
   const categoryInfo = {
     SUPER: { label: 'Supermercados', icon: <ShoppingBag className="w-3 h-3" /> },
     FUEL: { label: 'Combustibles', icon: <Fuel className="w-3 h-3" /> },
     FOOD: { label: 'Cenas y Restó', icon: <Utensils className="w-3 h-3" /> },
-    PHARMA: { label: 'Farmacias', icon: <Pill className="w-3 h-3" /> }, // <-- Agregado
+    PHARMA: { label: 'Farmacias', icon: <Pill className="w-3 h-3" /> },
   };
 
   return (
@@ -40,10 +45,17 @@ export default function BenefitList() {
           <h2 className="text-sm font-[800] text-slate-800 uppercase tracking-tighter flex items-center gap-2">
             ¿CON QUÉ PAGO HOY? <Zap className="w-4 h-4 text-yellow-500 fill-yellow-500" />
           </h2>
-          <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest">Ahorros del {dayName}</p>
+          <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest">Ahorros del día</p>
         </div>
-        <div className="bg-red-500 text-white text-[10px] font-black px-4 py-1.5 rounded-full italic shadow-lg shadow-red-100 uppercase tracking-widest">
-          {dayName}
+
+        {/* BADGE ROJO CON FECHA DINÁMICA */}
+        <div className="bg-red-500 text-white flex flex-col items-center justify-center px-4 py-1.5 rounded-2xl italic shadow-lg shadow-red-100 border-b-2 border-red-700 active:scale-95 transition-all">
+          <span className="text-[10px] font-black uppercase tracking-widest leading-none">
+            {dayName}
+          </span>
+          <span className="text-[8px] font-bold opacity-80 mt-0.5 not-italic tracking-tighter">
+            {fullDate}
+          </p>
         </div>
       </div>
 
@@ -79,7 +91,7 @@ export default function BenefitList() {
                         </div>
                     </div>
                   </div>
-                  <ChevronRight className="w-4 h-4 text-slate-200" />
+                  <ChevronRight className="w-4 h-4 text-slate-100" />
                 </div>
               ))}
             </div>
@@ -87,7 +99,13 @@ export default function BenefitList() {
         ))
       ) : (
         <div className="bg-white p-10 rounded-[3rem] text-center border-2 border-dashed border-slate-100 flex flex-col items-center gap-3">
-            <p className="text-[11px] font-bold text-slate-500 uppercase tracking-widest leading-loose">Hoy la billetera descansa. <br/> Mañana vuelven los ahorros.</p>
+            <div className="bg-slate-50 p-4 rounded-full">
+                <Coffee className="w-6 h-6 text-slate-300" />
+            </div>
+            <div>
+                <p className="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Hoy la billetera descansa</p>
+                <p className="text-[9px] text-slate-300 mt-1 uppercase font-bold tracking-tighter italic text-pretty px-4">No hay ahorros destacados cargados para hoy.</p>
+            </div>
         </div>
       )}
     </div>
