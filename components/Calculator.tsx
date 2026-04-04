@@ -1,5 +1,6 @@
 'use client';
-import React, { useState, useEffect, useRef } from 'react'; // Agregamos useRef
+import React, { useState, useEffect, useRef } from 'react';
+import { track } from '@vercel/analytics'; // Importamos el rastreador de eventos
 import { User, Fingerprint, PlusCircle, Users, Send, MessageSquare, Copy, FileText, Smartphone, Landmark } from 'lucide-react';
 
 interface Gasto {
@@ -17,7 +18,6 @@ export default function Calculator() {
   const [resultado, setResultado] = useState<string | null>(null);
   const [cuotaFinal, setCuotaFinal] = useState('');
 
-  // Referencia para frenar el scroll justo en el resultado
   const resultadoRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -98,20 +98,36 @@ export default function Calculator() {
     localStorage.setItem('tipoAlias', tipoAlias);
     localStorage.setItem('alias', alias);
     
-    // --- SCROLL INTELIGENTE ---
-    // En lugar de ir al final de la página, vamos al inicio del resultado
     setTimeout(() => {
       resultadoRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }, 100);
   };
 
+  // --- FUNCIONES CON RASTREO (TRACKING) ---
+
   const compartirWpp = () => {
-    if (resultado) window.open(`https://wa.me/?text=${encodeURIComponent(resultado)}`, '_blank');
+    if (resultado) {
+      // Rastreamos quién envía al WhatsApp y qué banco usa
+      track('enviar_whatsapp', { 
+        banco_destino: banco,
+        monto_cuota: cuotaFinal 
+      });
+      window.open(`https://wa.me/?text=${encodeURIComponent(resultado)}`, '_blank');
+    }
   };
 
-  const copiarTexto = (texto: string, aviso: string) => {
-    navigator.clipboard.writeText(texto);
-    alert(aviso);
+  const copiarSoloAlias = () => {
+    track('copiar_solo_alias');
+    navigator.clipboard.writeText(alias);
+    alert("✅ Alias copiado al portapapeles");
+  };
+
+  const copiarMensajeCompleto = () => {
+    if (resultado) {
+      track('copiar_mensaje_completo');
+      navigator.clipboard.writeText(resultado);
+      alert("✅ Resumen completo copiado");
+    }
   };
 
   return (
@@ -120,7 +136,7 @@ export default function Calculator() {
       {/* SECCIÓN COBRO */}
       <div className="space-y-3">
         <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-1">Donde recibís la plata</p>
-        <div className="bg-[#F1F5F9] p-3 rounded-2xl flex items-center border-2 border-transparent focus-within:border-blue-600 focus-within:bg-white transition-all">
+        <div className="bg-[#F1F5F9] p-3 rounded-2xl flex items-center border-2 border-transparent focus-within:border-blue-600 focus-within:bg-white transition-all text-slate-700">
           <User className="w-4 h-4 text-slate-400 mr-3" />
           <input 
             value={titular} 
@@ -129,7 +145,7 @@ export default function Calculator() {
             className="bg-transparent w-full outline-none font-semibold text-sm" 
           />
         </div>
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-2 gap-2 text-slate-700">
           <div className="bg-[#F1F5F9] p-3 rounded-2xl flex items-center border-2 border-transparent focus-within:border-blue-600 focus-within:bg-white transition-all">
             <Landmark className="w-4 h-4 text-slate-400 mr-2 shrink-0" />
             <select 
@@ -144,7 +160,7 @@ export default function Calculator() {
                 <option value="Vision">Vision</option><option value="BNF">BNF</option>
             </select>
           </div>
-          <div className="bg-[#F1F5F9] p-3 rounded-2xl flex items-center border-2 border-transparent focus-within:border-blue-600 focus-within:bg-white transition-all">
+          <div className="bg-[#F1F5F9] p-3 rounded-2xl flex items-center border-2 border-transparent focus-within:border-blue-600 focus-within:bg-white transition-all text-slate-700">
             <Smartphone className="w-4 h-4 text-slate-400 mr-2 shrink-0" />
             <select 
                 value={tipoAlias}
@@ -158,7 +174,7 @@ export default function Calculator() {
             </select>
           </div>
         </div>
-        <div className="bg-[#F1F5F9] p-3 rounded-2xl flex items-center border-2 border-transparent focus-within:border-blue-600 focus-within:bg-white transition-all">
+        <div className="bg-[#F1F5F9] p-3 rounded-2xl flex items-center border-2 border-transparent focus-within:border-blue-600 focus-within:bg-white transition-all text-slate-700">
           <Fingerprint className="w-4 h-4 text-slate-400 mr-3" />
           <input 
             value={alias}
@@ -175,11 +191,11 @@ export default function Calculator() {
 
       {/* SECCIÓN GASTOS */}
       <div className="space-y-3 pt-2">
-        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-1">Los Gastos</p>
+        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-1 text-slate-700">Los Gastos</p>
         <div className="space-y-3">
           {gastos.map((gasto, index) => (
             <div key={index} className="flex gap-2 items-center animate-in fade-in slide-in-from-left-2 duration-300">
-              <div className="bg-[#F1F5F9] p-3 rounded-2xl flex-1">
+              <div className="bg-[#F1F5F9] p-3 rounded-2xl flex-1 text-slate-700">
                 <input 
                   value={gasto.concepto}
                   onChange={(e) => {
@@ -191,7 +207,7 @@ export default function Calculator() {
                   className="bg-transparent w-full outline-none text-xs font-medium" 
                 />
               </div>
-              <div className="bg-[#F1F5F9] p-3 rounded-2xl w-32 flex items-center">
+              <div className="bg-[#F1F5F9] p-3 rounded-2xl w-32 flex items-center text-slate-700">
                 <span className="text-[10px] text-slate-400 font-bold mr-1 shrink-0">Gs.</span>
                 <input 
                   value={gasto.monto}
@@ -209,7 +225,7 @@ export default function Calculator() {
           <PlusCircle className="w-3 h-3" /> AGREGAR OTRO GASTO
         </button>
 
-        <div className="bg-[#F1F5F9] p-4 rounded-2xl flex items-center border-l-4 border-l-blue-600 mt-4 shadow-sm shadow-blue-50">
+        <div className="bg-[#F1F5F9] p-4 rounded-2xl flex items-center border-l-4 border-l-blue-600 mt-4 shadow-sm shadow-blue-50 text-slate-700">
           <Users className="w-4 h-4 text-slate-400 mr-3" />
           <input 
             value={personas}
@@ -221,12 +237,13 @@ export default function Calculator() {
         </div>
       </div>
 
+      {/* BOTÓN PRINCIPAL */}
       <button onClick={generarResumen} className="w-full bg-blue-600 text-white font-bold py-4 rounded-2xl shadow-xl shadow-blue-100 active:scale-95 transition-all flex justify-center items-center gap-2">
           <span>Generar Resumen</span>
           <Send className="w-4 h-4" />
       </button>
 
-      {/* ÁREA DE RESULTADOS CON LA NUEVA REFERENCIA */}
+      {/* ÁREA DE RESULTADOS */}
       {resultado && (
         <div ref={resultadoRef} id="resultado" className="space-y-4 pt-6 border-t border-slate-100 animate-in fade-in slide-in-from-bottom-4 duration-500">
           <div className="bg-slate-900 p-6 rounded-[2rem] text-center shadow-xl shadow-slate-200">
@@ -239,10 +256,10 @@ export default function Calculator() {
           </button>
 
           <div className="grid grid-cols-2 gap-2">
-            <button onClick={() => copiarTexto(alias, "✅ Alias copiado")} className="bg-white border border-slate-200 p-3 rounded-xl text-[10px] font-bold text-slate-600 flex flex-col items-center gap-1 active:bg-slate-50 transition-colors">
+            <button onClick={copiarSoloAlias} className="bg-white border border-slate-200 p-3 rounded-xl text-[10px] font-bold text-slate-600 flex flex-col items-center gap-1 active:bg-slate-50 transition-colors">
               <Copy className="w-4 h-4 text-blue-500" /> SOLO EL ALIAS
             </button>
-            <button onClick={() => copiarTexto(resultado, "✅ Resumen completo copiado")} className="bg-white border border-slate-200 p-3 rounded-xl text-[10px] font-bold text-slate-600 flex flex-col items-center gap-1 active:bg-slate-50 transition-colors">
+            <button onClick={copiarMensajeCompleto} className="bg-white border border-slate-200 p-3 rounded-xl text-[10px] font-bold text-slate-600 flex flex-col items-center gap-1 active:bg-slate-50 transition-colors">
               <FileText className="w-4 h-4 text-blue-500" /> EL MENSAJE
             </button>
           </div>
