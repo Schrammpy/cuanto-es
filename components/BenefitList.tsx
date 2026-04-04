@@ -43,7 +43,7 @@ export default function BenefitList() {
       <div className="flex items-center justify-between px-1">
         <div>
           <h2 className="text-sm font-[800] text-slate-800 uppercase tracking-tighter flex items-center gap-2">
-            ¿CON QUÉ PAGO HOY? <Zap className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+            Descuentos Interesantes <Zap className="w-4 h-4 text-yellow-500 fill-yellow-500" />
           </h2>
           <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest">Ahorros del día</p>
         </div>
@@ -111,11 +111,10 @@ export default function BenefitList() {
             </div>
             <div className="px-4">
                 <p className="text-[11px] font-[800] text-slate-500 uppercase tracking-widest leading-tight">
-                    Hoy la billetera está de permiso
+                    Al parecer hoy no hay promos interesantes...
                 </p>
                 <p className="text-[9px] text-slate-400 mt-2 uppercase font-bold tracking-tighter italic leading-relaxed">
-                    E'a, no hay promos destacadas hoy. <br/> 
-                    ¡Igual las cuentas claras hacen amistades largas!
+                    ¡Volve mañana! <br/> 
                 </p>
             </div>
         </div>

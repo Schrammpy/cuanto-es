@@ -15,27 +15,40 @@ export interface Benefit {
 export const BENEFITS: Benefit[] = [
   {
     id: '1',
-    day: 1,
+    day: 3,
     bank: "ueno",
     brand: "Biggie y Superseis",
     category: 'SUPER',
     discount: "40%",
     type: "REINTEGRO",
     paymentMethod: "QR ueno (Duo)",
-    link: "https://www.ueno.com.py/beneficios", // Ejemplo
+    link: "https://www.ueno.com.py/beneficios",
     color: "bg-green-100",
     textColor: "text-green-700"
   },
   {
     id: '2',
-    day: 2,
+    day: 6, //Sabado
     bank: "Itaú",
-    brand: "Supermercados Stock",
+    brand: "Stock | Superseis | Super Real",
     category: 'SUPER',
-    discount: "30%",
+    discount: "15%",
     type: "AHORRO",
     paymentMethod: "Tarjeta de Crédito",
-    link: "https://www.itau.com.py/beneficios", // Ejemplo
+    link: "https://www.itau.com.py/beneficios2/categoria/13", 
+    color: "bg-blue-100",
+    textColor: "text-blue-700"
+  },
+   {
+    id: '3',
+    day: 2, //Martes
+    bank: "Itaú",
+    brand: "Punto Farma",
+    category: 'PHARMA',
+    discount: "35%*",
+    type: "AHORRO",
+    paymentMethod: "QR y Tarjeta de Crédito",
+    link: "https://www.itau.com.py/beneficios2/categoria/3", 
     color: "bg-blue-100",
     textColor: "text-blue-700"
   }

@@ -16,7 +16,7 @@ export default function Home() {
         {/* MANUAL DE USO CON NOTA DE PRIVACIDAD */}
         <div className="bg-blue-50 border border-blue-100 p-5 rounded-[2rem] mb-6 shadow-sm shadow-blue-50">
             <h3 className="text-blue-900 text-[10px] font-[800] uppercase tracking-widest mb-5 flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-blue-600" /> ¡Cero estrés, es muy fácil!
+                <Sparkles className="w-4 h-4 text-blue-600" /> ¡Tranqui, es muy fácil!
             </h3>
             
             <div className="space-y-4">
@@ -27,12 +27,12 @@ export default function Home() {
                 
                 <div className="flex items-center gap-4">
                     <div className="bg-blue-200 p-2 rounded-xl shrink-0"><Receipt className="w-4 h-4 text-blue-700" /></div>
-                    <p className="text-[11px] font-semibold text-blue-800 leading-tight tracking-tight">Cargá qué se compró y entre cuántos dividen.</p>
+                    <p className="text-[11px] font-semibold text-blue-800 leading-tight tracking-tight">Qué se compró y entre cuántos estan.</p>
                 </div>
                 
                 <div className="flex items-center gap-4">
                     <div className="bg-blue-200 p-2 rounded-xl shrink-0"><Share2 className="w-4 h-4 text-blue-700" /></div>
-                    <p className="text-[11px] font-semibold text-blue-800 leading-tight tracking-tight">¡Listo! Pasale el resumen a tus socios al grupo.</p>
+                    <p className="text-[11px] font-semibold text-blue-800 leading-tight tracking-tight">¡Listo! Pasa el resumen al grupo.</p>
                 </div>
             </div>
         </div>

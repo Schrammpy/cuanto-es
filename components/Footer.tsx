@@ -6,7 +6,7 @@ export default function Footer() {
   const [showAlias, setShowAlias] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  const ALIAS_PAGO = "diego.schramm"; // <--- TU ALIAS REAL
+  const ALIAS_PAGO = "4409055"; // <--- TU ALIAS REAL
 
   const copiarAlias = () => {
     navigator.clipboard.writeText(ALIAS_PAGO);
@@ -38,18 +38,18 @@ export default function Footer() {
             className="flex items-center gap-2 bg-amber-50 text-amber-700 px-5 py-2.5 rounded-full border border-amber-200 active:scale-95 transition-all shadow-sm"
           >
             <Beer className="w-4 h-4" />
-            <span className="text-[10px] font-black uppercase tracking-widest italic">¿Te sirvió? Invitame un chopp</span>
+            <span className="text-[10px] font-black uppercase tracking-widest italic">Apoya al creador con un chopp</span>
           </button>
         ) : (
           <div className="bg-white border-2 border-amber-100 p-6 rounded-[2.5rem] w-full animate-in zoom-in-95 duration-300 shadow-xl shadow-amber-50 flex flex-col items-center border-dashed">
             <Heart className="w-5 h-5 text-red-500 mb-2 fill-red-500" />
             <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest mb-4 text-center px-2 leading-relaxed italic">
-                ¡Gracias socio! Tu apoyo ayuda a mantener viva la web.
+                Tu apoyo ayuda a mantener la web.
             </p>
             
             <div className="flex items-center justify-between bg-slate-50 w-full p-3 rounded-2xl border border-slate-200">
                 <div className="flex flex-col">
-                    <span className="text-[8px] text-slate-400 font-bold uppercase tracking-tighter">Alias para transferir</span>
+                    <span className="text-[8px] text-slate-400 font-bold uppercase tracking-tighter">Alias para donacion</span>
                     <span className="text-sm font-black text-slate-800 leading-none">{ALIAS_PAGO}</span>
                 </div>
                 <button 
@@ -78,7 +78,7 @@ export default function Footer() {
         </div>
         
         <p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest leading-loose italic max-w-[320px] mx-auto">
-            Esta herramienta no utiliza bases de datos. La información queda exclusivamente en tu dispositivo y la puedes borrar <button onClick={borrarDatos} className="text-red-500 underline decoration-red-200 underline-offset-2 hover:text-red-700 transition-colors">AQUÍ</button>.
+            Esta herramienta no guarda tus datos, la información queda exclusivamente en tu dispositivo y la puedes borrar <button onClick={borrarDatos} className="text-red-500 underline decoration-red-200 underline-offset-2 hover:text-red-700 transition-colors">AQUÍ</button>.
         </p>
 
         <div className="space-y-1 pt-4 border-t border-slate-100 text-slate-600">
@@ -92,7 +92,7 @@ export default function Footer() {
                 rel="noopener noreferrer"
                 className="text-blue-600 hover:text-blue-800 underline decoration-blue-200 underline-offset-2 transition-colors"
               >
-                Diego Schramm
+                DDSM
               </a> from Luque, Paraguay.
             </p>
         </div>
