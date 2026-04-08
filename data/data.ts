@@ -15,7 +15,7 @@ export interface Benefit {
 export const BENEFITS: Benefit[] = [
   {
     id: '1',
-    day: 3,
+    day: 0, //Ejemplo
     bank: "ueno",
     brand: "Biggie y Superseis",
     category: 'SUPER',
@@ -23,8 +23,8 @@ export const BENEFITS: Benefit[] = [
     type: "REINTEGRO",
     paymentMethod: "QR ueno (Duo)",
     link: "https://www.ueno.com.py/beneficios",
-    color: "bg-green-100",
-    textColor: "text-green-700"
+    color: "bg-emerald-100",
+    textColor: "text-emerald-700"
   },
   {
     id: '2',
@@ -36,8 +36,8 @@ export const BENEFITS: Benefit[] = [
     type: "AHORRO",
     paymentMethod: "Tarjeta de Crédito",
     link: "https://www.itau.com.py/beneficios2/categoria/13", 
-    color: "bg-blue-100",
-    textColor: "text-blue-700"
+    color: "bg-orange-100",
+    textColor: "text-orange-600"
   },
    {
     id: '3',
@@ -49,7 +49,20 @@ export const BENEFITS: Benefit[] = [
     type: "AHORRO",
     paymentMethod: "QR y Tarjeta de Crédito",
     link: "https://www.itau.com.py/beneficios2/categoria/3", 
+    color: "bg-orange-100",
+    textColor: "text-orange-600"
+  },
+  {
+    id: '4',
+    day: 3, //Miercoles
+    bank: "Banco Continental",
+    brand: "Stock | Superseis | Box Mayorista",
+    category: 'SUPER',
+    discount: "20%*",
+    type: "AHORRO",
+    paymentMethod: "Tarjeta de Crédito",
+    link: "https://www.bancontinental.com.py/#/club-continental/comercios", 
     color: "bg-blue-100",
-    textColor: "text-blue-700"
+    textColor: "text-blue-800"
   }
 ];
