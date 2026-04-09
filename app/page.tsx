@@ -4,12 +4,12 @@ import BenefitList from '@/components/BenefitList';
 import Calculator from '@/components/Calculator';
 import Footer from '@/components/Footer';
 import { Sparkles, UserCheck, Receipt, Share2, ShieldCheck } from 'lucide-react';
-import BrowserNotice from '@/components/BrowserNotice';
+
 
 export default function Home() {
   return (
     <main className="min-h-screen bg-[#F8FAFC] p-4 flex justify-center items-start pb-10">
-       <BrowserNotice /> {/* <--- EL AVISO AQUÍ */}
+       
       <div className="max-w-md w-full">
         
         {/* CABECERA */}
