@@ -1,24 +1,11 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { Analytics } from "@vercel/analytics/react"; // 1. Importamos esto
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import { Analytics } from "@vercel/analytics/react";
+import Script from "next/script";
 
 export const metadata: Metadata = {
-  title: "CuantoEs.com.py — Cuentas Claras",
-  description: "Calculá la carne del asado, el gasto del cumpleaños o la cena de amigos y pasá el resumen rápido por WhatsApp.",
-  icons: {
-    icon: "icon.svg", // Asegurate de tener un favicon luego
-  }
+  title: "CuantoEs.com.py — Cuentas Claras en Paraguay",
+  description: "Calculá la vaca del asado, el fútbol o la cena y pasá los datos de transferencia rápido por WhatsApp.",
 };
 
 export default function RootLayout({
@@ -29,8 +16,22 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body className="antialiased">
+        {/* GOOGLE ANALYTICS */}
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=G-VNDCH7QL6Q`} // <--- TU ID AQUÍ
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-VNDCH7QL6Q'); // <--- TU ID AQUÍ
+          `}
+        </Script>
+
         {children}
-        <Analytics /> {/* 2. Lo agregamos aquí antes de cerrar el body */}
+        <Analytics />
       </body>
     </html>
   );

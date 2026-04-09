@@ -107,6 +107,14 @@ export default function Calculator() {
 
   const compartirWpp = () => {
     if (resultado) {
+         // ESTO ENVÍA EL EVENTO A GOOGLE ANALYTICS GRATIS
+      if (typeof window !== 'undefined' && (window as any).gtag) {
+        (window as any).gtag('event', 'enviar_whatsapp', {
+          'banco_destino': banco,
+          'monto_cuota': cuotaFinal
+        });
+      }
+
       // Rastreamos quién envía al WhatsApp y qué banco usa
       track('enviar_whatsapp', { 
         banco_destino: banco,
