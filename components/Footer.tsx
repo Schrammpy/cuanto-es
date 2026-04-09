@@ -86,14 +86,14 @@ export default function Footer() {
               2026 © CUANTOES.COM.PY
             </p>
             <p className="text-[8px] font-bold uppercase tracking-widest italic text-slate-500">
-              Developed by <a 
+              Desarrollado por <a 
                 href="https://www.linkedin.com/in/diegoschramm/" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="text-blue-600 hover:text-blue-800 underline decoration-blue-200 underline-offset-2 transition-colors"
               >
-                DDSM
-              </a> from Luque, Paraguay.
+                Diego Schramm
+              </a> desde Luque, Paraguay.
             </p>
         </div>
       </div>
