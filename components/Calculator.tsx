@@ -107,7 +107,7 @@ export default function Calculator() {
 
   const compartirWpp = () => {
     if (resultado) {
-         // ESTO ENVÍA EL EVENTO A GOOGLE ANALYTICS GRATIS
+      // 1. REGISTRO EN GOOGLE ANALYTICS
       if (typeof window !== 'undefined' && (window as any).gtag) {
         (window as any).gtag('event', 'enviar_whatsapp', {
           'banco_destino': banco,
@@ -115,12 +115,27 @@ export default function Calculator() {
         });
       }
 
-      // Rastreamos quién envía al WhatsApp y qué banco usa
+      // 2. REGISTRO EN VERCEL ANALYTICS
       track('enviar_whatsapp', { 
         banco_destino: banco,
         monto_cuota: cuotaFinal 
       });
-      window.open(`https://wa.me/?text=${encodeURIComponent(resultado)}`, '_blank');
+
+      // 3. PREPARACIÓN DEL LINK (api.whatsapp.com es más estable que wa.me)
+      const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(resultado)}`;
+
+      // 4. DETECCIÓN DE FACEBOOK / INSTAGRAM
+      const ua = navigator.userAgent || navigator.vendor || (window as any).opera;
+      const isFacebookApp = ua.indexOf("FBAN") > -1 || ua.indexOf("FBAV") > -1;
+      const isInstagramApp = ua.indexOf("Instagram") > -1;
+
+      if (isFacebookApp || isInstagramApp) {
+        // En Facebook/IG, window.open suele fallar. Usamos location.href para forzar el salto a la App.
+        window.location.href = url;
+      } else {
+        // En navegadores normales (Chrome/Safari), abrimos en pestaña nueva.
+        window.open(url, '_blank');
+      }
     }
   };
 
