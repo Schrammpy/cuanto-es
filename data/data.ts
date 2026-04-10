@@ -64,5 +64,18 @@ export const BENEFITS: Benefit[] = [
     link: "https://www.bancontinental.com.py/#/club-continental/comercios", 
     color: "bg-blue-100",
     textColor: "text-blue-800"
+  },
+  {
+    id: '5',
+    day: 5, //Viernes
+    bank: "Banco Continental",
+    brand: "Petrobras | Copetrol | Petrochaco",
+    category: 'FUEL',
+    discount: "20%*",
+    type: "AHORRO",
+    paymentMethod: "Tarjeta de Crédito",
+    link: "https://www.bancontinental.com.py/#/club-continental/comercios", 
+    color: "bg-blue-100",
+    textColor: "text-blue-800"
   }
 ];
