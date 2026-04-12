@@ -15,7 +15,7 @@ export interface Benefit {
 export const BENEFITS: Benefit[] = [
   {
     id: '1',
-    day: 0, //Ejemplo
+    day: 9, //Ejemplo
     bank: "ueno",
     brand: "Biggie y Superseis",
     category: 'SUPER',
