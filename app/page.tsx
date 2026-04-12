@@ -1,5 +1,5 @@
 'use client';
-import Header from '@/components/Header';
+
 import BenefitList from '@/components/BenefitList';
 import Calculator from '@/components/Calculator';
 import Footer from '@/components/Footer';
@@ -12,8 +12,7 @@ export default function Home() {
        
       <div className="max-w-md w-full">
         
-        {/* CABECERA */}
-        <Header />
+       
 
         {/* MANUAL DE USO CON NOTA DE PRIVACIDAD */}
         <div className="bg-blue-50 border border-blue-100 p-5 rounded-[2rem] mb-6 shadow-sm shadow-blue-50">
