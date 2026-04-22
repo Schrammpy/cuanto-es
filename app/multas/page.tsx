@@ -10,22 +10,31 @@ const JORNAL_MINIMO = 111501;
 const FECHA_ACTUALIZACION = "Año 2026";
 
 const multasData = [
-  { infraction: "Registro de conducir vencido (vencimiento quinquenal)", jornales: 10, entity: "Municipal" },
+  // --- NUEVO: ESTACIONAMIENTO ASUNCIÓN ---
+  { infraction: "Estacionar en lugares prohibidos (Multa básica)", jornales: 4, entity: "Municipalidad de Asunción" },
+  { infraction: "Estacionar en lugares prohibidos con remoción de Grúa", jornales: 7, entity: "Municipalidad de Asunción" },
+  { infraction: "Obstruir rampas para personas con discapacidad o veredas", jornales: 10, entity: "Municipalidad de Asunción" },
+
+  // --- DOCUMENTACIÓN ---
+  { infraction: "Registro de conducir vencido", jornales: 10, entity: "Municipal" },
   { infraction: "Carecer de habilitación vehicular (o vencida)", jornales: 5, entity: "Caminera / Municipal" },
   { infraction: "No portar licencia de conducir física", jornales: 5, entity: "Caminera" },
+  
+  // --- ALCOTEST ---
   { infraction: "Alcotest Positivo: Grado Leve (0.001 a 0.199 mg/L)", jornales: 3, entity: "Caminera" },
   { infraction: "Alcotest Positivo: Grado Grave (0.200 a 0.250 mg/L)", jornales: 10, entity: "Caminera" },
   { infraction: "Alcotest Positivo: Grado Gravísimo (0.251 en adelante)", jornales: 20, entity: "Fiscalía / Caminera" },
+
+  // --- LUCES Y SEGURIDAD ---
   { infraction: "Pasar luz roja", jornales: 15, entity: "Municipal" },
   { infraction: "Luz quemada (faros delanteros o traseros)", jornales: 5, entity: "Caminera / Municipal" },
   { infraction: "No usar cinturón de seguridad", jornales: 5, entity: "Caminera / Municipal" },
   { infraction: "No usar casco o chaleco reflectivo (Motos)", jornales: 11, entity: "Caminera / Municipal" },
-  { infraction: "Transportar niños en el asiento delantero", jornales: 10, entity: "Caminera" },
-  { infraction: "Adelantamiento indebido por la derecha", jornales: 10, entity: "Caminera" },
-  { infraction: "Giro prohibido / Giro en U en lugares no permitidos", jornales: 5, entity: "Municipal" },
+  
+  // --- MANIOBRAS ---
+  { infraction: "Giro prohibido / Giro en U no permitido", jornales: 5, entity: "Municipal" },
   { infraction: "Circular en contramano", jornales: 20, entity: "Municipal" },
   { infraction: "Uso de celular mientras se conduce", jornales: 7, entity: "Municipal" },
-  { infraction: "No señalizar maniobras (Luz de giro)", jornales: 2, entity: "Caminera" },
 ];
 
 export default function MultasPage() {
