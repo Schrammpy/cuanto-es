@@ -36,9 +36,20 @@ export default function Footer() {
 
   return (
     <footer className="mt-4 pb-16 px-4 flex flex-col items-center gap-8">
-      
-      {/* SECCIÓN DE GRATITUD */}
-      <div className="w-full max-w-xs flex flex-col items-center">
+      {/* SECCIÓN DE PRIVACIDAD Y MARCA */}
+      <div className="text-center space-y-5 px-6">
+        <div className="flex items-center justify-center gap-1.5 text-slate-600">
+            <ShieldCheck className="w-3 h-3" />
+            <span className="text-[9px] font-black uppercase tracking-widest">Seguridad Garantizada</span>
+        </div>
+        
+        <p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest leading-loose italic max-w-[320px] mx-auto">
+            Esta herramienta no guarda tus datos, la información queda exclusivamente en tu dispositivo y la puedes borrar <button onClick={borrarDatos} className="text-red-500 underline decoration-red-200 underline-offset-2 hover:text-red-700 transition-colors">AQUÍ</button>.
+        </p>
+
+
+        {/* SECCIÓN DE GRATITUD */}
+        <div className="w-full max-w-xs flex flex-col items-center">
         {!showAlias ? (
           <button 
             onClick={() => setShowAlias(true)}
@@ -77,17 +88,6 @@ export default function Footer() {
         )}
       </div>
 
-      {/* SECCIÓN DE PRIVACIDAD Y MARCA */}
-      <div className="text-center space-y-5 px-6">
-        <div className="flex items-center justify-center gap-1.5 text-slate-600">
-            <ShieldCheck className="w-3 h-3" />
-            <span className="text-[9px] font-black uppercase tracking-widest">Seguridad Garantizada</span>
-        </div>
-        
-        <p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest leading-loose italic max-w-[320px] mx-auto">
-            Esta herramienta no guarda tus datos, la información queda exclusivamente en tu dispositivo y la puedes borrar <button onClick={borrarDatos} className="text-red-500 underline decoration-red-200 underline-offset-2 hover:text-red-700 transition-colors">AQUÍ</button>.
-        </p>
-
         <div className="space-y-1 pt-4 border-t border-slate-100 text-slate-600">
             <p className="text-[10px] font-black uppercase tracking-[0.2em]">
               2026 © CUANTOES.COM.PY
@@ -104,7 +104,6 @@ export default function Footer() {
             </p>
         </div>
       </div>
-
     </footer>
   );
 }
