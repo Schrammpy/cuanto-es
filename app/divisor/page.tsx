@@ -1,6 +1,5 @@
 'use client';
 
-import BenefitList from '@/components/BenefitList';
 import Calculator from '@/components/Calculator';
 import Footer from '@/components/Footer';
 import { Sparkles, UserCheck, Receipt, Share2, ShieldCheck } from 'lucide-react';
@@ -43,9 +42,6 @@ export default function Home() {
 
         {/* COMPONENTE CALCULADORA */}
         <Calculator />
-
-        {/* LISTA DE BENEFICIOS DEL DÍA */}
-        <BenefitList />
 
         {/* FOOTER CON GRATITUD Y SEGURIDAD */}
         <Footer />
