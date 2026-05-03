@@ -14,18 +14,14 @@ interface Item {
 }
 
 export default function PresupuestoPage() {
-  // Estados del Profesional (se guardan)
   const [profesional, setProfesional] = useState('');
   const [banco, setBanco] = useState('');
   const [tipoAlias, setTipoAlias] = useState('CI');
   const [alias, setAlias] = useState('');
-  
-  // Estados del Trabajo Actual (no se guardan)
   const [cliente, setCliente] = useState('');
   const [items, setItems] = useState<Item[]>([{ desc: '', precio: '' }]);
   const [resultado, setResultado] = useState<string | null>(null);
 
-  // Cargar datos del profesional al iniciar
   useEffect(() => {
     setProfesional(localStorage.getItem('p_titular') || '');
     setBanco(localStorage.getItem('p_banco') || '');
@@ -73,7 +69,6 @@ export default function PresupuestoPage() {
     
     setResultado(msg);
     
-    // Guardar permanentes
     localStorage.setItem('p_titular', profesional);
     localStorage.setItem('p_banco', banco);
     localStorage.setItem('p_tipoAlias', tipoAlias);
@@ -84,6 +79,26 @@ export default function PresupuestoPage() {
     setTimeout(() => {
         window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
     }, 100);
+  };
+
+  // --- FUNCIÓN DE ENVÍO CON MEDICIÓN ---
+  const enviarAlCliente = () => {
+    if (resultado) {
+      // 1. Medir en Google Analytics (Gratis)
+      if (typeof window !== 'undefined' && (window as any).gtag) {
+        (window as any).gtag('event', 'enviar_whatsapp', {
+          'herramienta': 'presupuesto_profesional',
+          'profesional': profesional
+        });
+      }
+
+      // 2. Medir en Vercel Analytics
+      track('enviar_presupuesto', { profesional });
+
+      // 3. Abrir WhatsApp (Usamos api.whatsapp.com para mejor compatibilidad con Facebook)
+      const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(resultado)}`;
+      window.open(url, '_blank');
+    }
   };
 
   return (
@@ -97,32 +112,30 @@ export default function PresupuestoPage() {
             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-tight">Herramienta para Profesionales</p>
         </header>
 
-        {/* MANUAL DE USO - PRESUPUESTO */}
-<div className="bg-blue-50 border border-blue-100 p-5 rounded-[2rem] shadow-sm">
-    <h3 className="text-blue-900 text-[10px] font-[800] uppercase tracking-widest mb-5 flex items-center gap-2">
-        <Sparkles className="w-4 h-4 text-blue-600" /> ¡Presupuestos Pro en segundos!
-    </h3>
-    <div className="space-y-4 text-slate-700">
-        <div className="flex items-center gap-4">
-            <div className="bg-blue-200 p-2 rounded-xl shrink-0"><UserCheck className="w-4 h-4 text-blue-700" /></div>
-            <p className="text-[11px] font-semibold leading-tight">Poné tus datos de cobro y el nombre del cliente.</p>
+        {/* MANUAL DE USO */}
+        <div className="bg-blue-50 border border-blue-100 p-5 rounded-[2rem] shadow-sm">
+            <h3 className="text-blue-900 text-[10px] font-[800] uppercase tracking-widest mb-5 flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-blue-600" /> ¡Presupuestos Pro en segundos!
+            </h3>
+            <div className="space-y-4 text-slate-700">
+                <div className="flex items-center gap-4">
+                    <div className="bg-blue-200 p-2 rounded-xl shrink-0"><UserCheck className="w-4 h-4 text-blue-700" /></div>
+                    <p className="text-[11px] font-semibold leading-tight">Poné tus datos de cobro y el nombre del cliente.</p>
+                </div>
+                <div className="flex items-center gap-4">
+                    <div className="bg-blue-200 p-2 rounded-xl shrink-0"><Receipt className="w-4 h-4 text-blue-700" /></div>
+                    <p className="text-[11px] font-semibold leading-tight">Cargá el detalle del trabajo y los materiales.</p>
+                </div>
+                <div className="flex items-center gap-4 text-blue-700">
+                    <div className="bg-blue-600 p-2 rounded-xl shrink-0 text-white shadow-md shadow-blue-100"><Share2 className="w-4 h-4" /></div>
+                    <p className="text-[11px] font-[800] leading-tight">¡Listo! Generá un presupuesto ideal para enviar a tu cliente.</p>
+                </div>
+            </div>
         </div>
-        <div className="flex items-center gap-4">
-            <div className="bg-blue-200 p-2 rounded-xl shrink-0"><Receipt className="w-4 h-4 text-blue-700" /></div>
-            <p className="text-[11px] font-semibold leading-tight">Cargá el detalle del trabajo y los materiales.</p>
-        </div>
-        <div className="flex items-center gap-4 text-blue-700">
-            <div className="bg-blue-600 p-2 rounded-xl shrink-0 text-white shadow-md shadow-blue-100"><Share2 className="w-4 h-4" /></div>
-            <p className="text-[11px] font-[800] leading-tight">¡Listo! Generá un presupuesto ideal para enviar a tu cliente.</p>
-        </div>
-        
-    </div>
-</div>
 
         {/* FORMULARIO */}
         <div className="bg-white rounded-[2.5rem] p-6 shadow-sm border border-slate-100 space-y-6">
             
-            {/* SECCIÓN 1: DATOS DEL PROFESIONAL */}
             <div className="space-y-3">
                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Tus Datos de Cobro</p>
                 <div className="bg-[#F1F5F9] p-3 rounded-2xl flex items-center border-2 border-transparent focus-within:border-blue-600 focus-within:bg-white transition-all text-slate-700">
@@ -164,12 +177,11 @@ export default function PresupuestoPage() {
                 </div>
             </div>
 
-            {/* SECCIÓN 2: DETALLES DEL TRABAJO */}
             <div className="space-y-3 pt-2">
                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1 text-slate-700 border-t border-slate-50 pt-4">Detalle del Cliente</p>
                 <div className="bg-[#F1F5F9] p-3 rounded-2xl flex items-center border-2 border-transparent focus-within:border-blue-600 focus-within:bg-white transition-all text-slate-700">
                     <User className="w-4 h-4 text-slate-400 mr-3" />
-                    <input value={cliente} onChange={e=>setCliente(e.target.value)} placeholder="Nombre del Cliente" className="bg-transparent w-full outline-none font-bold text-sm" />
+                    <input value={cliente} onChange={e=>setCliente(e.target.value)} placeholder="Nombre del Cliente" className="bg-transparent w-full outline-none font-bold text-sm text-slate-700" />
                 </div>
 
                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1 text-slate-700 pt-2">Trabajo y Materiales</p>
@@ -182,7 +194,7 @@ export default function PresupuestoPage() {
                         </div>
                     </div>
                 ))}
-                <button onClick={()=>setItems([...items, {desc:'', precio:''}])} className="text-blue-600 text-[10px] font-black uppercase tracking-widest flex items-center gap-1 px-1 hover:underline">
+                <button onClick={()=>setItems([...items, {desc:'', precio:''}])} className="text-blue-600 text-[10px] font-black uppercase tracking-widest flex items-center gap-1 px-1 hover:underline transition-all">
                     <PlusCircle className="w-3 h-3" /> Agregar ítem
                 </button>
             </div>
@@ -191,14 +203,14 @@ export default function PresupuestoPage() {
                 GENERAR PRESUPUESTO <Send className="w-4 h-4" />
             </button>
 
-            {/* RESULTADO */}
             {resultado && (
                 <div className="pt-6 border-t border-slate-100 space-y-4 animate-in slide-in-from-bottom-4">
                     <div className="bg-slate-900 p-6 rounded-[2rem] text-center shadow-xl">
                         <p className="text-blue-400 text-[10px] font-[900] uppercase mb-1 tracking-widest">Presupuesto Listo</p>
                         <p className="text-white text-xs font-medium italic opacity-70 leading-tight">Ya podés enviarlo al cliente por WhatsApp</p>
                     </div>
-                    <button onClick={() => window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(resultado!)}`, '_blank')} className="w-full bg-[#25D366] text-white font-[900] py-4 rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-green-100 transition-all active:scale-95">
+                    {/* CAMBIO AQUÍ: Llamamos a la nueva función enviarAlCliente */}
+                    <button onClick={enviarAlCliente} className="w-full bg-[#25D366] text-white font-[900] py-4 rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-green-100 transition-all active:scale-95">
                         <MessageSquare className="w-5 h-5" /> ENVIAR AL CLIENTE
                     </button>
                 </div>

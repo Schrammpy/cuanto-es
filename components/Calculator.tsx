@@ -110,6 +110,7 @@ export default function Calculator() {
       // 1. REGISTRO EN GOOGLE ANALYTICS
       if (typeof window !== 'undefined' && (window as any).gtag) {
         (window as any).gtag('event', 'enviar_whatsapp', {
+          'herramienta': 'divisor_gastos', // <--- ESTA ES LA LÍNEA NUEVA
           'banco_destino': banco,
           'monto_cuota': cuotaFinal
         });
