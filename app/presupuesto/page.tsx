@@ -109,7 +109,7 @@ export default function PresupuestoPage() {
             <h1 className="text-2xl font-[900] text-slate-800 tracking-tighter uppercase">
                 Armar <span className="text-blue-600 italic">Presupuesto</span>
             </h1>
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-tight">Herramienta para Profesionales</p>
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-tight">Herramienta para profesionales</p>
         </header>
 
         {/* MANUAL DE USO */}

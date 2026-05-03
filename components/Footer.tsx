@@ -16,13 +16,20 @@ export default function Footer() {
 
   // Función para borrar los datos locales
   const borrarDatos = () => {
-    const confirmar = confirm("¿Querés borrar tus datos de cobro guardados en este celular?");
+    const confirmar = confirm("¿Querés borrar tus datos de cobro guardados?");
     if (confirmar) {
+      // Limpia datos de Divisor
       localStorage.removeItem('titular');
       localStorage.removeItem('banco');
       localStorage.removeItem('tipoAlias');
       localStorage.removeItem('alias');
-      // Recargamos la página para que la calculadora se limpie visualmente
+      
+      // Limpia datos de Presupuesto
+      localStorage.removeItem('p_titular');
+      localStorage.removeItem('p_banco');
+      localStorage.removeItem('p_tipoAlias');
+      localStorage.removeItem('p_alias');
+
       window.location.reload();
     }
   };
