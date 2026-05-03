@@ -1,51 +1,73 @@
 'use client';
-
+import React from 'react';
+import Link from 'next/link';
 import BenefitList from '@/components/BenefitList';
-import Calculator from '@/components/Calculator';
-import Footer from '@/components/Footer';
-import { Sparkles, UserCheck, Receipt, Share2, ShieldCheck } from 'lucide-react';
+import { Calculator, Wrench, ShieldAlert, Sparkles, ChevronRight } from 'lucide-react';
 
+export default function HomePage() {
+  const tools = [
+    {
+      name: 'Dividir Gastos',
+      desc: 'Para el asado, el fútbol o la cena entre amigos.',
+      icon: <Calculator className="w-6 h-6 text-blue-600" />,
+      href: '/vaca',
+      color: 'bg-blue-50',
+    },
+    {
+      name: 'Presupuestos',
+      desc: 'Herramienta para trabajadores de oficio (plomeros, etc).',
+      icon: <Wrench className="w-6 h-6 text-orange-600" />,
+      href: '/presupuesto',
+      color: 'bg-orange-50',
+    },
+    {
+      name: 'Multas Py',
+      desc: 'Costos actualizados de infracciones de tránsito.',
+      icon: <ShieldAlert className="w-6 h-6 text-red-600" />,
+      href: '/multas',
+      color: 'bg-red-50',
+    }
+  ];
 
-export default function Home() {
   return (
-    <main className="min-h-screen bg-[#F8FAFC] p-4 flex justify-center items-start pb-10">
-       
-      <div className="max-w-md w-full">
+    <main className="min-h-screen bg-[#F8FAFC] p-4 flex flex-col items-center">
+      <div className="max-w-md w-full space-y-8 pt-4">
         
-       
-
-        {/* MANUAL DE USO CON NOTA DE PRIVACIDAD */}
-        <div className="bg-blue-50 border border-blue-100 p-5 rounded-[2rem] mb-6 shadow-sm shadow-blue-50">
-            <h3 className="text-blue-900 text-[10px] font-[800] uppercase tracking-widest mb-5 flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-blue-600" /> ¡Tranqui, es muy fácil!
-            </h3>
-            
-            <div className="space-y-4">
-                <div className="flex items-center gap-4">
-                    <div className="bg-blue-200 p-2 rounded-xl shrink-0"><UserCheck className="w-4 h-4 text-blue-700" /></div>
-                    <p className="text-[11px] font-semibold text-blue-800 leading-tight tracking-tight">Poné tus datos para recibir la transferencia.</p>
-                </div>
-                
-                <div className="flex items-center gap-4">
-                    <div className="bg-blue-200 p-2 rounded-xl shrink-0"><Receipt className="w-4 h-4 text-blue-700" /></div>
-                    <p className="text-[11px] font-semibold text-blue-800 leading-tight tracking-tight">Qué se compró y entre cuántos estan.</p>
-                </div>
-                
-                <div className="flex items-center gap-4">
-                    <div className="bg-blue-200 p-2 rounded-xl shrink-0"><Share2 className="w-4 h-4 text-blue-700" /></div>
-                    <p className="text-[11px] font-semibold text-blue-800 leading-tight tracking-tight">¡Listo! Pasa el resumen al grupo.</p>
-                </div>
+        {/* HERO SECTION */}
+        <section className="text-center space-y-2">
+            <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest animate-pulse">
+                <Sparkles className="w-3 h-3" /> ¡Nuevas herramientas!
             </div>
+            <h1 className="text-3xl font-[900] text-slate-800 tracking-tighter">
+                ¿Qué vamos a <br/> <span className="text-blue-600 italic">calcular hoy?</span>
+            </h1>
+            <p className="text-xs font-medium text-slate-400 px-8 leading-relaxed">
+                Elegí la herramienta que necesitás. Rápido, gratis y fácil de compartir.
+            </p>
+        </section>
+
+        {/* GRID DE HERRAMIENTAS */}
+        <div className="grid grid-cols-1 gap-4">
+            {tools.map((tool, i) => (
+                <Link 
+                    key={i} 
+                    href={tool.href}
+                    className="group bg-white p-5 rounded-[2rem] border border-slate-100 shadow-sm flex items-center gap-5 active:scale-95 transition-all hover:border-blue-200"
+                >
+                    <div className={`${tool.color} p-4 rounded-2xl shrink-0 group-hover:scale-110 transition-transform`}>
+                        {tool.icon}
+                    </div>
+                    <div className="flex-1">
+                        <h3 className="font-[800] text-slate-800 text-sm uppercase tracking-tight">{tool.name}</h3>
+                        <p className="text-[11px] text-slate-400 font-medium leading-tight mt-1">{tool.desc}</p>
+                    </div>
+                    <ChevronRight className="w-5 h-5 text-slate-200 group-hover:text-blue-400 transition-colors" />
+                </Link>
+            ))}
         </div>
 
-        {/* COMPONENTE CALCULADORA */}
-        <Calculator />
-
-        {/* LISTA DE BENEFICIOS DEL DÍA */}
+        {/* SECCIÓN DE BENEFICIOS (Para mantener el enganche diario) */}
         <BenefitList />
-
-        {/* FOOTER CON GRATITUD Y SEGURIDAD */}
-        <Footer />
 
       </div>
     </main>
