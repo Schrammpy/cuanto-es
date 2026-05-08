@@ -167,6 +167,7 @@ export default function PresupuestoPage() {
                     <input 
                         value={alias} 
                         onChange={e=>setAlias(e.target.value)} 
+                        inputMode={tipoAlias === 'CORREO' ? 'email' : 'numeric'} // <--- AGREGÁ ESTA LÍNEA
                         placeholder={
                             tipoAlias === 'CORREO' ? "ejemplo@correo.com" : 
                             tipoAlias === 'CELULAR' ? "Nro de Celular" : 
@@ -190,7 +191,7 @@ export default function PresupuestoPage() {
                         <input placeholder="Ej: Mano de obra..." className="bg-[#F1F5F9] p-3 rounded-2xl flex-1 outline-none text-xs font-bold text-slate-700 focus:bg-white border border-transparent focus:border-slate-200 transition-all" onChange={e => {const n=[...items]; n[idx].desc=e.target.value; setItems(n)}} />
                         <div className="bg-[#F1F5F9] p-3 rounded-2xl w-28 flex items-center text-slate-700">
                             <span className="text-[10px] font-bold mr-1 opacity-40 uppercase tracking-tighter">Gs.</span>
-                            <input placeholder="0" className="bg-transparent w-full outline-none text-xs font-bold text-right" value={item.precio} onChange={e => handleMontoChange(idx, e.target.value)} />
+                            <input placeholder="0" className="bg-transparent w-full outline-none text-xs font-bold text-right" value={item.precio}  inputMode="numeric" onChange={e => handleMontoChange(idx, e.target.value)} />
                         </div>
                     </div>
                 ))}
