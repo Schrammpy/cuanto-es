@@ -6,7 +6,7 @@ import { Search, AlertCircle, Info, Scale } from 'lucide-react';
 // ==========================================
 // CONFIGURACIÓN CENTRALIZADA
 // ==========================================
-const JORNAL_MINIMO = 111501; 
+const JORNAL_MINIMO = 117077; // Valor actualizado a junio de 2026
 const FECHA_ACTUALIZACION = "Año 2026";
 
 const multasData = [
