@@ -2,59 +2,58 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import dynamic from 'next/dynamic';
-import { MapPin, Send, Loader2, Info, Navigation, Truck } from 'lucide-react';
+import { MapPin, Send, Loader2, Info, Navigation, Truck, ChevronRight, CreditCard } from 'lucide-react';
 import Footer from '@/components/Footer';
 import 'leaflet/dist/leaflet.css';
 
-// Cargamos componentes de mapa solo en el cliente
 const MapContainer = dynamic(() => import('react-leaflet').then(mod => mod.MapContainer), { ssr: false });
 const TileLayer = dynamic(() => import('react-leaflet').then(mod => mod.TileLayer), { ssr: false });
 const Marker = dynamic(() => import('react-leaflet').then(mod => mod.Marker), { ssr: false });
 
-export default function DeliveryCliente({ params }: { params: { slug: string } }) {
+// USAMOS React.use para desempaquetar los params en Next.js 15
+export default function DeliveryCliente({ params }: { params: Promise<{ slug: string }> }) {
+  const resolvedParams = React.use(params); // <--- CLAVE PARA NEXT.JS 15
+  const slug = resolvedParams.slug;
+
   const [shop, setShop] = useState<any>(null);
   const [clientPos, setClientPos] = useState<[number, number] | null>(null);
   const [distancia, setDistancia] = useState<number | null>(null);
   const [costoTotal, setCostoTotal] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [L, setL] = useState<any>(null);
 
   useEffect(() => {
     import('leaflet').then(leaflet => setL(leaflet));
     fetchShop();
-  }, []);
+  }, [slug]);
 
   async function fetchShop() {
-    console.log("Buscando slug:", params.slug); // Ver en consola qué estamos buscando
-    
-    const { data, error } = await supabase
-      .from('comercios')
-      .select('*')
-      .eq('slug', params.slug)
-      .single();
-    
-    if (error) {
-      console.error("Error de Supabase:", error.message);
-      // Si quieres ver el error en pantalla mientras pruebas:
-      // alert("Error: " + error.message); 
+    try {
+      const { data, error } = await supabase
+        .from('comercios')
+        .select('*')
+        .eq('slug', slug)
+        .single();
+      
+      if (error) {
+        setErrorMsg(error.message);
+        console.error("Error Supabase:", error);
+      }
+      if (data) setShop(data);
+    } catch (err: any) {
+      setErrorMsg(err.message);
+    } finally {
+      setLoading(false);
     }
-    
-    if (data) {
-      setShop(data);
-    } else {
-      setShop(null);
-    }
-    setLoading(false);
   }
 
-  // --- LÓGICA DE CÁLCULO (Haversine) ---
   const calcularDistancia = (lat1: number, lon1: number, lat2: number, lon2: number) => {
     const R = 6371; 
     const dLat = (lat2 - lat1) * Math.PI / 180;
     const dLon = (lon2 - lon1) * Math.PI / 180;
     const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180) * Math.cos(lat2*Math.PI/180) * Math.sin(dLon/2)**2;
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return (R * c) * 1.25; // 25% extra por curvas de calles
+    return (R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))) * 1.25; 
   };
 
   const onMapClick = (e: any) => {
@@ -62,10 +61,8 @@ export default function DeliveryCliente({ params }: { params: { slug: string } }
     setClientPos([lat, lng]);
     const dist = calcularDistancia(shop.lat_origen, shop.lng_origen, lat, lng);
     setDistancia(dist);
-    
     const extra = dist > shop.km_base ? (dist - shop.km_base) * shop.precio_extra_km : 0;
-    const total = shop.precio_base + extra;
-    setCostoTotal(Math.round(total / 500) * 500); // Redondeo paraguayo
+    setCostoTotal(Math.round((shop.precio_base + extra) / 500) * 500);
   };
 
   const MapEvents = () => {
@@ -80,8 +77,15 @@ export default function DeliveryCliente({ params }: { params: { slug: string } }
     window.open(`https://api.whatsapp.com/send?phone=${shop.whatsapp}&text=${encodeURIComponent(msg)}`);
   };
 
-  if (loading || !L) return <div className="h-screen flex flex-col items-center justify-center gap-4 bg-white"><Loader2 className="animate-spin text-blue-600 w-10 h-10" /><p className="text-xs font-black uppercase text-slate-400 tracking-widest">Cargando Cotizador...</p></div>;
-  if (!shop) return <div className="h-screen flex items-center justify-center font-bold">Comercio no encontrado.</div>;
+  if (loading || !L) return <div className="h-screen flex flex-col items-center justify-center gap-4 bg-white"><Loader2 className="animate-spin text-blue-600 w-10 h-10" /><p className="text-xs font-black uppercase text-slate-400 tracking-widest text-center">Cargando Cotizador<br/>de {slug}...</p></div>;
+
+  if (!shop) return (
+    <div className="h-screen flex flex-col items-center justify-center p-10 text-center gap-4">
+      <p className="font-black text-slate-800 uppercase tracking-tighter">Comercio no encontrado</p>
+      <p className="text-xs text-slate-400 font-bold uppercase">Debug: {errorMsg || "No hay respuesta de la base de datos"}</p>
+      <a href="/delivery/crear" className="text-blue-600 font-bold underline text-sm mt-4">Crear un comercio nuevo</a>
+    </div>
+  );
 
   const shopIcon = L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png', shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png', iconSize: [25, 41], iconAnchor: [12, 41] });
   const clientIcon = L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png', shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png', iconSize: [25, 41], iconAnchor: [12, 41] });
@@ -89,19 +93,16 @@ export default function DeliveryCliente({ params }: { params: { slug: string } }
   return (
     <main className="min-h-screen bg-[#F8FAFC] p-4 flex justify-center items-start pb-10">
       <div className="max-w-md w-full space-y-6">
-        
         <header className="text-center space-y-1 pt-4">
-            <h1 className="text-2xl font-black text-slate-800 uppercase italic leading-none tracking-tighter">
+            <h1 className="text-2xl font-black text-slate-800 uppercase italic leading-none tracking-tighter italic">
                 ¿Cuanto es el <span className="text-blue-600">Delivery?</span>
             </h1>
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2">Para: {shop.nombre}</p>
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2 italic">Para: {shop.nombre}</p>
         </header>
 
         <div className="bg-blue-50 border border-blue-100 p-4 rounded-3xl flex items-center gap-3 shadow-sm">
             <div className="bg-blue-600 p-2 rounded-xl text-white shrink-0"><Navigation className="w-4 h-4" /></div>
-            <p className="text-[11px] font-bold text-blue-900 leading-tight">
-                Tocá en el mapa dónde es tu casa para calcular el envío automáticamente.
-            </p>
+            <p className="text-[11px] font-bold text-blue-900 leading-tight">Tocá en el mapa dónde es tu casa para calcular el envío automáticamente.</p>
         </div>
 
         <div className="h-[400px] w-full rounded-[2.5rem] overflow-hidden shadow-2xl border-4 border-white relative z-0">
@@ -126,16 +127,11 @@ export default function DeliveryCliente({ params }: { params: { slug: string } }
                     <p className="text-xl font-black text-white">Gs. {new Intl.NumberFormat('es-PY').format(costoTotal)}</p>
                 </div>
             </div>
-            
-            <button 
-                onClick={enviarPedido}
-                className="w-full bg-[#25D366] text-white font-black py-4 rounded-2xl flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-all"
-            >
+            <button onClick={enviarPedido} className="w-full bg-[#25D366] text-white font-black py-4 rounded-2xl flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-all">
                 <Send className="w-4 h-4" /> CONFIRMAR UBICACIÓN
             </button>
           </div>
         )}
-
         <Footer />
       </div>
     </main>
