@@ -1,7 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 // IMPORTANTE: Asegurate de que todos estos estén en la lista de abajo
-import { Menu, X, Sparkles, Calculator, Wrench, ShieldAlert } from 'lucide-react';
+import { Menu, X, Sparkles, Calculator, Wrench, ShieldAlert, Truck } from 'lucide-react';
 import Link from 'next/link';
 
 export default function Navbar() {
@@ -11,6 +11,7 @@ export default function Navbar() {
     { name: 'Inicio', icon: <Sparkles className="w-5 h-5" />, href: '/' },
     { name: 'Dividir Gastos', icon: <Calculator className="w-5 h-5" />, href: '/divisor' },
     { name: 'Presupuestos', icon: <Wrench className="w-5 h-5" />, href: '/presupuesto' },
+    { name: 'Cotizador Delivery', icon: <Truck className="w-5 h-5" />, href: '/delivery/crear' }, // <-- NUEVO
     { name: 'Multas de Tránsito', icon: <ShieldAlert className="w-5 h-5" />, href: '/multas' },
   ];
 

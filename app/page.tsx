@@ -2,7 +2,7 @@
 import React from 'react';
 import Link from 'next/link';
 import BenefitList from '@/components/BenefitList';
-import { Calculator, Wrench, ShieldAlert, Sparkles, ChevronRight } from 'lucide-react';
+import { Calculator, Wrench, ShieldAlert, Sparkles, ChevronRight, Truck } from 'lucide-react';
 
 export default function HomePage() {
   const tools = [
@@ -19,6 +19,13 @@ export default function HomePage() {
       icon: <Wrench className="w-6 h-6 text-orange-600" />,
       href: '/presupuesto',
       color: 'bg-orange-50',
+    },
+     {
+    name: 'Delivery Automático',
+    desc: 'Emprendedores: Coticen envíos sin pedir ubicación por WhatsApp.',
+    icon: <Truck className="w-6 h-6 text-emerald-600" />,
+    href: '/delivery/crear', // Lleva a que el vendedor cree su link
+    color: 'bg-emerald-50',
     },
     {
       name: 'Multas Py',
