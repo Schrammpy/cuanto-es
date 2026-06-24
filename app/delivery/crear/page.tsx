@@ -24,8 +24,10 @@ const icon = typeof window !== 'undefined' ? L.icon({
 
 // Sub-componente para capturar el clic en el mapa
 function MapPicker({ setPos }: { setPos: (p: [number, number]) => void }) {
-  const MapEvents = require('react-leaflet').useMapEvents; // Carga segura en cliente
-  MapEvents({
+  // @ts-ignore - Esto le dice a TypeScript que ignore la siguiente línea
+  const { useMapEvents } = require('react-leaflet');
+  
+  useMapEvents({
     click(e: any) {
       setPos([e.latlng.lat, e.latlng.lng]);
     },
