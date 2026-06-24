@@ -59,10 +59,29 @@ export default function DeliveryCliente({ params }: { params: Promise<{ slug: st
   const onMapClick = (e: any) => {
     const { lat, lng } = e.latlng;
     setClientPos([lat, lng]);
-    const dist = calcularDistancia(shop.lat_origen, shop.lng_origen, lat, lng);
-    setDistancia(dist);
-    const extra = dist > shop.km_base ? (dist - shop.km_base) * shop.precio_extra_km : 0;
-    setCostoTotal(Math.round((shop.precio_base + extra) / 500) * 500);
+    
+    // 1. Distancia lineal (pájaro)
+    let distLineal = calcularDistancia(shop.lat_origen, shop.lng_origen, lat, lng);
+    
+    // 2. Ajuste de calles reales (En ciudades Py sumamos un 20% aprox)
+    const distCalle = distLineal * 1.2; 
+    setDistancia(distCalle);
+    
+    // 3. Lógica de costo (Tarifa Bolt Moto Style)
+    let costoFinal = shop.precio_base;
+
+    // Si la distancia supera el radio base (ej: 10km)
+    if (distCalle > shop.km_base) {
+      const kmExtras = distCalle - shop.km_base;
+      costoFinal += kmExtras * shop.precio_extra_km;
+    }
+
+    // 4. Redondeo paraguayo (al 1.000 más cercano para delivery)
+    // Si da 14.200 -> 14.000 | Si da 14.600 -> 15.000
+    const finalRedondeado = Math.round(costoFinal / 1000) * 1000;
+    
+    // Aseguramos que nunca sea menor al precio base
+    setCostoTotal(Math.max(finalRedondeado, shop.precio_base));
   };
 
   const MapEvents = () => {

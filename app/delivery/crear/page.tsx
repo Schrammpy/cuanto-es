@@ -129,12 +129,12 @@ export default function CrearComercio() {
                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Tarifas de Envío</p>
                 <div className="grid grid-cols-2 gap-2 text-slate-700">
                     <div className="bg-[#F1F5F9] p-3 rounded-2xl flex flex-col">
-                        <span className="text-[8px] font-black text-slate-400 uppercase">Precio Base</span>
-                        <input placeholder="15.000" className="bg-transparent w-full outline-none font-bold text-sm" onChange={e => setForm({...form, precio_base: e.target.value})} />
+                        <span className="text-[8px] font-black text-slate-400 uppercase">Precio Base (0-10km)</span>
+                        <input placeholder="10.000" className="bg-transparent w-full outline-none font-bold text-sm" onChange={e => setForm({...form, precio_base: e.target.value})} />
                     </div>
                     <div className="bg-[#F1F5F9] p-3 rounded-2xl flex flex-col">
-                        <span className="text-[8px] font-black text-slate-400 uppercase">Km Extra</span>
-                        <input placeholder="3.000" className="bg-transparent w-full outline-none font-bold text-sm" onChange={e => setForm({...form, precio_extra_km: e.target.value})} />
+                        <span className="text-[8px] font-black text-slate-400 uppercase">Gs x Km Adicional</span>
+                        <input placeholder="1.000" className="bg-transparent w-full outline-none font-bold text-sm" onChange={e => setForm({...form, precio_extra_km: e.target.value})} />
                     </div>
                 </div>
             </div>
