@@ -46,8 +46,10 @@ export default function CrearComercio() {
     if (!form.nombre || !form.slug || !form.whatsapp || !form.precio_base) {
       return alert("⚠️ ¡E'a! Completá todos los campos.");
     }
+    
     setLoading(true);
     const cleanSlug = form.slug.toLowerCase().trim().replace(/\s+/g, '-');
+
     const { error } = await supabase.from('comercios').insert([{
       nombre: form.nombre,
       slug: cleanSlug,
@@ -60,7 +62,9 @@ export default function CrearComercio() {
     }]);
 
     if (error) {
-      alert("❌ Error: El link ya existe o hay un problema de conexión.");
+      // ESTA LÍNEA TE VA A DECIR EL ERROR REAL
+      alert("Error de Supabase: " + error.message);
+      console.error(error);
     } else {
       alert("✅ ¡Éxito! Tu cotizador ya está activo.");
       router.push(`/delivery/${cleanSlug}`);
