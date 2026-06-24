@@ -25,13 +25,25 @@ export default function DeliveryCliente({ params }: { params: { slug: string } }
   }, []);
 
   async function fetchShop() {
+    console.log("Buscando slug:", params.slug); // Ver en consola qué estamos buscando
+    
     const { data, error } = await supabase
       .from('comercios')
       .select('*')
       .eq('slug', params.slug)
       .single();
     
-    if (data) setShop(data);
+    if (error) {
+      console.error("Error de Supabase:", error.message);
+      // Si quieres ver el error en pantalla mientras pruebas:
+      // alert("Error: " + error.message); 
+    }
+    
+    if (data) {
+      setShop(data);
+    } else {
+      setShop(null);
+    }
     setLoading(false);
   }
 
