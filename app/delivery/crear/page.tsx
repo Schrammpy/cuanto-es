@@ -2,9 +2,13 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
-import { MapPin, Save, Globe, Store, Smartphone, Loader2, Info } from 'lucide-react';
+import { 
+  MapPin, Save, Globe, Store, Smartphone, Loader2, 
+  Sparkles, UserCheck, Receipt, Share2, ShieldCheck 
+} from 'lucide-react';
 import dynamic from 'next/dynamic';
 import 'leaflet/dist/leaflet.css';
+import Footer from '@/components/Footer';
 
 const MapContainer = dynamic(() => import('react-leaflet').then(m => m.MapContainer), { ssr: false });
 const TileLayer = dynamic(() => import('react-leaflet').then(m => m.TileLayer), { ssr: false });
@@ -21,7 +25,7 @@ export default function CrearComercio() {
     slug: '',
     whatsapp: '',
     precio_base: '',
-    km_base: '10', // Aumentado a 10km como base real
+    km_base: '10',
     precio_extra_km: ''
   });
   const [pos, setPos] = useState<[number, number]>([-25.2867, -57.6470]); 
@@ -31,32 +35,22 @@ export default function CrearComercio() {
     import('leaflet').then((leaflet) => setL(leaflet));
   }, []);
 
-  // --- FUNCIÓN PARA GENERAR EL LINK AUTOMÁTICAMENTE ---
   const slugify = (text: string) => {
-    return text
-      .toString()
-      .toLowerCase()
-      .trim()
-      .replace(/\s+/g, '-')     // Reemplaza espacios con -
-      .replace(/[^\w-]+/g, '')  // Elimina caracteres no permitidos
-      .replace(/--+/g, '-');    // Reemplaza múltiples - con uno solo
+    return text.toString().toLowerCase().trim()
+      .replace(/\s+/g, '-')
+      .replace(/[^\w-]+/g, '')
+      .replace(/--+/g, '-');
   };
 
   const handleNombreChange = (val: string) => {
-    setForm({
-      ...form,
-      nombre: val,
-      slug: slugify(val) // Se genera el link en tiempo real
-    });
+    setForm({ ...form, nombre: val, slug: slugify(val) });
   };
 
   const handleSave = async () => {
     if (!form.nombre || !form.whatsapp || !form.precio_base) {
-      return alert("⚠️ ¡E'a! Completá todos los campos.");
+      return alert("⚠️ ¡E'a! Completá los datos para crear tu link.");
     }
     setLoading(true);
-    
-    // Aseguramos que el número de WhatsApp no tenga símbolos raros
     const cleanWA = form.whatsapp.replace(/\D/g, "");
     const finalWA = cleanWA.startsWith('0') ? '595' + cleanWA.substring(1) : cleanWA;
 
@@ -72,9 +66,8 @@ export default function CrearComercio() {
     }]);
 
     if (error) {
-      alert("❌ Error: El nombre de tienda ya está en uso. Intentá con uno un poco diferente.");
+      alert("❌ El nombre de esta tienda ya existe. Probá agregando tu ciudad al nombre.");
     } else {
-      alert("✅ ¡Éxito! Tu cotizador ya está activo.");
       router.push(`/delivery/${form.slug}`);
     }
     setLoading(false);
@@ -99,102 +92,106 @@ export default function CrearComercio() {
       <div className="max-w-md w-full space-y-6">
         
         <header className="text-center space-y-1">
-            <h1 className="text-2xl font-black text-slate-800 uppercase italic leading-none">
-                Configurá tu <span className="text-blue-600">Delivery</span>
+            <h1 className="text-2xl font-[900] text-slate-800 tracking-tighter uppercase leading-none italic">
+                Link de <span className="text-blue-600">Delivery</span>
             </h1>
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest italic">SaaS para emprendedores Py</p>
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2">Personalizá tu propio cotizador</p>
         </header>
 
-        <div className="bg-white rounded-[2.5rem] p-6 shadow-sm border border-slate-100 space-y-5">
+        {/* GUÍA RÁPIDA (COHERENCIA CON OTRAS HERRAMIENTAS) */}
+        <div className="bg-blue-50 border border-blue-100 p-5 rounded-[2rem] shadow-sm">
+            <h3 className="text-blue-900 text-[10px] font-[800] uppercase tracking-widest mb-5 flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-blue-600" /> ¡Dale nivel a tu negocio!
+            </h3>
+            <div className="space-y-4 text-slate-700">
+                <div className="flex items-center gap-4">
+                    <div className="bg-blue-200 p-2 rounded-xl shrink-0"><UserCheck className="w-4 h-4 text-blue-700" /></div>
+                    <p className="text-[11px] font-semibold leading-tight text-pretty">Ubicá tu local en el mapa y poné tu WhatsApp.</p>
+                </div>
+                <div className="flex items-center gap-4">
+                    <div className="bg-blue-200 p-2 rounded-xl shrink-0"><Receipt className="w-4 h-4 text-blue-700" /></div>
+                    <p className="text-[11px] font-semibold leading-tight text-pretty">Definí tus precios de envío (Base y Km extra).</p>
+                </div>
+                <div className="flex items-center gap-4 text-blue-700 font-[800]">
+                    <div className="bg-blue-600 p-2 rounded-xl shrink-0 text-white shadow-md shadow-blue-100"><Share2 className="w-4 h-4" /></div>
+                    <p className="text-[11px] leading-tight text-blue-700 text-pretty">¡Listo! Poné el link en tu Bio y olvidate de cotizar a mano.</p>
+                </div>
+                <div className="flex items-start gap-4 pt-4 border-t border-blue-100/50">
+                    <div className="bg-white p-2 rounded-xl shrink-0 shadow-sm"><ShieldCheck className="w-4 h-4 text-emerald-600" /></div>
+                    <p className="text-[10px] font-bold text-blue-800 leading-tight">Privacidad: Tus datos se guardan de forma segura para que el link funcione siempre.</p>
+                </div>
+            </div>
+        </div>
+
+        <div className="bg-white rounded-[2.5rem] p-6 shadow-sm border border-slate-100 space-y-6">
             <div className="space-y-3">
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Información del Negocio</p>
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Tus Datos</p>
                 
                 {/* Nombre de la tienda */}
-                <div className="bg-[#F1F5F9] p-3 rounded-2xl flex items-center border-2 border-transparent focus-within:border-blue-600 focus-within:bg-white transition-all">
+                <div className="bg-[#F1F5F9] p-3 rounded-2xl flex items-center border-2 border-transparent focus-within:border-blue-600 focus-within:bg-white transition-all text-slate-700">
                     <Store className="w-4 h-4 text-slate-400 mr-3" />
-                    <input 
-                        placeholder="Nombre de tu Tienda (ej: Don Pipo)" 
-                        className="bg-transparent w-full outline-none font-bold text-sm text-slate-700" 
-                        onChange={e => handleNombreChange(e.target.value)} 
-                    />
+                    <input placeholder="Nombre de tu Tienda (ej: Don Pipo)" className="bg-transparent w-full outline-none font-bold text-sm" onChange={e => handleNombreChange(e.target.value)} />
                 </div>
 
-                {/* Slug Automático (Bloqueado) */}
-                <div className="bg-slate-50 p-3 rounded-2xl flex items-center border border-slate-100 opacity-70">
-                    <Globe className="w-4 h-4 text-slate-300 mr-3" />
-                    <span className="text-xs font-bold text-slate-400 mr-1">Link: /</span>
+                {/* Link Automático (Limpio) */}
+                <div className="bg-slate-50 p-3 rounded-2xl flex items-center border border-slate-100">
+                    <Globe className="w-4 h-4 text-blue-500 mr-3" />
                     <input 
-                        value={form.slug} 
+                        value={form.slug ? `cuantoes.com.py/delivery/${form.slug}` : ""} 
                         readOnly 
-                        placeholder="link-automatico"
-                        className="bg-transparent w-full outline-none font-bold text-xs text-blue-400" 
+                        placeholder="Link automático..."
+                        className="bg-transparent w-full outline-none font-bold text-[10px] text-blue-400 italic" 
                     />
                 </div>
 
-                {/* WhatsApp Local */}
-                <div className="bg-[#F1F5F9] p-3 rounded-2xl flex items-center border-2 border-transparent focus-within:border-blue-600 focus-within:bg-white transition-all">
+                {/* WhatsApp */}
+                <div className="bg-[#F1F5F9] p-3 rounded-2xl flex items-center border-2 border-transparent focus-within:border-blue-600 focus-within:bg-white transition-all text-slate-700">
                     <Smartphone className="w-4 h-4 text-slate-400 mr-3" />
-                    <input 
-                        placeholder="WhatsApp (ej: 0981001002)" 
-                        className="bg-transparent w-full outline-none font-bold text-sm text-slate-700" 
-                        onChange={e => setForm({...form, whatsapp: e.target.value})} 
-                    />
+                    <input placeholder="WhatsApp (ej: 0981 000 000)" className="bg-transparent w-full outline-none font-bold text-sm" onChange={e => setForm({...form, whatsapp: e.target.value})} />
                 </div>
             </div>
 
+            {/* MAPA */}
             <div className="space-y-2">
                 <p className="text-[10px] font-black text-slate-400 uppercase px-1 flex items-center gap-2">
-                    <MapPin className="w-3 h-3 text-red-500" /> Marcá donde está tu local
+                    <MapPin className="w-3 h-3 text-red-500" /> ¿Dónde queda tu local?
                 </p>
-                <div className="h-56 w-full rounded-3xl overflow-hidden border-4 border-[#F1F5F9] relative z-0">
+                <div className="h-56 w-full rounded-3xl overflow-hidden border-4 border-white shadow-inner relative z-0">
                     <MapContainer center={pos} zoom={13} style={{ height: '100%', width: '100%' }}>
                         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                         <Marker position={pos} icon={L.icon({ iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png', shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png', iconSize: [25, 41], iconAnchor: [12, 41] })} />
                         <MapClickHandler />
                     </MapContainer>
                 </div>
+                <p className="text-[9px] text-center text-slate-300 font-bold italic tracking-tighter leading-none">Tocá el mapa para ubicar tu punto de despacho</p>
             </div>
 
+            {/* TARIFAS */}
             <div className="space-y-3">
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Tarifas de Envío (Gs)</p>
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Tus Tarifas</p>
                 <div className="grid grid-cols-2 gap-3">
-                    {/* Input de Precio Base - Diseño más "Input" */}
                     <div className="bg-white p-3 rounded-2xl flex flex-col border-2 border-slate-100 focus-within:border-blue-500 transition-all shadow-sm">
-                        <span className="text-[8px] font-black text-blue-500 uppercase mb-1">Precio Base (0-10km)</span>
-                        <input 
-                            placeholder="Ej: 10.000" 
-                            className="bg-transparent w-full outline-none font-black text-sm text-slate-800" 
-                            onChange={e => setForm({...form, precio_base: e.target.value})} 
-                        />
+                        <span className="text-[8px] font-black text-blue-500 uppercase mb-1">Base (0-10km)</span>
+                        <input placeholder="10.000" className="bg-transparent w-full outline-none font-black text-sm text-slate-800" onChange={e => setForm({...form, precio_base: e.target.value})} />
                     </div>
-                    {/* Input de Km Extra - Diseño más "Input" */}
                     <div className="bg-white p-3 rounded-2xl flex flex-col border-2 border-slate-100 focus-within:border-blue-500 transition-all shadow-sm">
-                        <span className="text-[8px] font-black text-blue-500 uppercase mb-1">Gs x Km Adicional</span>
-                        <input 
-                            placeholder="Ej: 1.000" 
-                            className="bg-transparent w-full outline-none font-black text-sm text-slate-800" 
-                            onChange={e => setForm({...form, precio_extra_km: e.target.value})} 
-                        />
+                        <span className="text-[8px] font-black text-blue-500 uppercase mb-1">Km Adicional</span>
+                        <input placeholder="1.000" className="bg-transparent w-full outline-none font-black text-sm text-slate-800" onChange={e => setForm({...form, precio_extra_km: e.target.value})} />
                     </div>
                 </div>
             </div>
 
+            {/* BOTÓN REINVENTADO */}
             <button 
               onClick={handleSave} 
               disabled={loading}
-              className="w-full bg-blue-600 text-white font-black py-4 rounded-2xl shadow-xl active:scale-95 transition-all flex justify-center items-center gap-2"
+              className="w-full bg-blue-600 text-white font-[900] py-5 rounded-3xl shadow-xl shadow-blue-200 active:scale-95 transition-all flex justify-center items-center gap-3 tracking-tight"
             >
-                {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                {loading ? "CREANDO LINK..." : "ACTIVAR MI COTIZADOR"}
+                {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Sparkles className="w-5 h-5 fill-white/20" />}
+                <span>LANZAR MI LINK PROFESIONAL</span>
             </button>
         </div>
-
-        <div className="bg-amber-50 border border-amber-100 p-4 rounded-2xl flex items-start gap-3">
-            <Info className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
-            <p className="text-[10px] font-medium text-amber-800 leading-tight">
-                <strong>¿Cómo funciona?</strong> Al poner tu nombre, creamos un link único para vos. Tus clientes entrarán a ese link, marcarán su casa y verán el precio real del envío según tus tarifas.
-            </p>
-        </div>
+        <Footer />
       </div>
     </main>
   );
