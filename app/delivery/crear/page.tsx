@@ -53,33 +53,40 @@ export default function CrearComercio() {
   };
 
   const handleSave = async () => {
-    if (!form.nombre || !form.whatsapp || !form.precio_base || !form.precio_extra_km) {
-      return alert("⚠️ ¡E'a! Completá todos los datos para crear tu link.");
-    }
-    setLoading(true);
-    
-    const cleanWA = form.whatsapp.replace(/\D/g, "");
-    const finalWA = cleanWA.startsWith('0') ? '595' + cleanWA.substring(1) : cleanWA;
+  if (!form.nombre || !form.whatsapp || !form.precio_base || !form.precio_extra_km) {
+    return alert("⚠️ ¡E'a! Completá todos los datos para crear tu link.");
+  }
+  
+  setLoading(true);
+  
+  const cleanWA = form.whatsapp.replace(/\D/g, "");
+  const finalWA = cleanWA.startsWith('0') ? '595' + cleanWA.substring(1) : cleanWA;
 
-    const { error } = await supabase.from('comercios').insert([{
-      nombre: form.nombre,
-      slug: form.slug,
-      whatsapp: finalWA,
-      lat_origen: pos[0],
-      lng_origen: pos[1],
-      // Limpiamos los puntos antes de guardar en la base de datos
-      precio_base: parseInt(form.precio_base.replace(/\./g, "")),
-      km_base: parseInt(form.km_base),
-      precio_extra_km: parseInt(form.precio_extra_km.replace(/\./g, ""))
-    }]);
+  const { error } = await supabase.from('comercios').insert([{
+    nombre: form.nombre,
+    slug: form.slug,
+    whatsapp: finalWA,
+    precio_base: parseInt(form.precio_base.replace(/\./g, "")),
+    km_base: parseInt(form.km_base),
+    precio_extra_km: parseInt(form.precio_extra_km.replace(/\./g, "")),
+    lat_origen: pos[0],
+    lng_origen: pos[1],
+  }]);
 
-    if (error) {
-      alert("❌ El nombre de esta tienda ya existe o hubo un error. Probá con otro nombre.");
+  if (error) {
+    // Si el error es por link duplicado (Código 23505 en Postgres)
+    if (error.code === '23505') {
+      alert("❌ ¡E'a! El nombre '" + form.nombre + "' ya está registrado.\n\nSugerencia: Agregá tu ciudad o barrio al nombre (ej: " + form.nombre + " Luque) para que tu link sea único.");
     } else {
-      router.push(`/delivery/${form.slug}`);
+      alert("❌ Ocurrió un error: " + error.message);
     }
-    setLoading(false);
-  };
+  } else {
+    // Éxito: Guardamos y redirigimos
+    alert("✅ ¡Link creado con éxito!");
+    router.push(`/delivery/${form.slug}`);
+  }
+  setLoading(false);
+};
 
   const MapClickHandler = () => {
     // @ts-ignore
