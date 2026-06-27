@@ -35,6 +35,12 @@ export default function CrearComercio() {
     import('leaflet').then((leaflet) => setL(leaflet));
   }, []);
 
+  // --- FUNCIÓN PARA FORMATEAR MILES AUTOMÁTICAMENTE ---
+  const formatMiles = (val: string) => {
+    const num = val.replace(/\D/g, ""); // Solo números
+    return num ? new Intl.NumberFormat('es-PY').format(parseInt(num)) : "";
+  };
+
   const slugify = (text: string) => {
     return text.toString().toLowerCase().trim()
       .replace(/\s+/g, '-')
@@ -47,10 +53,11 @@ export default function CrearComercio() {
   };
 
   const handleSave = async () => {
-    if (!form.nombre || !form.whatsapp || !form.precio_base) {
-      return alert("⚠️ ¡E'a! Completá los datos para crear tu link.");
+    if (!form.nombre || !form.whatsapp || !form.precio_base || !form.precio_extra_km) {
+      return alert("⚠️ ¡E'a! Completá todos los datos para crear tu link.");
     }
     setLoading(true);
+    
     const cleanWA = form.whatsapp.replace(/\D/g, "");
     const finalWA = cleanWA.startsWith('0') ? '595' + cleanWA.substring(1) : cleanWA;
 
@@ -60,13 +67,14 @@ export default function CrearComercio() {
       whatsapp: finalWA,
       lat_origen: pos[0],
       lng_origen: pos[1],
+      // Limpiamos los puntos antes de guardar en la base de datos
       precio_base: parseInt(form.precio_base.replace(/\./g, "")),
       km_base: parseInt(form.km_base),
       precio_extra_km: parseInt(form.precio_extra_km.replace(/\./g, ""))
     }]);
 
     if (error) {
-      alert("❌ El nombre de esta tienda ya existe. Probá agregando tu ciudad al nombre.");
+      alert("❌ El nombre de esta tienda ya existe o hubo un error. Probá con otro nombre.");
     } else {
       router.push(`/delivery/${form.slug}`);
     }
@@ -98,27 +106,23 @@ export default function CrearComercio() {
             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2">Personalizá tu propio cotizador</p>
         </header>
 
-        {/* GUÍA RÁPIDA (COHERENCIA CON OTRAS HERRAMIENTAS) */}
+        {/* GUÍA RÁPIDA */}
         <div className="bg-blue-50 border border-blue-100 p-5 rounded-[2rem] shadow-sm">
             <h3 className="text-blue-900 text-[10px] font-[800] uppercase tracking-widest mb-5 flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-blue-600" /> ¡Dale nivel a tu negocio!
             </h3>
-            <div className="space-y-4 text-slate-700">
+            <div className="space-y-4 text-slate-700 font-medium leading-tight text-[11px]">
                 <div className="flex items-center gap-4">
                     <div className="bg-blue-200 p-2 rounded-xl shrink-0"><UserCheck className="w-4 h-4 text-blue-700" /></div>
-                    <p className="text-[11px] font-semibold leading-tight text-pretty">Ubicá tu local en el mapa y poné tu WhatsApp.</p>
+                    <p>Ubicá tu local en el mapa y poné tu WhatsApp.</p>
                 </div>
                 <div className="flex items-center gap-4">
                     <div className="bg-blue-200 p-2 rounded-xl shrink-0"><Receipt className="w-4 h-4 text-blue-700" /></div>
-                    <p className="text-[11px] font-semibold leading-tight text-pretty">Definí tus precios de envío (Base y Km extra).</p>
+                    <p>Definí tus precios de envío (Base y Km extra).</p>
                 </div>
                 <div className="flex items-center gap-4 text-blue-700 font-[800]">
                     <div className="bg-blue-600 p-2 rounded-xl shrink-0 text-white shadow-md shadow-blue-100"><Share2 className="w-4 h-4" /></div>
-                    <p className="text-[11px] leading-tight text-blue-700 text-pretty">¡Listo! Poné el link en tu Bio y olvidate de cotizar a mano.</p>
-                </div>
-                <div className="flex items-start gap-4 pt-4 border-t border-blue-100/50">
-                    <div className="bg-white p-2 rounded-xl shrink-0 shadow-sm"><ShieldCheck className="w-4 h-4 text-emerald-600" /></div>
-                    <p className="text-[10px] font-bold text-blue-800 leading-tight">Privacidad: Tus datos se guardan de forma segura para que el link funcione siempre.</p>
+                    <p>¡Listo! Poné el link en tu Bio de Instagram.</p>
                 </div>
             </div>
         </div>
@@ -126,14 +130,11 @@ export default function CrearComercio() {
         <div className="bg-white rounded-[2.5rem] p-6 shadow-sm border border-slate-100 space-y-6">
             <div className="space-y-3">
                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Tus Datos</p>
-                
-                {/* Nombre de la tienda */}
                 <div className="bg-[#F1F5F9] p-3 rounded-2xl flex items-center border-2 border-transparent focus-within:border-blue-600 focus-within:bg-white transition-all text-slate-700">
                     <Store className="w-4 h-4 text-slate-400 mr-3" />
                     <input placeholder="Nombre de tu Tienda (ej: Don Pipo)" className="bg-transparent w-full outline-none font-bold text-sm" onChange={e => handleNombreChange(e.target.value)} />
                 </div>
 
-                {/* Link Automático (Limpio) */}
                 <div className="bg-slate-50 p-3 rounded-2xl flex items-center border border-slate-100">
                     <Globe className="w-4 h-4 text-blue-500 mr-3" />
                     <input 
@@ -144,10 +145,9 @@ export default function CrearComercio() {
                     />
                 </div>
 
-                {/* WhatsApp */}
                 <div className="bg-[#F1F5F9] p-3 rounded-2xl flex items-center border-2 border-transparent focus-within:border-blue-600 focus-within:bg-white transition-all text-slate-700">
                     <Smartphone className="w-4 h-4 text-slate-400 mr-3" />
-                    <input placeholder="WhatsApp (ej: 0981 000 000)" className="bg-transparent w-full outline-none font-bold text-sm" onChange={e => setForm({...form, whatsapp: e.target.value})} />
+                    <input placeholder="WhatsApp (ej: 0981 000 000)" inputMode="numeric" className="bg-transparent w-full outline-none font-bold text-sm" onChange={e => setForm({...form, whatsapp: e.target.value})} />
                 </div>
             </div>
 
@@ -163,32 +163,43 @@ export default function CrearComercio() {
                         <MapClickHandler />
                     </MapContainer>
                 </div>
-                <p className="text-[9px] text-center text-slate-300 font-bold italic tracking-tighter leading-none">Tocá el mapa para ubicar tu punto de despacho</p>
             </div>
 
-            {/* TARIFAS */}
+            {/* TARIFAS (Actualizado con nombres y formateador) */}
             <div className="space-y-3">
                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Tus Tarifas</p>
                 <div className="grid grid-cols-2 gap-3">
                     <div className="bg-white p-3 rounded-2xl flex flex-col border-2 border-slate-100 focus-within:border-blue-500 transition-all shadow-sm">
-                        <span className="text-[8px] font-black text-blue-500 uppercase mb-1">Base (0-10km)</span>
-                        <input placeholder="10.000" className="bg-transparent w-full outline-none font-black text-sm text-slate-800" onChange={e => setForm({...form, precio_base: e.target.value})} />
+                        <span className="text-[8px] font-black text-blue-500 uppercase mb-1">Monto Base (0-10 km)</span>
+                        <input 
+                            placeholder="10.000" 
+                            inputMode="numeric"
+                            className="bg-transparent w-full outline-none font-black text-sm text-slate-800" 
+                            value={form.precio_base}
+                            onChange={e => setForm({...form, precio_base: formatMiles(e.target.value)})} 
+                        />
                     </div>
                     <div className="bg-white p-3 rounded-2xl flex flex-col border-2 border-slate-100 focus-within:border-blue-500 transition-all shadow-sm">
-                        <span className="text-[8px] font-black text-blue-500 uppercase mb-1">Km Adicional</span>
-                        <input placeholder="1.000" className="bg-transparent w-full outline-none font-black text-sm text-slate-800" onChange={e => setForm({...form, precio_extra_km: e.target.value})} />
+                        <span className="text-[8px] font-black text-blue-500 uppercase mb-1">Adicional por Km</span>
+                        <input 
+                            placeholder="1.000" 
+                            inputMode="numeric"
+                            className="bg-transparent w-full outline-none font-black text-sm text-slate-800" 
+                            value={form.precio_extra_km}
+                            onChange={e => setForm({...form, precio_extra_km: formatMiles(e.target.value)})} 
+                        />
                     </div>
                 </div>
             </div>
 
-            {/* BOTÓN REINVENTADO */}
+            {/* BOTÓN FINAL */}
             <button 
               onClick={handleSave} 
               disabled={loading}
               className="w-full bg-blue-600 text-white font-[900] py-5 rounded-3xl shadow-xl shadow-blue-200 active:scale-95 transition-all flex justify-center items-center gap-3 tracking-tight"
             >
                 {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Sparkles className="w-5 h-5 fill-white/20" />}
-                <span>LANZAR MI LINK PROFESIONAL</span>
+                <span>CREAR MI LINK</span>
             </button>
         </div>
         <Footer />
