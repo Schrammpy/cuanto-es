@@ -3,167 +3,251 @@ import React, { useEffect, useState, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
 import { getOrCreateUser } from '@/lib/user-store';
 import { useRouter } from 'next/navigation';
-import { Send, Clock, Shield, AlertTriangle, ChevronRight, Terminal, Activity } from 'lucide-react';
+import { 
+  Send, MessageSquare, LayoutTextSelection, Users, 
+  ArrowLeft, Clock, Shield, AlertTriangle, Terminal, Activity, ChevronRight 
+} from 'lucide-react';
 
-export default function MuroPage({ params }: { params: Promise<{ slug: string }> }) {
+type Vista = 'LOBBY' | 'MURO' | 'CHAT';
+
+export default function MuroInmersivo({ params }: { params: Promise<{ slug: string }> }) {
   const resolvedParams = React.use(params);
   const slug = resolvedParams.slug;
   const router = useRouter();
 
+  // ESTADOS PRINCIPALES
+  const [view, setView] = useState<Vista>('LOBBY');
   const [user, setUser] = useState<any>(null);
   const [sala, setSala] = useState<any>(null);
   const [mensajes, setMensajes] = useState<any[]>([]);
   const [nuevoMsg, setNuevoMsg] = useState('');
+  const [userCount, setUserCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [showExitWarning, setShowExitWarning] = useState(false);
 
   useEffect(() => {
     const userData = getOrCreateUser();
     setUser(userData);
-    fetchDatos();
-
-    const channel = supabase
-      .channel(`realtime_sala_${slug}`)
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'mensajes' }, 
-      (payload) => { setMensajes((prev) => [payload.new, ...prev]); })
-      .subscribe();
-
-    return () => { supabase.removeChannel(channel); };
+    fetchSala(userData);
   }, [slug]);
 
-  async function fetchDatos() {
-    const { data: salaData } = await supabase.from('salas').select('*').eq('slug', slug).single();
-    if (salaData) {
-      setSala(salaData);
-      const { data: msgs } = await supabase.from('mensajes').select('*').eq('sala_id', salaData.id).order('created_at', { ascending: false });
-      if (msgs) setMensajes(msgs);
+  // Manejar el cambio de vista (cargar mensajes correspondientes)
+  useEffect(() => {
+    if (sala && view !== 'LOBBY') {
+      fetchMensajes();
+    }
+  }, [view, sala]);
+
+  async function fetchSala(currentUser: any) {
+    const { data } = await supabase.from('salas').select('*').eq('slug', slug).single();
+    if (data) {
+      setSala(data);
+      setupRealtime(data.id, currentUser);
     }
     setLoading(false);
+  }
+
+  function setupRealtime(salaId: string, currentUser: any) {
+    // 1. Escuchar Mensajes Nuevos
+    const msgChannel = supabase.channel(`mensajes_${slug}`)
+      .on('postgres_changes', { 
+        event: 'INSERT', 
+        schema: 'public', 
+        table: 'mensajes', 
+        filter: `sala_id=eq.${salaId}` 
+      }, (p) => {
+        // Solo actualizar si el mensaje coincide con la vista actual (Chat o Muro)
+        setMensajes(prev => {
+            // Evitar duplicados por si acaso
+            if (prev.find(m => m.id === p.new.id)) return prev;
+            return [p.new, ...prev];
+        });
+      })
+      .subscribe();
+
+    // 2. Contador de Presencia (Gente online)
+    const presenceChannel = supabase.channel(`presencia_${slug}`);
+    presenceChannel
+      .on('presence', { event: 'sync' }, () => {
+        const state = presenceChannel.presenceState();
+        setUserCount(Object.keys(state).length);
+      })
+      .subscribe(async (status) => {
+        if (status === 'SUBSCRIBED') {
+          await presenceChannel.track({ 
+            user: currentUser.nick, 
+            online_at: new Date().toISOString() 
+          });
+        }
+      });
+
+    return () => {
+      supabase.removeChannel(msgChannel);
+      supabase.removeChannel(presenceChannel);
+    };
+  }
+
+  async function fetchMensajes() {
+    const isChat = view === 'CHAT';
+    const { data } = await supabase.from('mensajes')
+      .select('*')
+      .eq('sala_id', sala.id)
+      .eq('es_chat', isChat)
+      .order('created_at', { ascending: false })
+      .limit(50);
+    if (data) setMensajes(data);
   }
 
   async function enviarMensaje(e: React.FormEvent) {
     e.preventDefault();
     if (!nuevoMsg.trim() || !user || !sala) return;
+
+    const texto = nuevoMsg;
+    setNuevoMsg(''); // Limpieza rápida UI
+
     const { error } = await supabase.from('mensajes').insert([{
-      sala_id: sala.id, autor_uuid: user.id, autor_nick: user.nick, contenido: nuevoMsg
+      sala_id: sala.id,
+      autor_uuid: user.id,
+      autor_nick: user.nick,
+      contenido: texto,
+      es_chat: view === 'CHAT'
     }]);
-    if (!error) setNuevoMsg('');
+
+    if (error) alert("Error: " + error.message);
   }
 
-  if (loading) return <div className="h-screen bg-[#060B16] flex items-center justify-center font-mono text-blue-500 animate-pulse uppercase tracking-[0.3em]">Inicializando HUD...</div>;
-  if (!sala) return <div className="h-screen bg-[#060B16] flex items-center justify-center text-white font-mono uppercase text-[10px]">Error: Nodo no encontrado</div>;
+  if (loading) return <div className="h-screen bg-[#060B16] flex items-center justify-center font-mono text-blue-500 animate-pulse uppercase tracking-[0.3em]">Conectando al Nodo...</div>;
+  if (!sala) return <div className="h-screen bg-[#060B16] flex items-center justify-center text-white">Error 404: Ubicación no encontrada</div>;
 
-  return (
-    <main className="min-h-screen bg-[#060B16] text-white flex flex-col items-center overflow-hidden font-sans">
-      <div className="max-w-md w-full flex flex-col h-screen relative">
-        
-        {/* HEADER INMERSIVO (Sin Logo, solo la Sala) */}
-        <header className="p-6 border-b border-white/5 bg-[#0A101F]/95 backdrop-blur-xl">
-            <div className="flex justify-between items-center">
-                <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.6)]"></div>
-                        <h1 className="text-lg font-black uppercase tracking-tight text-slate-100">{sala.nombre}</h1>
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                        <Activity className="w-2.5 h-2.5 text-slate-600" />
-                        <span className="text-[8px] font-black text-slate-600 uppercase tracking-widest leading-none">Canal de proximidad activo</span>
-                    </div>
-                </div>
-                <div className="bg-white/5 border border-white/10 px-3 py-1.5 rounded-xl flex flex-col items-end shrink-0">
-                    <span className="text-[9px] font-black text-blue-400 uppercase tracking-tighter leading-none">{user?.nick}</span>
-                    <span className="text-[6px] text-slate-500 font-bold uppercase mt-1">Status: Anon</span>
-                </div>
+  // --- VISTA: LOBBY ---
+  if (view === 'LOBBY') {
+    return (
+      <main className="min-h-screen bg-[#060B16] text-white p-6 flex flex-col items-center justify-center space-y-10">
+        <header className="text-center space-y-2">
+            <h1 className="text-3xl font-black uppercase tracking-tighter text-slate-100 italic">{sala.nombre}</h1>
+            <div className="flex items-center justify-center gap-2 text-emerald-500">
+                <div className="w-2 h-2 bg-emerald-500 rounded-full animate-ping"></div>
+                <p className="text-[10px] font-black uppercase tracking-[0.3em]">Nodo Activo</p>
             </div>
         </header>
 
-        {/* CHAT/MURO AREA */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-6 flex flex-col-reverse scrollbar-hide">
-            {mensajes.map((m) => (
-                <div key={m.id} className="animate-in fade-in slide-in-from-bottom-2 duration-500">
-                    <div className="flex items-center gap-2 mb-1.5 px-1">
-                        <span className={`text-[9px] font-black tracking-widest uppercase ${m.autor_uuid === user?.id ? 'text-blue-500' : 'text-slate-500'}`}>
-                            {m.autor_nick}
-                        </span>
-                        <span className="text-[7px] text-slate-700 font-bold uppercase">
-                            {new Date(m.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                        </span>
-                    </div>
-                    <div className={`p-4 rounded-2xl rounded-tl-none max-w-[95%] text-sm font-medium leading-relaxed ${m.autor_uuid === user?.id ? 'bg-blue-600/10 border border-blue-500/20 text-blue-50 shadow-[0_0_15px_rgba(37,99,235,0.05)]' : 'bg-white/5 border border-white/5 text-slate-300'}`}>
-                        {m.contenido}
-                    </div>
+        <div className="w-full max-w-xs space-y-4">
+            <button onClick={() => setView('MURO')} className="w-full bg-white/5 border border-white/10 p-6 rounded-[2.5rem] flex flex-col items-center gap-3 hover:bg-blue-600/10 hover:border-blue-500/30 transition-all group">
+                <LayoutTextSelection className="w-8 h-8 text-blue-400 group-hover:scale-110 transition-transform" />
+                <div className="text-center">
+                    <span className="block font-black uppercase text-sm tracking-tight text-slate-200">Escribir en el Muro</span>
+                    <span className="text-[8px] font-bold text-slate-500 uppercase tracking-widest italic">Historial de 7 días</span>
                 </div>
-            ))}
+            </button>
 
-            <div className="bg-blue-900/10 border border-blue-500/10 p-8 rounded-[2.5rem] text-center mb-10 border-dashed">
-                <Shield className="w-6 h-6 text-blue-500/40 mx-auto mb-3" />
-                <p className="text-[10px] font-black text-blue-400 uppercase tracking-[0.2em] mb-2">Espacio Efímero</p>
-                <p className="text-[9px] text-slate-500 leading-relaxed font-bold uppercase tracking-tight italic">
-                    Este muro se purga automáticamente cada 24 horas. <br/> Sin rastro, sin archivos.
-                </p>
-            </div>
+            <button onClick={() => setView('CHAT')} className="w-full bg-white/5 border border-white/10 p-6 rounded-[2.5rem] flex flex-col items-center gap-3 hover:bg-emerald-600/10 hover:border-emerald-500/30 transition-all group relative">
+                <div className="absolute top-4 right-6 flex items-center gap-1 bg-emerald-500/20 px-2 py-0.5 rounded-full border border-emerald-500/30">
+                    <Users className="w-2.5 h-2.5 text-emerald-400" />
+                    <span className="text-[8px] font-black text-emerald-400">{userCount}</span>
+                </div>
+                <MessageSquare className="w-8 h-8 text-emerald-400 group-hover:scale-110 transition-transform" />
+                <div className="text-center">
+                    <span className="block font-black uppercase text-sm tracking-tight text-slate-200">Chat en Vivo</span>
+                    <span className="text-[8px] font-bold text-slate-500 uppercase tracking-widest italic">Borrado cada 24hs</span>
+                </div>
+            </button>
         </div>
 
-        {/* INPUT FIJO */}
-        <div className="p-4 bg-[#0A101F] border-t border-white/5">
-            <form onSubmit={enviarMensaje} className="flex gap-2">
-                <input 
-                    value={nuevoMsg}
-                    onChange={(e) => setNuevoMsg(e.target.value)}
-                    placeholder="Escribí un mensaje..."
-                    className="flex-1 bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-blue-500/30 text-sm placeholder:text-slate-800 transition-all font-medium text-slate-200"
-                />
-                <button className="bg-blue-600 hover:bg-blue-500 p-4 rounded-2xl active:scale-90 transition-all shadow-xl shadow-blue-900/30">
-                    <Send className="w-5 h-5 text-white" />
-                </button>
-            </form>
-        </div>
-
-        {/* FOOTER EXCLUSIVO CON ADVERTENCIA */}
-        <footer className="px-6 py-4 bg-[#060B16] border-t border-white/5">
-            <button 
-                onClick={() => setShowExitWarning(true)}
-                className="w-full flex items-center justify-between group"
-            >
+        {/* Footer de Salida */}
+        <footer className="w-full max-w-xs pt-10">
+            <button onClick={() => setShowExitWarning(true)} className="w-full flex items-center justify-between p-4 bg-white/5 rounded-2xl group border border-transparent hover:border-white/10 transition-all">
                 <div className="flex items-center gap-2">
                     <Terminal className="w-3 h-3 text-slate-700" />
-                    <span className="text-[9px] font-black text-slate-600 uppercase tracking-[0.1em]">
-                        Herramienta exclusiva de <span className="text-blue-900 group-hover:text-blue-600 transition-colors italic">CuantoEs.com.py</span>
-                    </span>
+                    <span className="text-[9px] font-black text-slate-600 uppercase tracking-widest">Powered by CuantoEs.py</span>
                 </div>
-                <ChevronRight className="w-3 h-3 text-slate-800 group-hover:text-blue-600" />
+                <ChevronRight className="w-3 h-3 text-slate-800 group-hover:text-blue-500" />
             </button>
         </footer>
 
-        {/* MODAL DE ADVERTENCIA AL SALIR */}
-        {showExitWarning && (
-            <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 animate-in fade-in duration-300">
-                <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setShowExitWarning(false)}></div>
-                <div className="bg-slate-900 border-2 border-red-500/30 p-8 rounded-[2.5rem] w-full max-w-sm relative z-110 shadow-2xl text-center">
-                    <AlertTriangle className="w-12 h-12 text-red-500 mx-auto mb-4" />
-                    <h3 className="text-lg font-black uppercase tracking-tighter mb-2">Estás saliendo del muro</h3>
-                    <p className="text-xs text-slate-400 leading-relaxed mb-6 font-medium">
-                        Este espacio es efímero. Para volver a ingresar deberás <span className="text-white font-bold italic underline decoration-red-500">escanear el código QR</span> nuevamente. <br/><br/> ¿Querés continuar?
-                    </p>
-                    <div className="flex flex-col gap-2">
-                        <button 
-                            onClick={() => router.push('/')}
-                            className="w-full bg-blue-600 text-white font-black py-4 rounded-2xl text-xs uppercase tracking-widest active:scale-95 transition-all shadow-lg shadow-blue-900/40"
-                        >
-                            SÍ, IR AL INICIO
-                        </button>
-                        <button 
-                            onClick={() => setShowExitWarning(false)}
-                            className="w-full bg-transparent text-slate-500 font-bold py-3 rounded-2xl text-[10px] uppercase tracking-widest hover:text-white"
-                        >
-                            CANCELAR Y QUEDARME
-                        </button>
-                    </div>
+        {showExitWarning && <ExitModal onConfirm={() => router.push('/')} onCancel={() => setShowExitWarning(false)} />}
+      </main>
+    );
+  }
+
+  // --- VISTA: MURO O CHAT ---
+  return (
+    <main className={`min-h-screen ${view === 'CHAT' ? 'bg-[#060B16]' : 'bg-[#0A0F1C]'} text-white flex flex-col h-screen overflow-hidden`}>
+      {/* Header Dinámico */}
+      <header className="p-4 border-b border-white/5 flex justify-between items-center bg-black/40 backdrop-blur-xl z-50">
+        <button onClick={() => setView('LOBBY')} className="p-2 bg-white/5 rounded-xl text-slate-400 active:scale-90 transition-all">
+            <ArrowLeft className="w-5 h-5" />
+        </button>
+        <div className="text-center">
+            <h2 className={`text-[10px] font-black uppercase tracking-[0.3em] leading-none ${view === 'CHAT' ? 'text-emerald-400' : 'text-blue-400'}`}>
+                {view === 'CHAT' ? 'Canal en Vivo' : 'Muro de la Comunidad'}
+            </h2>
+            <p className="text-[8px] font-bold text-slate-500 uppercase mt-1 italic tracking-widest">{sala.nombre}</p>
+        </div>
+        <div className="bg-white/5 px-2 py-1 rounded-lg text-[8px] font-black text-slate-500 border border-white/5">
+            {user?.nick.split('_')[0]}..
+        </div>
+      </header>
+
+      {/* Lista de Mensajes */}
+      <div className="flex-1 overflow-y-auto p-4 space-y-6 flex flex-col-reverse scrollbar-hide">
+        {mensajes.map((m) => (
+            <div key={m.id} className="animate-in fade-in slide-in-from-bottom-2 duration-500">
+                <div className="flex items-center gap-2 mb-1.5 px-1">
+                    <span className={`text-[9px] font-black uppercase tracking-tighter ${m.autor_uuid === user?.id ? 'text-blue-400' : 'text-slate-500'}`}>
+                        {m.autor_nick}
+                    </span>
+                    <span className="text-[7px] text-slate-700 font-bold uppercase">
+                        {new Date(m.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    </span>
+                </div>
+                <div className={`p-4 rounded-2xl rounded-tl-none max-w-[95%] text-sm font-medium leading-relaxed ${m.autor_uuid === user?.id ? 'bg-blue-600/10 border border-blue-500/20 text-blue-50' : 'bg-white/5 border border-white/5 text-slate-300'}`}>
+                    {m.contenido}
                 </div>
             </div>
-        )}
+        ))}
+        
+        {/* Aviso de borrado según vista */}
+        <div className="bg-white/5 border border-white/5 p-6 rounded-[2.5rem] text-center mb-6">
+            <Shield className="w-5 h-5 text-slate-600 mx-auto mb-2" />
+            <p className="text-[9px] text-slate-500 uppercase font-black tracking-widest">
+                {view === 'CHAT' ? 'Los mensajes de este chat se borran cada 24hs.' : 'Los mensajes de este muro se borran cada 7 días.'}
+            </p>
+        </div>
+      </div>
 
+      {/* Input */}
+      <div className="p-4 bg-black/60 border-t border-white/5 backdrop-blur-lg">
+        <form onSubmit={enviarMensaje} className="flex gap-2">
+            <input 
+                value={nuevoMsg} onChange={e => setNuevoMsg(e.target.value)}
+                placeholder={view === 'CHAT' ? "Escribí en vivo..." : "Dejá un tip o comentario..."}
+                className="flex-1 bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-sm font-medium focus:border-blue-500/50 transition-all"
+            />
+            <button className={`${view === 'CHAT' ? 'bg-emerald-600' : 'bg-blue-600'} p-4 rounded-2xl active:scale-90 transition-all shadow-lg`}>
+                <Send className="w-5 h-5" />
+            </button>
+        </form>
       </div>
     </main>
   );
+}
+
+// Sub-componente Modal
+function ExitModal({ onConfirm, onCancel }: { onConfirm: () => void, onCancel: () => void }) {
+    return (
+        <div className="fixed inset-0 z-[300] flex items-center justify-center p-6 animate-in fade-in duration-300">
+            <div className="absolute inset-0 bg-black/90 backdrop-blur-sm" onClick={onCancel}></div>
+            <div className="bg-slate-900 border border-white/10 p-8 rounded-[3rem] w-full max-w-sm relative z-10 shadow-2xl text-center">
+                <AlertTriangle className="w-12 h-12 text-red-500 mx-auto mb-4" />
+                <h3 className="text-lg font-black uppercase tracking-tighter mb-2">¿Saliendo del Nodo?</h3>
+                <p className="text-xs text-slate-400 leading-relaxed mb-8 font-medium px-4">
+                    Para volver a entrar a este espacio deberás <span className="text-white font-bold italic underline decoration-red-500">escanear el código QR</span> nuevamente.
+                </p>
+                <div className="space-y-3">
+                    <button onClick={onConfirm} className="w-full bg-blue-600 text-white font-black py-4 rounded-2xl text-xs uppercase tracking-widest active:scale-95 transition-all">SÍ, IR AL INICIO</button>
+                    <button onClick={onCancel} className="w-full bg-transparent text-slate-500 font-bold py-2 text-[10px] uppercase tracking-widest">ME QUEDO ACÁ</button>
+                </div>
+            </div>
+        </div>
+    );
 }
