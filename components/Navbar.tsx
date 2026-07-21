@@ -1,17 +1,23 @@
 'use client';
 import React, { useState } from 'react';
-// IMPORTANTE: Asegurate de que todos estos estén en la lista de abajo
+import { usePathname } from 'next/navigation'; // <--- AGREGAMOS ESTO
 import { Menu, X, Sparkles, Calculator, Wrench, ShieldAlert, Truck } from 'lucide-react';
 import Link from 'next/link';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname(); // Obtenemos la página actual
+
+  // LÓGICA: Si la página empieza con /muro, no mostramos nada
+  if (pathname.startsWith('/muro')) {
+    return null;
+  }
 
   const menuItems = [
     { name: 'Inicio', icon: <Sparkles className="w-5 h-5" />, href: '/' },
     { name: 'Dividir Gastos', icon: <Calculator className="w-5 h-5" />, href: '/divisor' },
     { name: 'Presupuestos', icon: <Wrench className="w-5 h-5" />, href: '/presupuesto' },
-    { name: 'Cotizador Delivery', icon: <Truck className="w-5 h-5" />, href: '/delivery/crear' }, // <-- NUEVO
+    { name: 'Cotizador Delivery', icon: <Truck className="w-5 h-5" />, href: '/delivery/crear' },
     { name: 'Multas de Tránsito', icon: <ShieldAlert className="w-5 h-5" />, href: '/multas' },
   ];
 
@@ -20,7 +26,7 @@ export default function Navbar() {
       <nav className="flex items-center justify-between px-4 py-4 max-w-md mx-auto w-full sticky top-0 bg-[#F8FAFC]/80 backdrop-blur-md z-[150]">
         <Link href="/" className="flex items-center gap-2">
             <div className="bg-blue-600 p-2 rounded-xl rotate-3 shadow-lg shadow-blue-100">
-                <span className="text-white font-black text-xs text-[10px]">Gs.</span>
+                <span className="text-white font-black text-[10px]">Gs.</span>
             </div>
             <div className="flex items-baseline">
                 <span className="font-[400] text-slate-800 tracking-tighter text-lg">Cuanto</span>
@@ -59,9 +65,8 @@ export default function Navbar() {
                 </Link>
               ))}
             </div>
-            
-            <div className="mt-10 pt-6 border-t border-slate-100 text-center">
-                <p className="text-[9px] font-bold text-slate-300 uppercase tracking-[0.2em]">Cuentas Claras 🇵🇾</p>
+            <div className="mt-10 pt-6 border-t border-slate-100 text-center text-slate-300">
+                <p className="text-[9px] font-bold uppercase tracking-[0.2em]">Cuentas Claras 🇵🇾</p>
             </div>
           </div>
         </div>
