@@ -4,7 +4,7 @@ import { supabase } from '@/lib/supabase';
 import { getOrCreateUser } from '@/lib/user-store';
 import { useRouter } from 'next/navigation';
 import { 
-  Send, MessageSquare, LayoutTextSelection, Users, 
+  Send, MessageSquare, LayoutList, Users, // <-- Cambiamos LayoutTextSelection por LayoutList
   ArrowLeft, Clock, Shield, AlertTriangle, Terminal, Activity, ChevronRight 
 } from 'lucide-react';
 
@@ -15,7 +15,6 @@ export default function MuroInmersivo({ params }: { params: Promise<{ slug: stri
   const slug = resolvedParams.slug;
   const router = useRouter();
 
-  // ESTADOS PRINCIPALES
   const [view, setView] = useState<Vista>('LOBBY');
   const [user, setUser] = useState<any>(null);
   const [sala, setSala] = useState<any>(null);
@@ -31,7 +30,6 @@ export default function MuroInmersivo({ params }: { params: Promise<{ slug: stri
     fetchSala(userData);
   }, [slug]);
 
-  // Manejar el cambio de vista (cargar mensajes correspondientes)
   useEffect(() => {
     if (sala && view !== 'LOBBY') {
       fetchMensajes();
@@ -48,7 +46,6 @@ export default function MuroInmersivo({ params }: { params: Promise<{ slug: stri
   }
 
   function setupRealtime(salaId: string, currentUser: any) {
-    // 1. Escuchar Mensajes Nuevos
     const msgChannel = supabase.channel(`mensajes_${slug}`)
       .on('postgres_changes', { 
         event: 'INSERT', 
@@ -56,16 +53,13 @@ export default function MuroInmersivo({ params }: { params: Promise<{ slug: stri
         table: 'mensajes', 
         filter: `sala_id=eq.${salaId}` 
       }, (p) => {
-        // Solo actualizar si el mensaje coincide con la vista actual (Chat o Muro)
         setMensajes(prev => {
-            // Evitar duplicados por si acaso
             if (prev.find(m => m.id === p.new.id)) return prev;
             return [p.new, ...prev];
         });
       })
       .subscribe();
 
-    // 2. Contador de Presencia (Gente online)
     const presenceChannel = supabase.channel(`presencia_${slug}`);
     presenceChannel
       .on('presence', { event: 'sync' }, () => {
@@ -101,10 +95,8 @@ export default function MuroInmersivo({ params }: { params: Promise<{ slug: stri
   async function enviarMensaje(e: React.FormEvent) {
     e.preventDefault();
     if (!nuevoMsg.trim() || !user || !sala) return;
-
     const texto = nuevoMsg;
-    setNuevoMsg(''); // Limpieza rápida UI
-
+    setNuevoMsg('');
     const { error } = await supabase.from('mensajes').insert([{
       sala_id: sala.id,
       autor_uuid: user.id,
@@ -112,14 +104,12 @@ export default function MuroInmersivo({ params }: { params: Promise<{ slug: stri
       contenido: texto,
       es_chat: view === 'CHAT'
     }]);
-
     if (error) alert("Error: " + error.message);
   }
 
   if (loading) return <div className="h-screen bg-[#060B16] flex items-center justify-center font-mono text-blue-500 animate-pulse uppercase tracking-[0.3em]">Conectando al Nodo...</div>;
-  if (!sala) return <div className="h-screen bg-[#060B16] flex items-center justify-center text-white">Error 404: Ubicación no encontrada</div>;
+  if (!sala) return <div className="h-screen bg-[#060B16] flex items-center justify-center text-white">Error 404: Ubicación no registrada</div>;
 
-  // --- VISTA: LOBBY ---
   if (view === 'LOBBY') {
     return (
       <main className="min-h-screen bg-[#060B16] text-white p-6 flex flex-col items-center justify-center space-y-10">
@@ -133,7 +123,7 @@ export default function MuroInmersivo({ params }: { params: Promise<{ slug: stri
 
         <div className="w-full max-w-xs space-y-4">
             <button onClick={() => setView('MURO')} className="w-full bg-white/5 border border-white/10 p-6 rounded-[2.5rem] flex flex-col items-center gap-3 hover:bg-blue-600/10 hover:border-blue-500/30 transition-all group">
-                <LayoutTextSelection className="w-8 h-8 text-blue-400 group-hover:scale-110 transition-transform" />
+                <LayoutList className="w-8 h-8 text-blue-400 group-hover:scale-110 transition-transform" />
                 <div className="text-center">
                     <span className="block font-black uppercase text-sm tracking-tight text-slate-200">Escribir en el Muro</span>
                     <span className="text-[8px] font-bold text-slate-500 uppercase tracking-widest italic">Historial de 7 días</span>
@@ -153,7 +143,6 @@ export default function MuroInmersivo({ params }: { params: Promise<{ slug: stri
             </button>
         </div>
 
-        {/* Footer de Salida */}
         <footer className="w-full max-w-xs pt-10">
             <button onClick={() => setShowExitWarning(true)} className="w-full flex items-center justify-between p-4 bg-white/5 rounded-2xl group border border-transparent hover:border-white/10 transition-all">
                 <div className="flex items-center gap-2">
@@ -169,10 +158,8 @@ export default function MuroInmersivo({ params }: { params: Promise<{ slug: stri
     );
   }
 
-  // --- VISTA: MURO O CHAT ---
   return (
     <main className={`min-h-screen ${view === 'CHAT' ? 'bg-[#060B16]' : 'bg-[#0A0F1C]'} text-white flex flex-col h-screen overflow-hidden`}>
-      {/* Header Dinámico */}
       <header className="p-4 border-b border-white/5 flex justify-between items-center bg-black/40 backdrop-blur-xl z-50">
         <button onClick={() => setView('LOBBY')} className="p-2 bg-white/5 rounded-xl text-slate-400 active:scale-90 transition-all">
             <ArrowLeft className="w-5 h-5" />
@@ -188,7 +175,6 @@ export default function MuroInmersivo({ params }: { params: Promise<{ slug: stri
         </div>
       </header>
 
-      {/* Lista de Mensajes */}
       <div className="flex-1 overflow-y-auto p-4 space-y-6 flex flex-col-reverse scrollbar-hide">
         {mensajes.map((m) => (
             <div key={m.id} className="animate-in fade-in slide-in-from-bottom-2 duration-500">
@@ -206,7 +192,6 @@ export default function MuroInmersivo({ params }: { params: Promise<{ slug: stri
             </div>
         ))}
         
-        {/* Aviso de borrado según vista */}
         <div className="bg-white/5 border border-white/5 p-6 rounded-[2.5rem] text-center mb-6">
             <Shield className="w-5 h-5 text-slate-600 mx-auto mb-2" />
             <p className="text-[9px] text-slate-500 uppercase font-black tracking-widest">
@@ -215,13 +200,12 @@ export default function MuroInmersivo({ params }: { params: Promise<{ slug: stri
         </div>
       </div>
 
-      {/* Input */}
-      <div className="p-4 bg-black/60 border-t border-white/5 backdrop-blur-lg">
+      <div className="p-4 bg-black/60 border-t border-white/5 pb-8">
         <form onSubmit={enviarMensaje} className="flex gap-2">
             <input 
                 value={nuevoMsg} onChange={e => setNuevoMsg(e.target.value)}
                 placeholder={view === 'CHAT' ? "Escribí en vivo..." : "Dejá un tip o comentario..."}
-                className="flex-1 bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-sm font-medium focus:border-blue-500/50 transition-all"
+                className="flex-1 bg-white/5 border border-white/10 p-4 rounded-2xl outline-none text-sm font-medium focus:border-blue-500/50 transition-all text-white"
             />
             <button className={`${view === 'CHAT' ? 'bg-emerald-600' : 'bg-blue-600'} p-4 rounded-2xl active:scale-90 transition-all shadow-lg`}>
                 <Send className="w-5 h-5" />
@@ -232,7 +216,6 @@ export default function MuroInmersivo({ params }: { params: Promise<{ slug: stri
   );
 }
 
-// Sub-componente Modal
 function ExitModal({ onConfirm, onCancel }: { onConfirm: () => void, onCancel: () => void }) {
     return (
         <div className="fixed inset-0 z-[300] flex items-center justify-center p-6 animate-in fade-in duration-300">
