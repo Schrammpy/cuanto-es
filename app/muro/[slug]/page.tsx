@@ -2,8 +2,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
 import { getOrCreateUser } from '@/lib/user-store';
-import { Send, Clock, Users, Shield, MessageSquare } from 'lucide-react';
-import Footer from '@/components/Footer';
+import { Send, Clock, Shield, Terminal, Activity, Wifi } from 'lucide-react';
 
 export default function MuroPage({ params }: { params: Promise<{ slug: string }> }) {
   const resolvedParams = React.use(params);
@@ -21,29 +20,25 @@ export default function MuroPage({ params }: { params: Promise<{ slug: string }>
     setUser(userData);
     fetchDatos();
 
-    // ESCUCHAR EN TIEMPO REAL (WebSockets)
     const channel = supabase
       .channel(`realtime_sala_${slug}`)
       .on('postgres_changes', { 
         event: 'INSERT', 
         schema: 'public', 
-        table: 'mensajes' 
+        table: 'mensajes',
+        filter: `sala_id=eq.${sala?.id}` // Filtro opcional si tenés el ID
       }, (payload) => {
-        // Solo agregamos el mensaje si pertenece a esta sala
         setMensajes((prev) => [payload.new, ...prev]);
       })
       .subscribe();
 
     return () => { supabase.removeChannel(channel); };
-  }, [slug]);
+  }, [slug, sala?.id]);
 
   async function fetchDatos() {
-    // 1. Buscar la sala
     const { data: salaData } = await supabase.from('salas').select('*').eq('slug', slug).single();
-    
     if (salaData) {
       setSala(salaData);
-      // 2. Traer mensajes de las últimas 24hs
       const { data: msgs } = await supabase
         .from('mensajes')
         .select('*')
@@ -57,9 +52,8 @@ export default function MuroPage({ params }: { params: Promise<{ slug: string }>
   async function enviarMensaje(e: React.FormEvent) {
     e.preventDefault();
     if (!nuevoMsg.trim() || !user || !sala) return;
-
     const msgAEnviar = nuevoMsg;
-    setNuevoMsg(''); // Limpiamos rápido para dar sensación de velocidad
+    setNuevoMsg('');
 
     const { error } = await supabase.from('mensajes').insert([{
       sala_id: sala.id,
@@ -67,80 +61,100 @@ export default function MuroPage({ params }: { params: Promise<{ slug: string }>
       autor_nick: user.nick,
       contenido: msgAEnviar
     }]);
-
-    if (error) alert("Error al enviar: " + error.message);
+    if (error) alert("Error: " + error.message);
   }
 
-  if (loading) return <div className="h-screen flex items-center justify-center font-black text-slate-400 animate-pulse uppercase tracking-widest">Buscando Muro...</div>;
-  if (!sala) return <div className="h-screen flex items-center justify-center font-bold">Muro no encontrado 404</div>;
+  if (loading) return <div className="h-screen bg-[#0F172A] flex items-center justify-center font-mono text-blue-500 animate-pulse uppercase tracking-[0.3em]">Cargando Sistema...</div>;
+  if (!sala) return <div className="h-screen bg-[#0F172A] flex items-center justify-center text-white font-mono">Error 404: Muro inexistente</div>;
 
   return (
-    <main className="min-h-screen bg-[#0F172A] text-white flex flex-col items-center">
-      <div className="max-w-md w-full flex flex-col h-screen">
+    <main className="min-h-screen bg-[#060B16] text-white flex flex-col items-center overflow-hidden">
+      <div className="max-w-md w-full flex flex-col h-screen border-x border-white/5 shadow-2xl shadow-blue-900/20">
         
-        {/* HEADER ESTILO LOBBY */}
-        <header className="p-6 border-b border-white/10 bg-[#0F172A]/80 backdrop-blur-md sticky top-0 z-50">
-            <div className="flex justify-between items-start mb-2">
-                <div>
-                    <h1 className="text-xl font-black uppercase tracking-tighter text-blue-400 leading-none">{sala.nombre}</h1>
-                    <div className="flex items-center gap-1.5 mt-2">
-                        <Clock className="w-3 h-3 text-emerald-400" />
-                        <span className="text-[9px] font-bold text-emerald-400 uppercase tracking-widest">Sala Efímera (24hs)</span>
+        {/* HEADER TIPO HUD */}
+        <header className="p-5 border-b border-white/10 bg-[#0F172A]/90 backdrop-blur-xl">
+            <div className="flex justify-between items-start">
+                <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-emerald-500 rounded-full animate-ping"></div>
+                        <h1 className="text-lg font-black uppercase tracking-tighter text-blue-400">{sala.nombre}</h1>
                     </div>
+                    <p className="text-[8px] font-black text-slate-500 uppercase tracking-[0.2em] flex items-center gap-1">
+                        <Activity className="w-2 h-2" /> Server Status: Online
+                    </p>
                 </div>
-                <div className="bg-blue-600/20 text-blue-400 px-3 py-1 rounded-full text-[10px] font-black border border-blue-400/30">
-                    {user?.nick}
+                <div className="flex flex-col items-end">
+                    <span className="bg-blue-600/10 text-blue-400 px-3 py-1 rounded-lg text-[9px] font-black border border-blue-400/20 uppercase tracking-widest">
+                        {user?.nick}
+                    </span>
+                    <span className="text-[7px] text-slate-600 mt-1 uppercase font-bold tracking-tighter">ID: {user?.id.substring(0,8)}</span>
                 </div>
             </div>
         </header>
 
-        {/* INPUT FIJO ARRIBA (Estilo moderno) */}
-        <div className="p-4 bg-slate-800/50 border-b border-white/5">
-            <form onSubmit={enviarMensaje} className="flex gap-2">
-                <input 
-                    value={nuevoMsg}
-                    onChange={(e) => setNuevoMsg(e.target.value)}
-                    placeholder="Escribí algo aquí..."
-                    className="flex-1 bg-white/5 border border-white/10 p-3 rounded-2xl outline-none focus:border-blue-500 text-sm placeholder:text-slate-600 font-medium"
-                />
-                <button className="bg-blue-600 hover:bg-blue-500 p-3 rounded-2xl active:scale-90 transition-all shadow-lg shadow-blue-600/20">
-                    <Send className="w-5 h-5" />
-                </button>
-            </form>
-        </div>
-
-        {/* LISTA DE MENSAJES (Scroll inverso) */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-6 flex flex-col-reverse">
-            <div ref={scrollRef} /> {/* Ancla para el scroll */}
+        {/* ÁREA DE MENSAJES (Scroll Inverso) */}
+        <div className="flex-1 overflow-y-auto p-4 space-y-6 flex flex-col-reverse scrollbar-hide">
+            <div ref={scrollRef} />
             {mensajes.map((m) => (
-                <div key={m.id} className="animate-in fade-in slide-in-from-bottom-2 duration-300">
-                    <div className="flex items-center gap-2 mb-1.5">
-                        <span className={`text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-tighter ${m.autor_uuid === user?.id ? 'bg-blue-600 text-white' : 'bg-white/10 text-blue-400'}`}>
-                            {m.autor_nick} {m.autor_uuid === user?.id && '(Vos)'}
+                <div key={m.id} className="animate-in fade-in slide-in-from-bottom-2 duration-500">
+                    <div className="flex items-center gap-2 mb-1.5 opacity-80">
+                        <span className={`text-[9px] font-black px-2 py-0.5 rounded tracking-tighter uppercase ${m.autor_uuid === user?.id ? 'bg-blue-600 text-white' : 'bg-slate-800 text-blue-300'}`}>
+                            {m.autor_nick}
                         </span>
-                        <span className="text-[8px] text-slate-500 font-bold">
+                        <span className="text-[7px] text-slate-600 font-bold">
                             {new Date(m.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                         </span>
                     </div>
-                    <div className={`p-4 rounded-3xl rounded-tl-none max-w-[90%] text-sm font-medium leading-relaxed ${m.autor_uuid === user?.id ? 'bg-blue-600/10 border border-blue-600/20 text-blue-50' : 'bg-white/5 border border-white/5 text-slate-300'}`}>
+                    <div className={`p-4 rounded-2xl rounded-tl-none max-w-[92%] text-[13px] leading-relaxed shadow-sm ${m.autor_uuid === user?.id ? 'bg-blue-600/15 border border-blue-500/20 text-blue-50' : 'bg-white/5 border border-white/5 text-slate-300'}`}>
                         {m.contenido}
                     </div>
                 </div>
             ))}
 
-            {/* Mensaje de bienvenida/instrucciones */}
-            <div className="bg-blue-900/20 border border-blue-500/20 p-6 rounded-[2.5rem] text-center mb-4">
-                <Shield className="w-8 h-8 text-blue-500 mx-auto mb-3 opacity-50" />
-                <p className="text-xs font-bold text-blue-300 uppercase tracking-widest mb-1">Muro 100% Anónimo</p>
-                <p className="text-[10px] text-slate-400 leading-relaxed italic">
-                    Este espacio es libre. Los mensajes se borran solos cada 24 horas. ¡Sé buena onda con los demás!
+            {/* Aviso de Privacidad Estilo Terminal */}
+            <div className="bg-blue-900/10 border border-blue-500/10 p-6 rounded-[2.5rem] text-center mb-8 border-dashed">
+                <Shield className="w-6 h-6 text-blue-500/50 mx-auto mb-3" />
+                <p className="text-[10px] font-black text-blue-400 uppercase tracking-[0.2em] mb-1">Encriptación de Sesión</p>
+                <p className="text-[9px] text-slate-500 leading-relaxed font-medium uppercase tracking-tight">
+                    Este muro es efímero. Los registros se purgan automáticamente cada 24 horas. <br/> Sin rastro, sin archivos.
                 </p>
             </div>
         </div>
 
-        <div className="p-4 opacity-50 bg-[#0F172A]">
-            <Footer />
+        {/* INPUT BAR (Flotante sobre el nuevo footer) */}
+        <div className="p-4 bg-[#0F172A] border-t border-white/5">
+            <form onSubmit={enviarMensaje} className="flex gap-2">
+                <input 
+                    value={nuevoMsg}
+                    onChange={(e) => setNuevoMsg(e.target.value)}
+                    placeholder="Escribí un mensaje..."
+                    className="flex-1 bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-blue-500/50 text-sm placeholder:text-slate-700 transition-all font-medium"
+                />
+                <button className="bg-blue-600 hover:bg-blue-500 p-4 rounded-2xl active:scale-90 transition-all shadow-xl shadow-blue-900/20">
+                    <Send className="w-5 h-5" />
+                </button>
+            </form>
         </div>
+
+        {/* NUEVO MURO-FOOTER ESPECÍFICO */}
+        <footer className="px-6 py-3 bg-[#060B16] flex justify-between items-center border-t border-white/5">
+            <div className="flex items-center gap-4 text-slate-600">
+                <div className="flex items-center gap-1">
+                    <Terminal className="w-3 h-3" />
+                    <span className="text-[8px] font-black uppercase tracking-[0.2em]">CUANTOES_CORE_V1</span>
+                </div>
+                <div className="flex items-center gap-1">
+                    <Wifi className="w-3 h-3 text-emerald-950" />
+                    <span className="text-[8px] font-black uppercase tracking-[0.2em]">Realtime Active</span>
+                </div>
+            </div>
+            <div>
+                <p className="text-[8px] font-black text-slate-700 uppercase tracking-[0.2em]">
+                    Developed by <span className="text-slate-500">Diego Schramm</span>
+                </p>
+            </div>
+        </footer>
+
       </div>
     </main>
   );
