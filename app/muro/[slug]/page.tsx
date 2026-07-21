@@ -155,6 +155,13 @@ export default function MuroInmersivo({ params }: { params: Promise<{ slug: stri
             </button>
         </div>
 
+        <div className="text-center px-8">
+        <p className="text-[8px] text-slate-500 uppercase leading-relaxed">
+        Al utilizar este muro, aceptás nuestros <a href="/legal" className="underline text-blue-500">términos de uso</a>. 
+        Recordá que tus mensajes son públicos y CuantoEs.com.py no se hace responsable por el contenido generado por usuarios.
+        </p>
+        </div>
+
         <footer className="w-full max-w-xs pt-10">
             <button onClick={() => setShowExitWarning(true)} className="w-full flex items-center justify-between p-4 bg-white/5 rounded-2xl group border border-transparent hover:border-white/10 transition-all">
                 <div className="flex items-center gap-2">
