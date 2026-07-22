@@ -7,6 +7,7 @@ import {
   Send, MessageSquare, LayoutList, Users, 
   ArrowLeft, Clock, Shield, AlertTriangle, Terminal, Activity, ChevronRight 
 } from 'lucide-react';
+import { ThinkingOrb } from 'thinking-orbs';
 
 type Vista = 'LOBBY' | 'MURO' | 'CHAT';
 
@@ -115,37 +116,43 @@ export default function MuroInmersivo({ params }: { params: Promise<{ slug: stri
   }
 
   if (loading) return (
-  <div className="h-screen bg-[#060B16] flex flex-col items-center justify-center overflow-hidden relative">
-    {/* ORBS ANIMADOS (Fondo) */}
-    <div className="absolute w-64 h-64 bg-blue-600/20 rounded-full blur-[80px] animate-[pulse_4s_infinite] top-1/4 -left-20"></div>
-    <div className="absolute w-80 h-80 bg-emerald-600/10 rounded-full blur-[100px] animate-[pulse_6s_infinite] bottom-1/4 -right-20"></div>
-    
-    {/* CONTENEDOR CENTRAL */}
-    <div className="relative z-10 flex flex-col items-center gap-6">
-      {/* El Orb Principal (Estilo Glassmorphism) */}
-      <div className="relative w-24 h-24">
-        <div className="absolute inset-0 bg-blue-500 rounded-full blur-xl opacity-20 animate-ping"></div>
-        <div className="relative w-full h-full rounded-full border border-white/10 bg-white/5 backdrop-blur-3xl flex items-center justify-center shadow-2xl">
-            <div className="w-12 h-12 rounded-full border-t-2 border-blue-500 animate-spin"></div>
-        </div>
+  <div className="h-screen bg-[#060B16] flex flex-col items-center justify-center overflow-hidden">
+    <div className="relative flex flex-col items-center gap-8 animate-in fade-in duration-700">
+      
+      {/* EL ORB PUNTUADO (Estilo del repositorio que pasaste) */}
+      <div className="relative">
+        {/* Un resplandor sutil de fondo */}
+        <div className="absolute inset-0 bg-blue-500/20 rounded-full blur-2xl scale-150"></div>
+        
+        <ThinkingOrb 
+          state="searching" 
+          size={64} 
+          speed={1} 
+          theme="dark" 
+        />
       </div>
 
-      <div className="text-center space-y-2">
-        <p className="font-mono text-blue-500 text-[10px] font-black uppercase tracking-[0.4em] animate-pulse">
-            INGRESANDO AL SISTEMA
+      {/* TEXTO DE CARGA */}
+      <div className="text-center space-y-3">
+        <p className="font-mono text-blue-500 text-[10px] font-black uppercase tracking-[0.5em] animate-pulse">
+            INGRESANDO AL PUNTO
         </p>
-        <div className="flex gap-1 justify-center">
-            <div className="w-1 h-1 bg-blue-500 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-            <div className="w-1 h-1 bg-blue-500 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
-            <div className="w-1 h-1 bg-blue-500 rounded-full animate-bounce"></div>
+        
+        {/* Barra de progreso técnica chiquita */}
+        <div className="w-32 h-[1px] bg-white/10 mx-auto relative overflow-hidden">
+            <div className="absolute inset-0 bg-blue-500 w-full -translate-x-full animate-[progress_2s_infinite]"></div>
         </div>
       </div>
     </div>
 
-    {/* DATA STREAM SUTIL (Opcional, para el vibe de terminal) */}
-    <div className="absolute bottom-10 left-0 w-full px-10 opacity-20">
-        <div className="h-[1px] w-full bg-gradient-to-r from-transparent via-blue-500 to-transparent"></div>
-    </div>
+    {/* Estilo para la animación de la barrita */}
+    <style jsx>{`
+      @keyframes progress {
+        0% { transform: translateX(-100%); }
+        50% { transform: translateX(0); }
+        100% { transform: translateX(100%); }
+      }
+    `}</style>
   </div>
 );
   if (!sala) return <div className="h-screen bg-[#060B16] flex items-center justify-center text-white italic text-xs uppercase tracking-widest">404: Punto no encontrado</div>;
