@@ -114,7 +114,40 @@ export default function MuroInmersivo({ params }: { params: Promise<{ slug: stri
     if (error) alert("Error: " + error.message);
   }
 
-  if (loading) return <div className="h-screen bg-[#060B16] flex items-center justify-center font-mono text-blue-500 animate-pulse uppercase tracking-[0.3em]">Cargando Sistema...</div>;
+  if (loading) return (
+  <div className="h-screen bg-[#060B16] flex flex-col items-center justify-center overflow-hidden relative">
+    {/* ORBS ANIMADOS (Fondo) */}
+    <div className="absolute w-64 h-64 bg-blue-600/20 rounded-full blur-[80px] animate-[pulse_4s_infinite] top-1/4 -left-20"></div>
+    <div className="absolute w-80 h-80 bg-emerald-600/10 rounded-full blur-[100px] animate-[pulse_6s_infinite] bottom-1/4 -right-20"></div>
+    
+    {/* CONTENEDOR CENTRAL */}
+    <div className="relative z-10 flex flex-col items-center gap-6">
+      {/* El Orb Principal (Estilo Glassmorphism) */}
+      <div className="relative w-24 h-24">
+        <div className="absolute inset-0 bg-blue-500 rounded-full blur-xl opacity-20 animate-ping"></div>
+        <div className="relative w-full h-full rounded-full border border-white/10 bg-white/5 backdrop-blur-3xl flex items-center justify-center shadow-2xl">
+            <div className="w-12 h-12 rounded-full border-t-2 border-blue-500 animate-spin"></div>
+        </div>
+      </div>
+
+      <div className="text-center space-y-2">
+        <p className="font-mono text-blue-500 text-[10px] font-black uppercase tracking-[0.4em] animate-pulse">
+            INGRESANDO AL SISTEMA
+        </p>
+        <div className="flex gap-1 justify-center">
+            <div className="w-1 h-1 bg-blue-500 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+            <div className="w-1 h-1 bg-blue-500 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+            <div className="w-1 h-1 bg-blue-500 rounded-full animate-bounce"></div>
+        </div>
+      </div>
+    </div>
+
+    {/* DATA STREAM SUTIL (Opcional, para el vibe de terminal) */}
+    <div className="absolute bottom-10 left-0 w-full px-10 opacity-20">
+        <div className="h-[1px] w-full bg-gradient-to-r from-transparent via-blue-500 to-transparent"></div>
+    </div>
+  </div>
+);
   if (!sala) return <div className="h-screen bg-[#060B16] flex items-center justify-center text-white italic text-xs uppercase tracking-widest">404: Punto no encontrado</div>;
 
   // --- VISTA: LOBBY ---
