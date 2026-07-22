@@ -5,7 +5,7 @@ import { getOrCreateUser } from '@/lib/user-store';
 import { useRouter } from 'next/navigation';
 import { 
   Send, MessageSquare, LayoutList, Users, 
-  ArrowLeft, Clock, Shield, AlertTriangle, Terminal, Activity, ChevronRight 
+  ArrowLeft, Clock, Shield, AlertTriangle, Terminal, Activity, ChevronRight, ExternalLink
 } from 'lucide-react';
 
 type Vista = 'LOBBY' | 'MURO' | 'CHAT';
@@ -23,22 +23,18 @@ export default function MuroInmersivo({ params }: { params: Promise<{ slug: stri
   const [userCount, setUserCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [showExitWarning, setShowExitWarning] = useState(false);
-  const [estaBloqueado, setEstaBloqueado] = useState(false);
 
-  // --- LÓGICA DEL BOTÓN ATRÁS DEL CELULAR ---
+  // --- LÓGICA DEL BOTÓN ATRÁS ---
   useEffect(() => {
     if (view !== 'LOBBY') {
-      // Agregamos un estado al historial para que el botón atrás no salga de la página
       window.history.pushState({ view }, "");
     }
-
     const handleBackButton = (event: PopStateEvent) => {
       if (view !== 'LOBBY') {
         event.preventDefault();
-        setView('LOBBY'); // Volvemos al lobby en vez de salir de la web
+        setView('LOBBY');
       }
     };
-
     window.addEventListener('popstate', handleBackButton);
     return () => window.removeEventListener('popstate', handleBackButton);
   }, [view]);
@@ -109,42 +105,30 @@ export default function MuroInmersivo({ params }: { params: Promise<{ slug: stri
   }
 
   async function enviarMensaje(e: React.FormEvent) {
-  e.preventDefault();
-  if (!nuevoMsg.trim() || !user || !sala || estaBloqueado) return;
-
-  setEstaBloqueado(true); // Bloqueamos el botón
-  const texto = nuevoMsg;
-  setNuevoMsg('');
-
-  const { error } = await supabase.from('mensajes').insert([{
-    sala_id: sala.id,
-    autor_uuid: user.id,
-    autor_nick: user.nick,
-    contenido: texto,
-    es_chat: view === 'CHAT'
-  }]);
-
-  if (error) {
-    alert(error.message);
-    setNuevoMsg(texto); // Si falló, le devolvemos el texto para que no lo pierda
+    e.preventDefault();
+    if (!nuevoMsg.trim() || !user || !sala) return;
+    const texto = nuevoMsg;
+    setNuevoMsg('');
+    const { error } = await supabase.from('mensajes').insert([{
+      sala_id: sala.id, autor_uuid: user.id, autor_nick: user.nick, contenido: texto, es_chat: view === 'CHAT'
+    }]);
+    if (error) alert("Error: " + error.message);
   }
-
-  // Esperamos 3 segundos antes de dejarlo escribir otra vez
-  setTimeout(() => setEstaBloqueado(false), 3000);
-}
 
   if (loading) return <div className="h-screen bg-[#060B16] flex items-center justify-center font-mono text-blue-500 animate-pulse uppercase tracking-[0.3em]">Cargando Sistema...</div>;
   if (!sala) return <div className="h-screen bg-[#060B16] flex items-center justify-center text-white">404: Punto no encontrado</div>;
 
   // --- VISTA: LOBBY ---
   if (view === 'LOBBY') {
+    const waLink = "https://api.whatsapp.com/send?phone=595992685363&text=Hola%2C%20estoy%20interesado%20en%20tener%20mi%20propio%20muro%2Fchat%20privado%2C%20como%20puedo%20hacer%3F";
+
     return (
       <main className="min-h-screen bg-[#060B16] text-white p-6 flex flex-col items-center justify-center space-y-10">
         <header className="text-center space-y-2">
-            <h1 className="text-3xl font-black uppercase tracking-tighter text-slate-100 italic">{sala.nombre}</h1>
+            <h1 className="text-3xl font-black uppercase tracking-tighter text-slate-100 italic leading-none">{sala.nombre}</h1>
             <div className="flex items-center justify-center gap-2 text-emerald-500">
-                <div className="w-2 h-2 bg-emerald-500 rounded-full animate-ping"></div>
-                <p className="text-[10px] font-black uppercase tracking-[0.3em]">Punto Activo</p>
+                <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-ping"></div>
+                <p className="text-[9px] font-black uppercase tracking-[0.3em]">Punto Activo</p>
             </div>
         </header>
 
@@ -153,7 +137,7 @@ export default function MuroInmersivo({ params }: { params: Promise<{ slug: stri
                 <LayoutList className="w-8 h-8 text-blue-400 group-hover:scale-110 transition-transform" />
                 <div className="text-center">
                     <span className="block font-black uppercase text-sm tracking-tight text-slate-200">Escribir en el Muro</span>
-                    <span className="text-[8px] font-bold text-slate-500 uppercase tracking-widest italic">Historial de 7 días</span>
+                    <span className="text-[8px] font-bold text-slate-500 uppercase tracking-widest italic leading-none">Historial de 7 días</span>
                 </div>
             </button>
 
@@ -165,25 +149,38 @@ export default function MuroInmersivo({ params }: { params: Promise<{ slug: stri
                 <MessageSquare className="w-8 h-8 text-emerald-400 group-hover:scale-110 transition-transform" />
                 <div className="text-center">
                     <span className="block font-black uppercase text-sm tracking-tight text-slate-200">Chat en Vivo</span>
-                    <span className="text-[8px] font-bold text-slate-500 uppercase tracking-widest italic">Borrado cada 24hs</span>
+                    <span className="text-[8px] font-bold text-slate-500 uppercase tracking-widest italic leading-none">Borrado cada 24hs</span>
                 </div>
             </button>
         </div>
 
-        <div className="text-center px-8">
-        <p className="text-[8px] text-slate-500 uppercase leading-relaxed">
-        Al utilizar este muro, aceptás nuestros <a href="/legal" className="underline text-blue-500">términos de uso</a>. 
-        Recordá que tus mensajes son públicos y el sitio no se hace responsable por el contenido generado por usuarios.
-        </p>
-        </div>
+        {/* FOOTER MULTI-PROPÓSITO */}
+        <footer className="w-full max-w-xs flex flex-col items-center gap-6 pt-6">
+            
+            {/* OPCIÓN: MURO PRIVADO (Venta) */}
+            <div className="text-center space-y-3">
+                <p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest leading-tight px-4">
+                    ¿Querés contar con tu propio muro o chat privado?
+                </p>
+                <a 
+                    href={waLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 bg-blue-600/10 text-blue-400 px-4 py-2 rounded-xl border border-blue-500/20 text-[10px] font-black uppercase tracking-widest active:scale-95 transition-all"
+                >
+                    <MessageSquare className="w-3 h-3" /> Contactame
+                </a>
+            </div>
 
-        <footer className="w-full max-w-xs pt-10">
-            <button onClick={() => setShowExitWarning(true)} className="w-full flex items-center justify-between p-4 bg-white/5 rounded-2xl group border border-transparent hover:border-white/10 transition-all">
-                <div className="flex items-center gap-2">
-                    <Terminal className="w-3 h-3 text-slate-700" />
-                    <span className="text-[9px] font-black text-slate-600 uppercase tracking-widest">Powered by CuantoEs.py</span>
-                </div>
-                <ChevronRight className="w-3 h-3 text-slate-800 group-hover:text-blue-500" />
+            {/* OPCIÓN: SALIDA A CUANTOES (Alerta) */}
+            <button 
+                onClick={() => setShowExitWarning(true)} 
+                className="group flex items-center gap-2 opacity-40 hover:opacity-100 transition-opacity"
+            >
+                <Terminal className="w-3 h-3 text-slate-500" />
+                <span className="text-[8px] font-bold text-slate-500 uppercase tracking-widest">
+                    Herramienta de <span className="italic underline">CuantoEs.com.py</span>
+                </span>
             </button>
         </footer>
 
@@ -205,9 +202,7 @@ export default function MuroInmersivo({ params }: { params: Promise<{ slug: stri
             </h2>
             <p className="text-[8px] font-bold text-slate-500 uppercase mt-1 italic tracking-widest truncate max-w-[150px] mx-auto">{sala.nombre}</p>
         </div>
-        
-        {/* NICK: MEJORADO (Más grande y legible) */}
-        <div className="bg-blue-600/20 px-3 py-2 rounded-xl text-[10px] font-black text-blue-400 border border-blue-500/30 shadow-lg shadow-blue-900/20 shrink-0">
+        <div className="bg-blue-600/20 px-3 py-2 rounded-xl text-[10px] font-black text-blue-400 border border-blue-500/30 shrink-0">
             {user?.nick}
         </div>
       </header>
@@ -216,7 +211,7 @@ export default function MuroInmersivo({ params }: { params: Promise<{ slug: stri
         {mensajes.map((m) => (
             <div key={m.id} className="animate-in fade-in slide-in-from-bottom-2 duration-500">
                 <div className="flex items-center gap-2 mb-1.5 px-1">
-                    <span className={`text-[10px] font-black uppercase tracking-tighter ${m.autor_uuid === user?.id ? 'text-blue-400' : 'text-slate-500'}`}>
+                    <span className={`text-[9px] font-black uppercase tracking-tighter ${m.autor_uuid === user?.id ? 'text-blue-400' : 'text-slate-500'}`}>
                         {m.autor_nick}
                     </span>
                     <span className="text-[7px] text-slate-700 font-bold uppercase">
@@ -228,7 +223,6 @@ export default function MuroInmersivo({ params }: { params: Promise<{ slug: stri
                 </div>
             </div>
         ))}
-        
         <div className="bg-white/5 border border-white/5 p-6 rounded-[2.5rem] text-center mb-6">
             <Shield className="w-5 h-5 text-slate-600 mx-auto mb-2" />
             <p className="text-[9px] text-slate-500 uppercase font-black tracking-widest">
@@ -257,7 +251,7 @@ function ExitModal({ onConfirm, onCancel }: { onConfirm: () => void, onCancel: (
     return (
         <div className="fixed inset-0 z-[300] flex items-center justify-center p-6 animate-in fade-in duration-300">
             <div className="absolute inset-0 bg-black/90 backdrop-blur-sm" onClick={onCancel}></div>
-            <div className="bg-slate-900 border border-white/10 p-8 rounded-[3rem] w-full max-w-sm relative z-10 shadow-2xl text-center">
+            <div className="bg-[#0A101F] border border-white/10 p-8 rounded-[3rem] w-full max-w-sm relative z-10 shadow-2xl text-center">
                 <AlertTriangle className="w-12 h-12 text-red-500 mx-auto mb-4" />
                 <h3 className="text-lg font-black uppercase tracking-tighter mb-2">¿Saliendo del Punto?</h3>
                 <p className="text-xs text-slate-400 leading-relaxed mb-8 font-medium px-4">
