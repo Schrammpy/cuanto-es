@@ -23,6 +23,7 @@ export default function MuroInmersivo({ params }: { params: Promise<{ slug: stri
   const [userCount, setUserCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [showExitWarning, setShowExitWarning] = useState(false);
+  const [estaBloqueado, setEstaBloqueado] = useState(false);
 
   // --- LÓGICA DEL BOTÓN ATRÁS DEL CELULAR ---
   useEffect(() => {
@@ -108,15 +109,29 @@ export default function MuroInmersivo({ params }: { params: Promise<{ slug: stri
   }
 
   async function enviarMensaje(e: React.FormEvent) {
-    e.preventDefault();
-    if (!nuevoMsg.trim() || !user || !sala) return;
-    const texto = nuevoMsg;
-    setNuevoMsg('');
-    const { error } = await supabase.from('mensajes').insert([{
-      sala_id: sala.id, autor_uuid: user.id, autor_nick: user.nick, contenido: texto, es_chat: view === 'CHAT'
-    }]);
-    if (error) alert("Error: " + error.message);
+  e.preventDefault();
+  if (!nuevoMsg.trim() || !user || !sala || estaBloqueado) return;
+
+  setEstaBloqueado(true); // Bloqueamos el botón
+  const texto = nuevoMsg;
+  setNuevoMsg('');
+
+  const { error } = await supabase.from('mensajes').insert([{
+    sala_id: sala.id,
+    autor_uuid: user.id,
+    autor_nick: user.nick,
+    contenido: texto,
+    es_chat: view === 'CHAT'
+  }]);
+
+  if (error) {
+    alert(error.message);
+    setNuevoMsg(texto); // Si falló, le devolvemos el texto para que no lo pierda
   }
+
+  // Esperamos 3 segundos antes de dejarlo escribir otra vez
+  setTimeout(() => setEstaBloqueado(false), 3000);
+}
 
   if (loading) return <div className="h-screen bg-[#060B16] flex items-center justify-center font-mono text-blue-500 animate-pulse uppercase tracking-[0.3em]">Cargando Sistema...</div>;
   if (!sala) return <div className="h-screen bg-[#060B16] flex items-center justify-center text-white">404: Punto no encontrado</div>;
@@ -158,7 +173,7 @@ export default function MuroInmersivo({ params }: { params: Promise<{ slug: stri
         <div className="text-center px-8">
         <p className="text-[8px] text-slate-500 uppercase leading-relaxed">
         Al utilizar este muro, aceptás nuestros <a href="/legal" className="underline text-blue-500">términos de uso</a>. 
-        Recordá que tus mensajes son públicos y CuantoEs.com.py no se hace responsable por el contenido generado por usuarios.
+        Recordá que tus mensajes son públicos y el sitio no se hace responsable por el contenido generado por usuarios.
         </p>
         </div>
 

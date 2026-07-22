@@ -10,7 +10,7 @@ export default function LegalPage() {
       <div className="max-w-2xl mx-auto px-6 py-10 space-y-8">
         <header className="text-center space-y-2">
           <h1 className="text-3xl font-black text-slate-800 uppercase tracking-tighter">Términos y <span className="text-blue-600">Condiciones</span></h1>
-          <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Última actualización: Abril 2024</p>
+          <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Última actualización: Abril 2026</p>
         </header>
 
         <section className="space-y-6 text-slate-600 text-sm leading-relaxed">
@@ -56,7 +56,7 @@ export default function LegalPage() {
               <h2 className="font-black uppercase tracking-tight text-lg">4. Sobre los códigos QR</h2>
             </div>
             <p>
-              La ubicación física de los códigos QR de CuantoEs.com.py es meramente referencial. Si usted encuentra un código en una ubicación privada sin autorización, o en un lugar que considere inapropiado, favor reportarlo a <strong>info@cuantoes.com.py</strong> para su desactivación digital inmediata.
+              La ubicación física de los códigos QR de CuantoEs.com.py es meramente referencial. Si usted encuentra un código en una ubicación privada sin autorización, o en un lugar que considere inapropiado, favor reportarlo a <strong>mydocs.studio@gmail.com</strong> para su desactivación digital inmediata.
             </p>
           </div>
         </section>

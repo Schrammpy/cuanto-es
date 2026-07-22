@@ -30,6 +30,8 @@ export default function Footer() {
       localStorage.removeItem('p_tipoAlias');
       localStorage.removeItem('p_alias');
 
+       localStorage.removeItem('cuantoes_chat_user');
+
       window.location.reload();
     }
   };
@@ -56,13 +58,13 @@ export default function Footer() {
             className="flex items-center gap-2 bg-amber-50 text-amber-700 px-5 py-2.5 rounded-full border border-amber-200 active:scale-95 transition-all shadow-sm"
           >
             <Beer className="w-4 h-4" />
-            <span className="text-[10px] font-black uppercase tracking-widest italic">Apoya al creador con un chopp</span>
+            <span className="text-[10px] font-black uppercase tracking-widest italic">Apoya al creador</span>
           </button>
         ) : (
           <div className="bg-white border-2 border-amber-100 p-6 rounded-[2.5rem] w-full animate-in zoom-in-95 duration-300 shadow-xl shadow-amber-50 flex flex-col items-center border-dashed">
             <Heart className="w-5 h-5 text-red-500 mb-2 fill-red-500" />
             <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest mb-4 text-center px-2 leading-relaxed italic">
-                Tu apoyo ayuda a mantener la web.
+                Tu apoyo ayuda a mantener el sitio.
             </p>
             
             <div className="flex items-center justify-between bg-slate-50 w-full p-3 rounded-2xl border border-slate-200">
