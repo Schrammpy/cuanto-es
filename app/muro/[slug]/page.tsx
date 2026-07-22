@@ -24,7 +24,6 @@ export default function MuroInmersivo({ params }: { params: Promise<{ slug: stri
   const [loading, setLoading] = useState(true);
   const [showExitWarning, setShowExitWarning] = useState(false);
 
-  // --- LÓGICA DEL BOTÓN ATRÁS DEL CELULAR ---
   useEffect(() => {
     if (view !== 'LOBBY') {
       window.history.pushState({ view }, "");
@@ -116,7 +115,7 @@ export default function MuroInmersivo({ params }: { params: Promise<{ slug: stri
   }
 
   if (loading) return <div className="h-screen bg-[#060B16] flex items-center justify-center font-mono text-blue-500 animate-pulse uppercase tracking-[0.3em]">Cargando Sistema...</div>;
-  if (!sala) return <div className="h-screen bg-[#060B16] flex items-center justify-center text-white">404: Punto no encontrado</div>;
+  if (!sala) return <div className="h-screen bg-[#060B16] flex items-center justify-center text-white italic text-xs uppercase tracking-widest">404: Punto no encontrado</div>;
 
   // --- VISTA: LOBBY ---
   if (view === 'LOBBY') {
@@ -132,6 +131,7 @@ export default function MuroInmersivo({ params }: { params: Promise<{ slug: stri
             </div>
         </header>
 
+        {/* 1. JERARQUÍA: ACCIONES (MURO / CHAT) */}
         <div className="w-full max-w-xs space-y-4">
             <button onClick={() => setView('MURO')} className="w-full bg-white/5 border border-white/10 p-6 rounded-[2.5rem] flex flex-col items-center gap-3 hover:bg-blue-600/10 hover:border-blue-500/30 transition-all group">
                 <LayoutList className="w-8 h-8 text-blue-400 group-hover:scale-110 transition-transform" />
@@ -154,17 +154,13 @@ export default function MuroInmersivo({ params }: { params: Promise<{ slug: stri
             </button>
         </div>
 
+        {/* FOOTER MULTI-BLOQUE REORDENADO */}
         <footer className="w-full max-w-xs flex flex-col items-center gap-10 pt-6">
-            <div className="text-center px-4">
-                <p className="text-[8px] text-slate-500 uppercase leading-relaxed font-bold tracking-tighter">
-                    Al utilizar este punto, aceptás los <a href="/legal" className="underline text-blue-500">términos de uso</a>. 
-                    Los mensajes son públicos y anónimos. La plataforma no se hace responsable por el contenido generado.
-                </p>
-            </div>
-
+            
+            {/* 2. JERARQUÍA: OPORTUNIDAD DE NEGOCIO */}
             <div className="text-center space-y-4">
                 <p className="text-[9px] font-black text-slate-600 uppercase tracking-widest leading-tight px-6">
-                    ¿Querés contar con tu propio muro o chat privado?
+                    ¿Querés contar con tu propio muro/chat para uso particular o comercial?
                 </p>
                 <a 
                     href={waLink}
@@ -176,12 +172,21 @@ export default function MuroInmersivo({ params }: { params: Promise<{ slug: stri
                 </a>
             </div>
 
+            {/* 3. JERARQUÍA: REGLAS DEL JUEGO (LEGAL) */}
+            <div className="text-center px-4">
+                <p className="text-[8px] text-slate-500 uppercase leading-relaxed font-bold tracking-tighter">
+                    Al utilizar este muro, aceptás nuestros <a href="/legal" className="underline text-blue-500">términos de uso</a>. 
+                    Recordá que tus mensajes son públicos y CuantoEs.com.py no se hace responsable por el contenido generado por usuarios.
+                </p>
+            </div>
+
+            {/* 4. JERARQUÍA: SALIDA (BRANDING) */}
             <button 
                 onClick={() => setShowExitWarning(true)} 
                 className="group flex items-center gap-2 opacity-30 hover:opacity-100 transition-opacity border-t border-white/5 pt-6 w-full justify-center"
             >
                 <Terminal className="w-3 h-3 text-slate-500" />
-                <span className="text-[8px] font-black text-slate-500 uppercase tracking-widest leading-none">
+                <span className="text-[8px] font-bold text-slate-500 uppercase tracking-widest leading-none">
                     Herramienta de <span className="italic underline">CuantoEs.com.py</span>
                 </span>
             </button>
@@ -203,7 +208,7 @@ export default function MuroInmersivo({ params }: { params: Promise<{ slug: stri
             <h2 className={`text-[10px] font-black uppercase tracking-[0.3em] leading-none ${view === 'CHAT' ? 'text-emerald-400' : 'text-blue-400'}`}>
                 {view === 'CHAT' ? 'Canal en Vivo' : 'Comunidad'}
             </h2>
-            <p className="text-[8px] font-bold text-slate-500 uppercase mt-1 italic tracking-widest truncate max-w-[150px] mx-auto">{sala.nombre}</p>
+            <p className="text-[8px] font-bold text-slate-500 uppercase mt-1 italic tracking-widest truncate max-w-[150px] mx-auto text-pretty leading-tight">{sala.nombre}</p>
         </div>
         <div className="bg-blue-600/20 px-3 py-2 rounded-xl text-[10px] font-black text-blue-400 border border-blue-500/30 shrink-0">
             {user?.nick}
@@ -214,7 +219,7 @@ export default function MuroInmersivo({ params }: { params: Promise<{ slug: stri
         {mensajes.map((m) => (
             <div key={m.id} className="animate-in fade-in slide-in-from-bottom-2 duration-500">
                 <div className="flex items-center gap-2 mb-1.5 px-1">
-                    <span className={`text-[10px] font-black uppercase tracking-tighter ${m.autor_uuid === user?.id ? 'text-blue-400' : 'text-slate-500'}`}>
+                    <span className={`text-[9px] font-black uppercase tracking-tighter ${m.autor_uuid === user?.id ? 'text-blue-400' : 'text-slate-500'}`}>
                         {m.autor_nick}
                     </span>
                     <span className="text-[7px] text-slate-700 font-bold uppercase">
