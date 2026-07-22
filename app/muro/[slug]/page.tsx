@@ -123,71 +123,80 @@ export default function MuroInmersivo({ params }: { params: Promise<{ slug: stri
     const waLink = "https://api.whatsapp.com/send?phone=595992685363&text=Hola%2C%20estoy%20interesado%20en%20tener%20mi%20propio%20muro%2Fchat%20privado%2C%20como%20puedo%20hacer%3F";
 
     return (
-      <main className="min-h-screen bg-[#060B16] text-white p-6 flex flex-col items-center justify-center space-y-10">
-        <header className="text-center space-y-2">
-            <h1 className="text-3xl font-black uppercase tracking-tighter text-slate-100 italic leading-none">{sala.nombre}</h1>
-            <div className="flex items-center justify-center gap-2 text-emerald-500">
-                <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-ping"></div>
-                <p className="text-[9px] font-black uppercase tracking-[0.3em]">Punto Activo</p>
+  <main className="min-h-screen bg-[#060B16] text-white p-6 flex flex-col items-center justify-center space-y-10">
+    <header className="text-center space-y-2">
+        <h1 className="text-3xl font-black uppercase tracking-tighter text-slate-100 italic leading-none">{sala.nombre}</h1>
+        <div className="flex items-center justify-center gap-2 text-emerald-500">
+            <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-ping"></div>
+            <p className="text-[9px] font-black uppercase tracking-[0.3em]">Punto Activo</p>
+        </div>
+    </header>
+
+    <div className="w-full max-w-xs space-y-4">
+        {/* BOTÓN MURO */}
+        <button onClick={() => setView('MURO')} className="w-full bg-white/5 border border-white/10 p-6 rounded-[2.5rem] flex flex-col items-center gap-3 hover:bg-blue-600/10 hover:border-blue-500/30 transition-all group">
+            <LayoutList className="w-8 h-8 text-blue-400 group-hover:scale-110 transition-transform" />
+            <div className="text-center">
+                <span className="block font-black uppercase text-sm tracking-tight text-slate-200">Escribir en el Muro</span>
+                <span className="text-[8px] font-bold text-slate-500 uppercase tracking-widest italic leading-none">Historial de 7 días</span>
             </div>
-        </header>
+        </button>
 
-        <div className="w-full max-w-xs space-y-4">
-            <button onClick={() => setView('MURO')} className="w-full bg-white/5 border border-white/10 p-6 rounded-[2.5rem] flex flex-col items-center gap-3 hover:bg-blue-600/10 hover:border-blue-500/30 transition-all group">
-                <LayoutList className="w-8 h-8 text-blue-400 group-hover:scale-110 transition-transform" />
-                <div className="text-center">
-                    <span className="block font-black uppercase text-sm tracking-tight text-slate-200">Escribir en el Muro</span>
-                    <span className="text-[8px] font-bold text-slate-500 uppercase tracking-widest italic leading-none">Historial de 7 días</span>
-                </div>
-            </button>
+        {/* BOTÓN CHAT */}
+        <button onClick={() => setView('CHAT')} className="w-full bg-white/5 border border-white/10 p-6 rounded-[2.5rem] flex flex-col items-center gap-3 hover:bg-emerald-600/10 hover:border-emerald-500/30 transition-all group relative">
+            <div className="absolute top-4 right-6 flex items-center gap-1 bg-emerald-500/20 px-2 py-0.5 rounded-full border border-emerald-500/30">
+                <Users className="w-2.5 h-2.5 text-emerald-400" />
+                <span className="text-[8px] font-black text-emerald-400">{userCount}</span>
+            </div>
+            <MessageSquare className="w-8 h-8 text-emerald-400 group-hover:scale-110 transition-transform" />
+            <div className="text-center">
+                <span className="block font-black uppercase text-sm tracking-tight text-slate-200">Chat en Vivo</span>
+                <span className="text-[8px] font-bold text-slate-500 uppercase tracking-widest italic leading-none">Borrado cada 24hs</span>
+            </div>
+        </button>
+    </div>
 
-            <button onClick={() => setView('CHAT')} className="w-full bg-white/5 border border-white/10 p-6 rounded-[2.5rem] flex flex-col items-center gap-3 hover:bg-emerald-600/10 hover:border-emerald-500/30 transition-all group relative">
-                <div className="absolute top-4 right-6 flex items-center gap-1 bg-emerald-500/20 px-2 py-0.5 rounded-full border border-emerald-500/30">
-                    <Users className="w-2.5 h-2.5 text-emerald-400" />
-                    <span className="text-[8px] font-black text-emerald-400">{userCount}</span>
-                </div>
-                <MessageSquare className="w-8 h-8 text-emerald-400 group-hover:scale-110 transition-transform" />
-                <div className="text-center">
-                    <span className="block font-black uppercase text-sm tracking-tight text-slate-200">Chat en Vivo</span>
-                    <span className="text-[8px] font-bold text-slate-500 uppercase tracking-widest italic leading-none">Borrado cada 24hs</span>
-                </div>
-            </button>
+    {/* FOOTER MULTI-BLOQUE */}
+    <footer className="w-full max-w-xs flex flex-col items-center gap-10 pt-6">
+        
+        {/* BLOQUE 1: INFORMACIÓN LEGAL Y USO */}
+        <div className="text-center px-4">
+            <p className="text-[8px] text-slate-500 uppercase leading-relaxed font-bold tracking-tighter">
+                Al utilizar este punto, aceptás los <a href="/legal" className="underline text-blue-500">términos de uso</a>. 
+                Los mensajes son públicos y anónimos. La plataforma no se hace responsable por el contenido generado.
+            </p>
         </div>
 
-        {/* FOOTER MULTI-PROPÓSITO */}
-        <footer className="w-full max-w-xs flex flex-col items-center gap-6 pt-6">
-            
-            {/* OPCIÓN: MURO PRIVADO (Venta) */}
-            <div className="text-center space-y-3">
-                <p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest leading-tight px-4">
-                    ¿Querés contar con tu propio muro o chat privado?
-                </p>
-                <a 
-                    href={waLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 bg-blue-600/10 text-blue-400 px-4 py-2 rounded-xl border border-blue-500/20 text-[10px] font-black uppercase tracking-widest active:scale-95 transition-all"
-                >
-                    <MessageSquare className="w-3 h-3" /> Contactame
-                </a>
-            </div>
-
-            {/* OPCIÓN: SALIDA A CUANTOES (Alerta) */}
-            <button 
-                onClick={() => setShowExitWarning(true)} 
-                className="group flex items-center gap-2 opacity-40 hover:opacity-100 transition-opacity"
+        {/* BLOQUE 2: MURO PRIVADO (Comercial) */}
+        <div className="text-center space-y-4">
+            <p className="text-[9px] font-black text-slate-600 uppercase tracking-widest leading-tight px-6">
+                ¿Querés contar con tu propio muro o chat privado?
+            </p>
+            <a 
+                href={waLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 bg-blue-600/10 text-blue-400 px-5 py-2.5 rounded-xl border border-blue-500/20 text-[10px] font-black uppercase tracking-widest active:scale-95 transition-all"
             >
-                <Terminal className="w-3 h-3 text-slate-500" />
-                <span className="text-[8px] font-bold text-slate-500 uppercase tracking-widest">
-                    Herramienta de <span className="italic underline">CuantoEs.com.py</span>
-                </span>
-            </button>
-        </footer>
+                <MessageSquare className="w-3.5 h-3.5" /> Contactame
+            </a>
+        </div>
 
-        {showExitWarning && <ExitModal onConfirm={() => router.push('/')} onCancel={() => setShowExitWarning(false)} />}
-      </main>
-    );
-  }
+        {/* BLOQUE 3: SALIDA (Branding) */}
+        <button 
+            onClick={() => setShowExitWarning(true)} 
+            className="group flex items-center gap-2 opacity-30 hover:opacity-100 transition-opacity border-t border-white/5 pt-6 w-full justify-center"
+        >
+            <Terminal className="w-3 h-3 text-slate-500" />
+            <span className="text-[8px] font-black text-slate-500 uppercase tracking-widest leading-none">
+                Herramienta de <span className="italic underline">CuantoEs.com.py</span>
+            </span>
+        </button>
+    </footer>
+
+    {showExitWarning && <ExitModal onConfirm={() => router.push('/')} onCancel={() => setShowExitWarning(false)} />}
+  </main>
+);
 
   // --- VISTA: MURO O CHAT ---
   return (
