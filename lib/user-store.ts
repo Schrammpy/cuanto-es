@@ -1,45 +1,42 @@
-// Lista de sujetos (Nombres neutros o de uso común en Py)
+// Lista de sujetos (Nombres neutros y respetuosos)
 const SUJETOS = [
-  'Alguien', 
-  'Compa', 
-  'Colega', 
-  'Projimo', 
-  'Fulano'
+  'Persona',    // Universal y neutro
+  'Visitante',  // Ideal para un punto físico
+  'Compa',      // Muy nuestro y amigable
+  'Colega',     // Respetuoso
+  'Socio',      // El pronombre universal paraguayo
+  'Alguien',    // Misterioso pero correcto
+  'Individuo',  // Formal y correcto
+  'Peatón'      // Divertido para paradas de bus
 ];
 
-// Lista de adjetivos (Neutros, sin terminación o/a en lo posible)
+// Lista de adjetivos (Positivos, buena onda y neutros en género)
 const ADJETIVOS = [
-  'Infiel', 
-  'Fiel', 
-  'Tranqui', 
-  'Purete', 
-  'Mbarete', 
-  'Juky',
-  'Ñembotavy',
-  'Kaigue',
-  'AnaDie', 
-  'Vyro'      // El que anda en las nubes
+  'Juky',       // Simpático/agradable en guaraní
+  'Purete',     // Excelente/bueno
+  'Tranqui',    // Relajado
+  'Atento',     // Alguien que ayuda (se entiende neutro en este contexto)
+  'Genial',     // Positivo
+  'Curioso',    // Que explora el muro
+  'Cool',       // Moderno
+  'Amigable'   // El mejor para la comunidad
 ];
 
 export const getOrCreateUser = () => {
   if (typeof window === 'undefined') return null;
 
-  // Buscamos si ya tiene un perfil guardado
   let user = localStorage.getItem('cuantoes_chat_user');
   
   if (!user) {
     const id = crypto.randomUUID();
     
-    // Elegimos uno de cada lista de forma aleatoria
     const sujeto = SUJETOS[Math.floor(Math.random() * SUJETOS.length)];
     const adjetivo = ADJETIVOS[Math.floor(Math.random() * ADJETIVOS.length)];
     
-    // Armamos el Nick: SUJETO + ADJETIVO + NRO (Ej: Compa_Tranqui_42)
+    // Formato: SUJETO_ADJETIVO_NRO (Ej: Compa_Juky_22)
     const nick = `${sujeto}_${adjetivo}_${Math.floor(Math.random() * 99)}`;
     
     const newUser = { id, nick };
-    
-    // Guardamos en el navegador del usuario para que siempre sea el mismo
     localStorage.setItem('cuantoes_chat_user', JSON.stringify(newUser));
     return newUser;
   }
