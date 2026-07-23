@@ -90,7 +90,7 @@ export default function MuroInmersivo({ params }: { params: Promise<{ slug: stri
     return (
       <main className="min-h-screen bg-[#060B16] text-white p-6 flex flex-col items-center justify-center space-y-10">
         <header className="text-center space-y-4">
-            {sala.logo_url && <img src={sala.logo_url} alt="Logo" className="h-24 w-auto mx-auto mb-4 animate-in zoom-in-50 duration-700 object-contain" />}
+            {sala.logo_url && <img src={sala.logo_url} alt="Logo" className="h-24 w-auto mx-auto mb-4 animate-in zoom-in-50 duration-700 object-contain rounded-2xl" />}
             <h1 className="text-3xl font-[900] text-slate-100 italic leading-tight uppercase tracking-tighter">{sala.nombre}</h1>
             <div className="flex items-center justify-center gap-2">
                 <div className="w-1.5 h-1.5 rounded-full animate-ping bg-emerald-500"></div>
@@ -102,7 +102,7 @@ export default function MuroInmersivo({ params }: { params: Promise<{ slug: stri
             <button onClick={() => setView('MURO')} className="w-full bg-white/5 border border-white/10 p-6 rounded-[2.5rem] flex flex-col items-center gap-3 hover:bg-white/10 transition-all group">
                 <LayoutList className="w-8 h-8 group-hover:scale-110 transition-transform" style={{ color: brandColor }} />
                 <div className="text-center">
-                    <span className="block font-black uppercase text-sm tracking-tight text-slate-200">{sala.welcome_text || 'Buzón de Sugerencias'}</span>
+                    <span className="block font-black uppercase text-sm tracking-tight text-slate-200">{sala.welcome_text || 'Muro de comentarios'}</span>
                     <span className="text-[8px] font-bold text-slate-500 uppercase tracking-widest italic leading-none">Historial de 7 días</span>
                 </div>
             </button>
