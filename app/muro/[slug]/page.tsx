@@ -1,11 +1,12 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
 import { getOrCreateUser } from '@/lib/user-store';
 import { useRouter } from 'next/navigation';
+import { ThinkingOrb } from 'thinking-orbs';
 import { 
   Send, MessageSquare, LayoutList, Users, 
-  ArrowLeft, Clock, Shield, AlertTriangle, Terminal, Activity, ChevronRight, Info, Lock
+  ArrowLeft, Clock, Shield, AlertTriangle, Terminal, Activity, ChevronRight, Lock
 } from 'lucide-react';
 
 type Vista = 'LOBBY' | 'MURO' | 'CHAT';
@@ -24,10 +25,16 @@ export default function MuroInmersivo({ params }: { params: Promise<{ slug: stri
   const [loading, setLoading] = useState(true);
   const [showExitWarning, setShowExitWarning] = useState(false);
 
+  // --- LÓGICA DEL BOTÓN ATRÁS ---
   useEffect(() => {
-    if (view !== 'LOBBY') window.history.pushState({ view }, "");
+    if (view !== 'LOBBY') {
+      window.history.pushState({ view }, "");
+    }
     const handleBackButton = (event: PopStateEvent) => {
-      if (view !== 'LOBBY') { event.preventDefault(); setView('LOBBY'); }
+      if (view !== 'LOBBY') {
+        event.preventDefault();
+        setView('LOBBY');
+      }
     };
     window.addEventListener('popstate', handleBackButton);
     return () => window.removeEventListener('popstate', handleBackButton);
@@ -40,7 +47,9 @@ export default function MuroInmersivo({ params }: { params: Promise<{ slug: stri
   }, [slug]);
 
   useEffect(() => {
-    if (sala && view !== 'LOBBY') fetchMensajes();
+    if (sala && view !== 'LOBBY') {
+      fetchMensajes();
+    }
   }, [view, sala]);
 
   async function fetchSala(currentUser: any) {
@@ -53,32 +62,79 @@ export default function MuroInmersivo({ params }: { params: Promise<{ slug: stri
   }
 
   function setupRealtime(salaId: string, currentUser: any) {
-    supabase.channel(`mensajes_${slug}`).on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'mensajes', filter: `sala_id=eq.${salaId}` }, (p) => {
-        setMensajes(prev => prev.find(m => m.id === p.new.id) ? prev : [p.new, ...prev]);
-    }).subscribe();
+    const msgChannel = supabase.channel(`mensajes_${slug}`)
+      .on('postgres_changes', { 
+        event: 'INSERT', 
+        schema: 'public', 
+        table: 'mensajes', 
+        filter: `sala_id=eq.${salaId}` 
+      }, (p) => {
+        setMensajes(prev => {
+            if (prev.find(m => m.id === p.new.id)) return prev;
+            return [p.new, ...prev];
+        });
+      })
+      .subscribe();
 
     const presenceChannel = supabase.channel(`presencia_${slug}`);
-    presenceChannel.on('presence', { event: 'sync' }, () => {
+    presenceChannel
+      .on('presence', { event: 'sync' }, () => {
         setUserCount(Object.keys(presenceChannel.presenceState()).length);
-    }).subscribe(async (status) => {
-        if (status === 'SUBSCRIBED') await presenceChannel.track({ user: currentUser.nick, online_at: new Date().toISOString() });
-    });
+      })
+      .subscribe(async (status) => {
+        if (status === 'SUBSCRIBED') {
+          await presenceChannel.track({ user: currentUser.nick, online_at: new Date().toISOString() });
+        }
+      });
+
+    return () => {
+      supabase.removeChannel(msgChannel);
+      supabase.removeChannel(presenceChannel);
+    };
   }
 
   async function fetchMensajes() {
-    const { data } = await supabase.from('mensajes').select('*').eq('sala_id', sala.id).eq('es_chat', view === 'CHAT').order('created_at', { ascending: false }).limit(50);
+    const isChat = view === 'CHAT';
+    const { data } = await supabase.from('mensajes')
+      .select('*')
+      .eq('sala_id', sala.id)
+      .eq('es_chat', isChat)
+      .order('created_at', { ascending: false })
+      .limit(50);
     if (data) setMensajes(data);
   }
 
   async function enviarMensaje(e: React.FormEvent) {
     e.preventDefault();
     if (!nuevoMsg.trim() || !user || !sala) return;
-    const { error } = await supabase.from('mensajes').insert([{ sala_id: sala.id, autor_uuid: user.id, autor_nick: user.nick, contenido: nuevoMsg, es_chat: view === 'CHAT' }]);
-    if (!error) setNuevoMsg('');
+    const texto = nuevoMsg;
+    setNuevoMsg('');
+    const { error } = await supabase.from('mensajes').insert([{
+      sala_id: sala.id, autor_uuid: user.id, autor_nick: user.nick, contenido: texto, es_chat: view === 'CHAT'
+    }]);
+    if (error) alert("Error: " + error.message);
   }
 
-  if (loading) return <div className="h-screen bg-[#060B16] flex items-center justify-center font-mono text-blue-500 animate-pulse uppercase tracking-[0.3em]">Inicializando...</div>;
-  if (!sala) return <div className="h-screen bg-[#060B16] flex items-center justify-center text-white italic text-xs">404: Punto no encontrado</div>;
+  // --- PANTALLA DE CARGA CON ORB ---
+  if (loading) return (
+    <div className="h-screen bg-[#060B16] flex flex-col items-center justify-center overflow-hidden">
+      <div className="relative flex flex-col items-center gap-8 animate-in fade-in duration-700">
+        <div className="relative">
+          <div className="absolute inset-0 bg-blue-500/20 rounded-full blur-2xl scale-150"></div>
+          <ThinkingOrb state="searching" size={64} speed={1} theme="dark" />
+        </div>
+        <div className="text-center space-y-3">
+          <p className="font-mono text-blue-500 text-[10px] font-black uppercase tracking-[0.5em] animate-pulse">INGRESANDO AL PUNTO</p>
+          <div className="w-32 h-[1px] bg-white/10 mx-auto relative overflow-hidden">
+              <div className="absolute inset-0 bg-blue-500 w-full -translate-x-full animate-[progress_2s_infinite]"></div>
+          </div>
+        </div>
+      </div>
+      <style jsx>{` @keyframes progress { 0% { transform: translateX(-100%); } 50% { transform: translateX(0); } 100% { transform: translateX(100%); } } `}</style>
+    </div>
+  );
+
+  if (!sala) return <div className="h-screen bg-[#060B16] flex items-center justify-center text-white italic text-xs uppercase tracking-widest text-center px-10 leading-relaxed">404: PUNTO NO ENCONTRADO EN EL SISTEMA</div>;
 
   const brandColor = sala.color_hex || '#2563EB';
   const isPremium = sala.es_premium;
@@ -122,23 +178,21 @@ export default function MuroInmersivo({ params }: { params: Promise<{ slug: stri
 
         <footer className="w-full max-w-xs flex flex-col items-center gap-10 pt-6">
             {isPremium ? (
-    /* CONTENIDO PARA B2B (EMPRENDEDOR) - MOTIVADOR */
-        <div className="bg-white/5 border border-white/10 p-6 rounded-[2rem] text-center space-y-4 shadow-2xl">
-            <div className="flex justify-center gap-2 mb-1">
-            <Lock className="w-3.5 h-3.5 text-blue-500" />
-            <span className="text-[9px] font-black text-blue-400 uppercase tracking-[0.2em]">Canal Directo y Privado</span>
-            </div>
-            <p className="text-[11px] font-semibold text-slate-200 leading-relaxed italic px-2">
-            "Tu opinión es el motor de nuestra mejora. Sentite libre de compartir tus sugerencias, tips o felicitaciones de forma 100% anónima y segura."
-            </p>
-            <div className="pt-2">
-            <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest border-t border-white/5 pt-3">
-                ¡Tu aporte suma muchísimo!
-            </p>
-            </div>
-            </div>
+                <div className="bg-white/5 border border-white/10 p-6 rounded-[2rem] text-center space-y-4 shadow-2xl">
+                    <div className="flex justify-center gap-2 mb-1">
+                        <Lock className="w-3.5 h-3.5 text-blue-500" />
+                        <span className="text-[9px] font-black text-blue-400 uppercase tracking-[0.2em]">Canal Directo y Privado</span>
+                    </div>
+                    <p className="text-[11px] font-semibold text-slate-200 leading-relaxed italic px-2">
+                        "Tu opinión es el motor de nuestra mejora. Sentite libre de compartir tus sugerencias, tips o felicitaciones de forma 100% anónima y segura."
+                    </p>
+                    <div className="pt-2">
+                        <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest border-t border-white/5 pt-3">
+                            ¡Tu aporte suma muchísimo!
+                        </p>
+                    </div>
+                </div>
             ) : (
-                /* CONTENIDO PARA CALLE (SOCIAL) */
                 <div className="flex flex-col items-center gap-10">
                     <div className="text-center px-4">
                         <p className="text-[8px] text-slate-500 uppercase leading-relaxed font-bold tracking-tighter">
@@ -147,9 +201,7 @@ export default function MuroInmersivo({ params }: { params: Promise<{ slug: stri
                         </p>
                     </div>
                     <div className="text-center space-y-4">
-                        <p className="text-[9px] font-black text-slate-600 uppercase tracking-widest leading-tight px-6">
-                            ¿Querés contar con tu propio muro o chat privado?
-                        </p>
+                        <p className="text-[9px] font-black text-slate-600 uppercase tracking-widest leading-tight px-6">¿Querés contar con tu propio muro o chat privado?</p>
                         <a href={waLink} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 bg-blue-600/10 text-blue-400 px-5 py-2.5 rounded-xl border border-blue-500/20 text-[10px] font-black uppercase tracking-widest active:scale-95 transition-all">
                             <MessageSquare className="w-3.5 h-3.5" /> Contactame
                         </a>
@@ -183,7 +235,9 @@ export default function MuroInmersivo({ params }: { params: Promise<{ slug: stri
         {mensajes.map((m) => (
             <div key={m.id} className="animate-in fade-in slide-in-from-bottom-2">
                 <div className="flex items-center gap-2 mb-1.5 px-1">
-                    <span className="text-[9px] font-black uppercase tracking-tighter" style={{ color: m.autor_uuid === user?.id ? brandColor : '#64748b' }}>{m.autor_nick}</span>
+                    <span className={`text-[10px] font-black uppercase tracking-tighter ${m.autor_uuid === user?.id ? 'text-blue-400' : 'text-slate-500'}`} style={{ color: m.autor_uuid === user?.id ? brandColor : '#64748b' }}>
+                        {m.autor_nick}
+                    </span>
                     <span className="text-[7px] text-slate-700 font-bold uppercase">{new Date(m.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                 </div>
                 <div className={`p-4 rounded-2xl rounded-tl-none max-w-[95%] text-sm font-medium leading-relaxed ${m.autor_uuid === user?.id ? 'bg-white/10 border border-white/10 text-white' : 'bg-white/5 border border-white/5 text-slate-300'}`}>
@@ -191,17 +245,19 @@ export default function MuroInmersivo({ params }: { params: Promise<{ slug: stri
                 </div>
             </div>
         ))}
+        
         <div className="bg-white/5 border border-white/5 p-6 rounded-[2.5rem] text-center mb-6 border-dashed">
-        <Shield className="w-5 h-5 text-slate-600 mx-auto mb-2" />
-        <p className="text-[9px] text-slate-500 uppercase font-black tracking-widest text-pretty px-4 italic leading-relaxed">
-        {isPremium 
-            ? 'Este es un espacio de escucha activa para mejorar nuestro servicio.' 
-            : view === 'CHAT' 
-                ? 'Este chat es efímero y se borra cada 24hs.' 
-                : 'Este muro es comunitario y se borra cada 7 días.'
-        }
-        </p>
+            <Shield className="w-5 h-5 text-slate-600 mx-auto mb-2" />
+            <p className="text-[9px] text-slate-500 uppercase font-black tracking-widest text-pretty px-4 italic leading-relaxed">
+                {isPremium 
+                    ? 'Este es un espacio de escucha activa para mejorar nuestro servicio.' 
+                    : view === 'CHAT' 
+                        ? 'Este chat es efímero y se borra cada 24hs.' 
+                        : 'Este muro es comunitario y se borra cada 7 días.'
+                }
+            </p>
         </div>
+      </div>
 
       <div className="p-4 bg-black/60 border-t border-white/5 pb-8">
         <form onSubmit={enviarMensaje} className="flex gap-2">
