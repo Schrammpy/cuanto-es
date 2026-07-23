@@ -122,19 +122,21 @@ export default function MuroInmersivo({ params }: { params: Promise<{ slug: stri
 
         <footer className="w-full max-w-xs flex flex-col items-center gap-10 pt-6">
             {isPremium ? (
-                /* CONTENIDO PARA B2B (EMPRENDEDOR) */
-                <div className="bg-white/5 border border-white/10 p-5 rounded-[2rem] text-center space-y-3">
-                    <div className="flex justify-center gap-2 mb-2">
-                        <Lock className="w-3 h-3 text-slate-500" />
-                        <span className="text-[8px] font-black text-slate-500 uppercase tracking-widest leading-none">Espacio 100% Seguro</span>
-                    </div>
-                    <p className="text-[10px] font-bold text-slate-300 leading-relaxed italic">
-                        "Tu opinión nos ayuda a mejorar. Este muro es anónimo y tus comentarios se borran automáticamente en 7 días."
-                    </p>
-                    <p className="text-[9px] font-black text-slate-500 uppercase tracking-tighter">
-                        ¡Gracias por elegirnos!
-                    </p>
-                </div>
+    /* CONTENIDO PARA B2B (EMPRENDEDOR) - MOTIVADOR */
+        <div className="bg-white/5 border border-white/10 p-6 rounded-[2rem] text-center space-y-4 shadow-2xl">
+            <div className="flex justify-center gap-2 mb-1">
+            <Lock className="w-3.5 h-3.5 text-blue-500" />
+            <span className="text-[9px] font-black text-blue-400 uppercase tracking-[0.2em]">Canal Directo y Privado</span>
+            </div>
+            <p className="text-[11px] font-semibold text-slate-200 leading-relaxed italic px-2">
+            "Tu opinión es el motor de nuestra mejora. Sentite libre de compartir tus sugerencias, tips o felicitaciones de forma 100% anónima y segura."
+            </p>
+            <div className="pt-2">
+            <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest border-t border-white/5 pt-3">
+                ¡Tu aporte suma muchísimo!
+            </p>
+            </div>
+            </div>
             ) : (
                 /* CONTENIDO PARA CALLE (SOCIAL) */
                 <div className="flex flex-col items-center gap-10">
@@ -189,13 +191,17 @@ export default function MuroInmersivo({ params }: { params: Promise<{ slug: stri
                 </div>
             </div>
         ))}
-        <div className="bg-white/5 border border-white/5 p-6 rounded-[2.5rem] text-center mb-6">
-            <Shield className="w-5 h-5 text-slate-600 mx-auto mb-2" />
-            <p className="text-[9px] text-slate-500 uppercase font-black tracking-widest text-pretty px-4 italic leading-relaxed">
-                {view === 'CHAT' ? 'Este chat es efímero y se borra cada 24hs.' : 'Este muro es comunitario y se borra cada 7 días.'}
-            </p>
+        <div className="bg-white/5 border border-white/5 p-6 rounded-[2.5rem] text-center mb-6 border-dashed">
+        <Shield className="w-5 h-5 text-slate-600 mx-auto mb-2" />
+        <p className="text-[9px] text-slate-500 uppercase font-black tracking-widest text-pretty px-4 italic leading-relaxed">
+        {isPremium 
+            ? 'Este es un espacio de escucha activa para mejorar nuestro servicio.' 
+            : view === 'CHAT' 
+                ? 'Este chat es efímero y se borra cada 24hs.' 
+                : 'Este muro es comunitario y se borra cada 7 días.'
+        }
+        </p>
         </div>
-      </div>
 
       <div className="p-4 bg-black/60 border-t border-white/5 pb-8">
         <form onSubmit={enviarMensaje} className="flex gap-2">
