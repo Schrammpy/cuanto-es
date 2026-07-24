@@ -95,7 +95,7 @@ export default function Footer() {
               2026 © CUANTOES.COM.PY
             </p>
             <p className="text-[8px] font-bold uppercase tracking-widest italic text-slate-500">
-              Un proyecto de<a 
+              Un proyecto de <a 
                 href="https://www.linkedin.com/in/diegoschramm" 
                 target="_blank" 
                 rel="noopener noreferrer"

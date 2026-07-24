@@ -184,7 +184,7 @@ export default function MuroInmersivo({ params }: { params: Promise<{ slug: stri
                         <span className="text-[9px] font-black text-blue-400 uppercase tracking-[0.2em]">Canal Directo y Privado</span>
                     </div>
                     <p className="text-[11px] font-semibold text-slate-200 leading-relaxed italic px-2">
-                        "Algo no te gustó o te molestó hoy, ¡decilo acá con total confianza! Este espacio es 100% anónimo y tu opinión sincera nos ayuda a dar un mejor servicio cada día."
+                        "¿Algo no salió como esperabas? Cuéntanos con confianza. Tu opinión es 100% anónima."
                     </p>
                     <div className="pt-2">
                         <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest border-t border-white/5 pt-3">
