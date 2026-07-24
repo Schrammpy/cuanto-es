@@ -95,14 +95,14 @@ export default function Footer() {
               2026 © CUANTOES.COM.PY
             </p>
             <p className="text-[8px] font-bold uppercase tracking-widest italic text-slate-500">
-              Para mayor información comunicarse con <a 
-                href="mailto:mydocs.studio@gmail.com" 
+              Un proyecto de<a 
+                href="https://www.linkedin.com/in/diegoschramm" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="text-blue-600 hover:text-blue-800 underline decoration-blue-200 underline-offset-2 transition-colors"
               >
-                MyDocs Studio
-              </a> de Luque, Paraguay.
+                Diego Schramm
+              </a> Analista de Sistemas 🇵🇾
             </p>
         </div>
       </div>
