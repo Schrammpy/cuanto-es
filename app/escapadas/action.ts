@@ -1,63 +1,76 @@
 'use server'
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenAI } from "@google/genai";
 import { supabase } from "@/lib/supabase";
 
-// Verificamos la llave en el servidor
-const apiKey = process.env.GOOGLE_GEMINI_KEY;
-const genAI = new GoogleGenerativeAI(apiKey || "");
+// Inicializamos con la nueva clase de 2026
+const ai = new GoogleGenAI({ 
+  apiKey: process.env.GOOGLE_GEMINI_KEY 
+});
 
 export async function buscarEscapadaAction(frase: string) {
-  if (!apiKey) return { error: "No se encontró la API KEY en el servidor." };
-
   try {
-    // Usamos el nombre de modelo más estándar actualmente
-    const model = genAI.getGenerativeModel({ model: "gemini-3.6-flash" });
+    // Definimos el esquema de respuesta para que sea JSON puro
+    const recipeJsonSchema = {
+      type: "object",
+      properties: {
+        presupuesto: { type: "integer", description: "Monto total disponible en guaraníes" },
+        personas: { type: "integer", description: "Cantidad de personas que viajan" },
+        busqueda_keyword: { type: "string", description: "Palabra clave: naturaleza, arroyo o aventura" }
+      },
+      required: ["presupuesto", "personas", "busqueda_keyword"]
+    };
 
-    const prompt = `
-      Eres un guía turístico de Paraguay. 
-      Analiza la frase: "${frase}"
-      Responde EXCLUSIVAMENTE un objeto JSON puro (sin markdown, sin bloques de código, sin texto extra) con este formato:
-      {"presupuesto": numero, "personas": numero, "busqueda": "texto"}
-      
-      Si el usuario no dice presupuesto, usa 1500000. Si no dice personas, usa 2.
-    `;
+    // Usamos la nueva Interactions API
+    const interaction = await ai.interactions.create({
+      model: "gemini-3.6-flash",
+      input: `Analiza esta consulta de viaje en Paraguay: "${frase}". Extrae los datos financieros.`,
+      response_format: {
+        type: "text",
+        mime_type: "application/json",
+        schema: recipeJsonSchema
+      },
+    });
 
-    const result = await model.generateContent(prompt);
-    const text = result.response.text();
-    
-    // Limpiador agresivo de JSON por si la IA se pone rebelde
-    const start = text.indexOf('{');
-    const end = text.lastIndexOf('}') + 1;
-    const jsonClean = text.substring(start, end);
-    const aiData = JSON.parse(jsonClean);
+    // En la versión 3.6 accedemos directamente a output_text
+    const aiData = JSON.parse(interaction.output_text);
 
-    // 1. Buscamos en Supabase
-    const { data: destinos, error: dbError } = await supabase.from('escapadas').select('*');
-    if (dbError || !destinos) return { error: "Error al leer destinos de la base de datos." };
+    // 1. Buscamos destinos en Supabase
+    const { data: destinos, error: dbError } = await supabase
+      .from('escapadas')
+      .select('*');
 
-    // 2. Cálculos de CuantoEs
+    if (dbError || !destinos) {
+      return { error: "Error de conexión con la base de datos de destinos." };
+    }
+
+    // 2. Lógica CuantoEs (Cálculos reales locales)
+    const PRECIO_NAFTA = 7500;
+    const COMIDA_DIARIA_PP = 85000; // Ajustado a inflación 2026
+
     const recomendaciones = destinos.map(d => {
-      const costoNafta = ((d.distancia_km * 2) / 100) * 10 * 7500;
+      const costoNafta = ((d.distancia_km * 2) / 100) * 10 * PRECIO_NAFTA;
       const costoPeajes = d.peajes * 2 * 10000;
-      const costoAlojamientoTotal = d.alojamiento_base * aiData.personas;
-      const costoEntradasTotal = d.precio_acceso * aiData.personas;
-      const comidaEstimada = 80000 * aiData.personas;
-      
-      const gastoProbable = costoNafta + costoPeajes + costoAlojamientoTotal + costoEntradasTotal + comidaEstimada;
+      const costoAlojamiento = d.alojamiento_base * aiData.personas;
+      const costoEntradas = d.precio_acceso * aiData.personas;
+      const costoComida = COMIDA_DIARIA_PP * aiData.personas;
+
+      const gastoProbable = costoNafta + costoPeajes + costoAlojamiento + costoEntradas + costoComida;
       const colchon = aiData.presupuesto - gastoProbable;
 
       return {
         ...d,
         gastoProbable,
         colchon,
-        viable: colchon >= -50000
+        esViable: colchon >= -50000
       };
     });
 
-    return recomendaciones.filter(r => r.viable).sort((a,b) => b.colchon - a.colchon);
+    return recomendaciones
+      .filter(r => r.esViable)
+      .sort((a, b) => b.colchon - a.colchon);
 
   } catch (error: any) {
-    console.error("Error en Gemini:", error);
-    return { error: "Google no pudo procesar el mensaje. Reintentá en un momento." };
+    console.error("Error en Interactions API:", error);
+    return { error: "El motor de IA 3.6 no pudo procesar la solicitud. Reintenta." };
   }
-}
+}gi
