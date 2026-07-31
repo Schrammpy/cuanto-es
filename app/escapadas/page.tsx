@@ -10,10 +10,31 @@ export default function EscapadasHome() {
   const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-    const formData = new FormData(e.currentTarget);
-    const data = await buscarEscapadaAction(formData.get('consulta') as string);
-    setRecomendaciones(data);
-    setLoading(false);
+    setRecomendaciones([]); // Limpiamos resultados anteriores
+    
+    try {
+        const formData = new FormData(e.currentTarget);
+        const consulta = formData.get('consulta') as string;
+        
+        if (!consulta) {
+            alert("Escribí algo primero, socio.");
+            setLoading(false);
+            return;
+        }
+
+        const data = await buscarEscapadaAction(consulta);
+        
+        if (Array.isArray(data)) {
+            setRecomendaciones(data);
+            if (data.length === 0) alert("Hína... con ese presupuesto no llegamos a los destinos cargados. Probá subiendo el monto.");
+        } else {
+            alert("E'a, Gemini se mareó. Probá de nuevo.");
+        }
+    } catch (err) {
+        alert("Ocurrió un error inesperado.");
+    } finally {
+        setLoading(false);
+    }
   };
 
   return (
