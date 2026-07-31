@@ -8,7 +8,7 @@ const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GEMINI_KEY!);
 export async function buscarEscapadaAction(frase: string) {
   try {
     // Usamos el modelo estable
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
     const prompt = `
       Actúa como un experto en turismo de Paraguay.
