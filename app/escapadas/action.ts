@@ -6,18 +6,53 @@ const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GEMINI_KEY!);
 
 export async function buscarEscapadaAction(frase: string) {
   try {
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    // CAMBIO AQUÍ: Usamos gemini-1.5-flash (sin el v1beta en el nombre) o gemini-1.5-flash-latest
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" }); 
 
     const prompt = `
-      Actúa como un extractor de datos para una app de viajes en Paraguay.
-      Analiza la siguiente frase y devuelve ÚNICAMENTE un objeto JSON puro, sin bloques de código ni markdown.
-      Si no se especifica el presupuesto, usa 0. Si no se especifica personas, usa 1.
-      
-      Frase: "${frase}"
-
-      Formato esperado:
-      {"presupuesto": number, "personas": number, "busqueda": string}
+      Eres un experto en turismo en Paraguay. 
+      Analiza la frase: "${frase}"
+      Responde EXCLUSIVAMENTE con un objeto JSON (sin markdown, sin bloques de código):
+      {"presupuesto": numero, "personas": numero, "busqueda": "texto"}
     `;
+
+    const aiResult = await model.generateContent(prompt);
+    const response = aiResult.response;
+    const text = response.text();
+    
+    // Limpiador de seguridad por si la IA se pone rebelde con el formato
+    const cleanJson = text.replace(/```json|```/g, "").trim();
+    const aiData = JSON.parse(cleanJson);
+
+    // 2. Traer destinos de Supabase
+    const { data: destinos, error } = await supabase.from('escapadas').select('*');
+    if (error || !destinos) return [];
+
+    // 3. Cálculos CuantoEs
+    const recomendaciones = destinos.map(d => {
+      const costoNafta = ((d.distancia_km * 2) / 100) * 10 * 7500;
+      const costoPeajes = d.peajes * 10000;
+      const costoAlojamientoTotal = d.alojamiento_base * aiData.personas;
+      const costoEntradasTotal = d.precio_acceso * aiData.personas;
+      const comidaEstimada = 80000 * aiData.personas;
+      
+      const gastoProbable = costoNafta + costoPeajes + costoAlojamientoTotal + costoEntradasTotal + comidaEstimada;
+      
+      return {
+        ...d,
+        gastoProbable,
+        colchon: aiData.presupuesto - gastoProbable
+      }
+    });
+
+    return recomendaciones.filter(r => r.colchon >= -50000).sort((a,b) => b.colchon - a.colchon);
+
+  } catch (error: any) {
+    console.error("Error real:", error);
+    // Si falla el modelo 1.5, intentamos con el 1.0 pro como plan de rescate
+    return { error: "El modelo de IA no respondió. Reintenta en 5 segundos." };
+  }
+}
 
     const aiResult = await model.generateContent(prompt);
     const responseText = aiResult.response.text();
