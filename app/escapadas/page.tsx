@@ -2,7 +2,8 @@
 import React, { useState } from 'react';
 import { 
   Search, Sparkles, Check, MessageCircle, 
-  Instagram, MapPin, AlertTriangle, ChevronRight,
+  Link as LinkIcon, // Cambiamos Instagram por LinkIcon
+  MapPin, AlertTriangle, ChevronRight,
   Wallet, Users, Loader2
 } from 'lucide-react';
 import { buscarEscapadaAction } from './action';
@@ -118,19 +119,17 @@ export default function EscapadasHome() {
                         </div>
                     </div>
 
-                    {/* DESGLOSE RÁPIDO */}
                     <div className="grid grid-cols-2 gap-2 mb-4">
-                        <div className="bg-slate-50 p-2.5 rounded-2xl border border-slate-100/50">
-                            <p className="text-[7px] font-bold text-slate-400 uppercase mb-0.5">Alojamiento est.</p>
+                        <div className="bg-slate-50 p-2.5 rounded-2xl border border-slate-100/50 text-center">
+                            <p className="text-[7px] font-bold text-slate-400 uppercase mb-0.5 leading-none">Alojamiento/Pers.</p>
                             <p className="text-xs font-black text-slate-700">Gs. {formatGs(res.alojamiento_base)}</p>
                         </div>
-                        <div className="bg-slate-50 p-2.5 rounded-2xl border border-slate-100/50">
-                            <p className="text-[7px] font-bold text-slate-400 uppercase mb-0.5">Entrada/Acceso</p>
+                        <div className="bg-slate-50 p-2.5 rounded-2xl border border-slate-100/50 text-center">
+                            <p className="text-[7px] font-bold text-slate-400 uppercase mb-0.5 leading-none">Entrada/Acceso</p>
                             <p className="text-xs font-black text-slate-700">Gs. {formatGs(res.precio_acceso)}</p>
                         </div>
                     </div>
                     
-                    {/* BARRA DE COLCHÓN */}
                     <div className="bg-blue-50 rounded-2xl p-4 flex justify-between items-center border border-blue-100 shadow-inner">
                         <div className="flex flex-col">
                             <span className="text-[10px] font-bold text-blue-600 uppercase leading-none">Te sobran</span>
@@ -139,7 +138,6 @@ export default function EscapadasHome() {
                         <span className="text-lg font-[900] text-blue-700 italic">Gs. {formatGs(res.colchon)} 🛡️</span>
                     </div>
 
-                    {/* BOTONES DE ACCIÓN */}
                     <div className="grid grid-cols-2 gap-3 mt-5">
                         {res.telefono_reserva && (
                             <a 
@@ -158,12 +156,11 @@ export default function EscapadasHome() {
                                 rel="noopener noreferrer"
                                 className="bg-white border-2 border-slate-100 text-slate-600 py-4 rounded-2xl text-[10px] font-black uppercase flex items-center justify-center gap-2 active:scale-95 transition-all"
                             >
-                                <Instagram className="w-4 h-4 text-pink-500" /> Ver Fotos
+                                <LinkIcon className="w-4 h-4 text-blue-500" /> Ver Más
                             </a>
                         )}
                     </div>
                     
-                    {/* ALERTA CAMINO TIERRA */}
                     {res.es_camino_tierra && (
                         <div className="flex items-center justify-center gap-1.5 mt-4 opacity-70">
                             <AlertTriangle className="w-3 h-3 text-orange-500" />
