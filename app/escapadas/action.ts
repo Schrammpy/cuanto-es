@@ -2,28 +2,33 @@
 import { GoogleGenAI } from "@google/genai";
 import { supabase } from "@/lib/supabase";
 
-// Inicializamos con la nueva clase de 2026
 const ai = new GoogleGenAI({ 
   apiKey: process.env.GOOGLE_GEMINI_KEY 
 });
 
 export async function buscarEscapadaAction(frase: string) {
   try {
-    // Definimos el esquema de respuesta para que sea JSON puro
     const recipeJsonSchema = {
       type: "object",
       properties: {
-        presupuesto: { type: "integer", description: "Monto total disponible" },
+        presupuesto: { type: "integer", description: "Monto total en Gs." },
         personas: { type: "integer", description: "Cantidad de personas" },
-        busqueda_keyword: { type: "string", description: "Palabra clave" }
+        // CAMBIO CLAVE: Pedimos una lista de tags que coincidan con la intención
+        tags_busqueda: { 
+          type: "array", 
+          items: { type: "string" },
+          description: "Categorías relacionadas: arroyo, piscina, cerro, cultura, historia, relax, aventura" 
+        }
       },
-      required: ["presupuesto", "personas", "busqueda_keyword"]
+      required: ["presupuesto", "personas", "tags_busqueda"]
     };
 
-    // Usamos la nueva Interactions API
     const interaction = await ai.interactions.create({
       model: "gemini-3.6-flash",
-      input: `Analiza esta consulta de viaje en Paraguay: "${frase}". Extrae los datos.`,
+      input: `Analiza la intención del usuario: "${frase}". 
+              Si menciona "mojar los pies", "agua" o "calor", incluye tags como 'arroyo', 'piscina', 'cascada'.
+              Si menciona "subir", "caminar" o "altura", usa 'cerro', 'aventura', 'senderismo'.
+              Si menciona "conocer", "historia" o "iglesia", usa 'historia', 'cultura', 'museo'.`,
       response_format: {
         type: "text",
         mime_type: "application/json",
@@ -31,31 +36,28 @@ export async function buscarEscapadaAction(frase: string) {
       },
     });
 
-    // VALIDACIÓN PARA TYPESCRIPT: 
-    // Si no hay texto de salida, lanzamos error para que no explote el JSON.parse
     const textResponse = interaction.output_text;
-    if (!textResponse) {
-      throw new Error("La IA no devolvió una respuesta válida.");
-    }
-
+    if (!textResponse) throw new Error("La IA no respondió.");
     const aiData = JSON.parse(textResponse);
 
-    // 1. Buscamos destinos en Supabase
-    const { data: destinos, error: dbError } = await supabase
-      .from('escapadas')
-      .select('*');
-
-    if (dbError || !destinos) {
-      return { error: "Error de conexión con la base de datos de destinos." };
+    // 1. CONSULTA INTELIGENTE A SUPABASE
+    // Usamos .overlaps para que traiga destinos que tengan AL MENOS UNO de los tags de la IA
+    let query = supabase.from('escapadas').select('*');
+    
+    if (aiData.tags_busqueda && aiData.tags_busqueda.length > 0) {
+        query = query.overlaps('tags', aiData.tags_busqueda);
     }
 
-    // 2. Lógica CuantoEs (Cálculos 2026)
+    const { data: destinos, error: dbError } = await query;
+
+    if (dbError || !destinos) return { error: "No pudimos filtrar destinos adecuados." };
+
+    // 2. Lógica CuantoEs (Cálculos de Gasto Seguro)
     const PRECIO_NAFTA = 7500;
     const COMIDA_DIARIA_PP = 85000;
 
     const recomendaciones = destinos.map(d => {
-      const kmTotales = d.distancia_km * 2;
-      const costoNafta = (kmTotales / 100) * 10 * PRECIO_NAFTA;
+      const costoNafta = ((d.distancia_km * 2) / 100) * 10 * PRECIO_NAFTA;
       const costoPeajes = d.peajes * 2 * 10000;
       const costoAlojamiento = d.alojamiento_base * aiData.personas;
       const costoEntradas = d.precio_acceso * aiData.personas;
@@ -72,13 +74,20 @@ export async function buscarEscapadaAction(frase: string) {
       };
     });
 
-    return recomendaciones
+    // 3. Devolvemos resultados que entran en presupuesto
+    const filtrados = recomendaciones
       .filter(r => r.esViable)
       .sort((a, b) => b.colchon - a.colchon);
 
+    // Si por el filtro de tags no quedó nada, devolvemos un mensaje especial
+    if (filtrados.length === 0) {
+        return { error: "No encontré lugares para '" + frase + "' que entren en ese presupuesto." };
+    }
+
+    return filtrados;
+
   } catch (error: any) {
-    console.error("Error en Interactions API:", error);
-    // Devolvemos el error estructurado para la UI
-    return { error: error.message || "Error interno de la IA. Probá de nuevo." };
+    console.error("Error:", error);
+    return { error: "E'a, ocurrió un error técnico. Probá de nuevo." };
   }
 }
