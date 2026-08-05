@@ -8,16 +8,18 @@ const ai = new GoogleGenAI({
 
 export async function buscarEscapadaAction(frase: string) {
   try {
+    // Definimos el universo de tags que existen en tu DB
+    const TAGS_EXISTENTES = "naturaleza, arroyo, cascada, piscina, cerro, aventura, historia, cultura, iglesia, religion, paz, espiritual, relax, familiar, premium";
+
     const recipeJsonSchema = {
       type: "object",
       properties: {
-        presupuesto: { type: "integer", description: "Monto total en Gs." },
+        presupuesto: { type: "integer", description: "Presupuesto total en Gs." },
         personas: { type: "integer", description: "Cantidad de personas" },
-        // CAMBIO CLAVE: Pedimos una lista de tags que coincidan con la intención
         tags_busqueda: { 
           type: "array", 
           items: { type: "string" },
-          description: "Categorías relacionadas: arroyo, piscina, cerro, cultura, historia, relax, aventura" 
+          description: `Elige de esta lista los que mejor coincidan con la intención: ${TAGS_EXISTENTES}` 
         }
       },
       required: ["presupuesto", "personas", "tags_busqueda"]
@@ -25,10 +27,13 @@ export async function buscarEscapadaAction(frase: string) {
 
     const interaction = await ai.interactions.create({
       model: "gemini-3.6-flash",
-      input: `Analiza la intención del usuario: "${frase}". 
-              Si menciona "mojar los pies", "agua" o "calor", incluye tags como 'arroyo', 'piscina', 'cascada'.
-              Si menciona "subir", "caminar" o "altura", usa 'cerro', 'aventura', 'senderismo'.
-              Si menciona "conocer", "historia" o "iglesia", usa 'historia', 'cultura', 'museo'.`,
+      input: `Analiza la frase del usuario paraguayo: "${frase}".
+              Instrucciones especiales:
+              - Si dice "presupuesto bajo", usa 350000.
+              - Si dice "presupuesto alto", usa 2500000.
+              - Interpreta "escape espiritual" como ['espiritual', 'paz', 'religion', 'historia'].
+              - Interpreta "mojar los pies" como ['arroyo', 'cascada', 'piscina'].
+              - Tu objetivo es mapear el sentimiento del usuario a los tags disponibles.`,
       response_format: {
         type: "text",
         mime_type: "application/json",
@@ -37,22 +42,18 @@ export async function buscarEscapadaAction(frase: string) {
     });
 
     const textResponse = interaction.output_text;
-    if (!textResponse) throw new Error("La IA no respondió.");
+    if (!textResponse) throw new Error("IA sin respuesta");
     const aiData = JSON.parse(textResponse);
 
-    // 1. CONSULTA INTELIGENTE A SUPABASE
-    // Usamos .overlaps para que traiga destinos que tengan AL MENOS UNO de los tags de la IA
-    let query = supabase.from('escapadas').select('*');
-    
-    if (aiData.tags_busqueda && aiData.tags_busqueda.length > 0) {
-        query = query.overlaps('tags', aiData.tags_busqueda);
-    }
+    // 1. CONSULTA A SUPABASE
+    let { data: destinos, error: dbError } = await supabase
+        .from('escapadas')
+        .select('*')
+        .overlaps('tags', aiData.tags_busqueda); // Filtro por tags inteligentes
 
-    const { data: destinos, error: dbError } = await query;
+    if (dbError || !destinos) return { error: "No encontramos lugares que coincidan con esa vibra." };
 
-    if (dbError || !destinos) return { error: "No pudimos filtrar destinos adecuados." };
-
-    // 2. Lógica CuantoEs (Cálculos de Gasto Seguro)
+    // 2. LÓGICA DE CÁLCULO (Se mantiene igual...)
     const PRECIO_NAFTA = 7500;
     const COMIDA_DIARIA_PP = 85000;
 
@@ -70,24 +71,16 @@ export async function buscarEscapadaAction(frase: string) {
         ...d,
         gastoProbable,
         colchon,
-        esViable: colchon >= -50000
+        esViable: colchon >= -70000 // Aumentamos un poquito el margen de tolerancia
       };
     });
 
-    // 3. Devolvemos resultados que entran en presupuesto
-    const filtrados = recomendaciones
+    return recomendaciones
       .filter(r => r.esViable)
       .sort((a, b) => b.colchon - a.colchon);
 
-    // Si por el filtro de tags no quedó nada, devolvemos un mensaje especial
-    if (filtrados.length === 0) {
-        return { error: "No encontré lugares para '" + frase + "' que entren en ese presupuesto." };
-    }
-
-    return filtrados;
-
   } catch (error: any) {
     console.error("Error:", error);
-    return { error: "E'a, ocurrió un error técnico. Probá de nuevo." };
+    return { error: "Lo siento socio, hubo un error técnico al procesar tu idea." };
   }
 }
