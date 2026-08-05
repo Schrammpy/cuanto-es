@@ -8,7 +8,6 @@ const ai = new GoogleGenAI({
 
 export async function buscarEscapadaAction(frase: string) {
   try {
-    // Definimos el universo de tags que existen en tu DB
     const TAGS_EXISTENTES = "naturaleza, arroyo, cascada, piscina, cerro, aventura, historia, cultura, iglesia, religion, paz, espiritual, relax, familiar, premium";
 
     const recipeJsonSchema = {
@@ -19,7 +18,7 @@ export async function buscarEscapadaAction(frase: string) {
         tags_busqueda: { 
           type: "array", 
           items: { type: "string" },
-          description: `Elige de esta lista los que mejor coincidan con la intención: ${TAGS_EXISTENTES}` 
+          description: `Elige de esta lista los que mejor coincidan: ${TAGS_EXISTENTES}` 
         }
       },
       required: ["presupuesto", "personas", "tags_busqueda"]
@@ -27,13 +26,7 @@ export async function buscarEscapadaAction(frase: string) {
 
     const interaction = await ai.interactions.create({
       model: "gemini-3.6-flash",
-      input: `Analiza la frase del usuario paraguayo: "${frase}".
-              Instrucciones especiales:
-              - Si dice "presupuesto bajo", usa 350000.
-              - Si dice "presupuesto alto", usa 2500000.
-              - Interpreta "escape espiritual" como ['espiritual', 'paz', 'religion', 'historia'].
-              - Interpreta "mojar los pies" como ['arroyo', 'cascada', 'piscina'].
-              - Tu objetivo es mapear el sentimiento del usuario a los tags disponibles.`,
+      input: `Analiza la frase: "${frase}". Si no hay presupuesto usa 1500000. Si no hay personas usa 2. Mapea la intención a los tags: ${TAGS_EXISTENTES}`,
       response_format: {
         type: "text",
         mime_type: "application/json",
@@ -49,29 +42,37 @@ export async function buscarEscapadaAction(frase: string) {
     let { data: destinos, error: dbError } = await supabase
         .from('escapadas')
         .select('*')
-        .overlaps('tags', aiData.tags_busqueda); // Filtro por tags inteligentes
+        .overlaps('tags', aiData.tags_busqueda);
 
-    if (dbError || !destinos) return { error: "No encontramos lugares que coincidan con esa vibra." };
+    if (dbError || !destinos) return { error: "No encontramos lugares con esa vibra." };
 
-    // 2. LÓGICA DE CÁLCULO (Se mantiene igual...)
+    // 2. LÓGICA DE CÁLCULO "GASTO SEGURO"
     const PRECIO_NAFTA = 7500;
     const COMIDA_DIARIA_PP = 85000;
 
     const recomendaciones = destinos.map(d => {
-      const costoNafta = ((d.distancia_km * 2) / 100) * 10 * PRECIO_NAFTA;
-      const costoPeajes = d.peajes * 2 * 10000;
-      const costoAlojamiento = d.alojamiento_base * aiData.personas;
-      const costoEntradas = d.precio_acceso * aiData.personas;
-      const costoComida = COMIDA_DIARIA_PP * aiData.personas;
+      const nafta = ((d.distancia_km * 2) / 100) * 10 * PRECIO_NAFTA;
+      const peajes = d.peajes * 2 * 10000;
+      const alojamiento = d.alojamiento_base * aiData.personas;
+      const entradas = d.precio_acceso * aiData.personas;
+      const comida = COMIDA_DIARIA_PP * aiData.personas;
 
-      const gastoProbable = costoNafta + costoPeajes + costoAlojamiento + costoEntradas + costoComida;
+      const gastoProbable = nafta + peajes + alojamiento + entradas + comida;
       const colchon = aiData.presupuesto - gastoProbable;
 
       return {
         ...d,
         gastoProbable,
         colchon,
-        esViable: colchon >= -70000 // Aumentamos un poquito el margen de tolerancia
+        // ENVIAMOS EL DESGLOSE PARA EL ACORDEÓN
+        detalles: {
+          nafta,
+          peajes,
+          alojamiento,
+          entradas,
+          comida
+        },
+        esViable: colchon >= -70000
       };
     });
 
@@ -81,6 +82,6 @@ export async function buscarEscapadaAction(frase: string) {
 
   } catch (error: any) {
     console.error("Error:", error);
-    return { error: "Lo siento socio, hubo un error técnico al procesar tu idea." };
+    return { error: "Hubo un error al procesar tu idea. Intentá de nuevo." };
   }
 }
