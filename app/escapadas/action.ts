@@ -10,23 +10,29 @@ export async function buscarEscapadaAction(frase: string) {
   try {
     const TAGS_EXISTENTES = "naturaleza, arroyo, cascada, piscina, cerro, aventura, historia, cultura, iglesia, religion, paz, espiritual, relax, familiar, premium";
 
+    // 1. IA EXTRACTORA MEJORADA
     const recipeJsonSchema = {
       type: "object",
       properties: {
-        presupuesto: { type: "integer", description: "Presupuesto total en Gs." },
+        presupuesto: { type: "integer", description: "Monto total disponible" },
         personas: { type: "integer", description: "Cantidad de personas" },
         tags_busqueda: { 
           type: "array", 
           items: { type: "string" },
-          description: `Elige de esta lista los que mejor coincidan: ${TAGS_EXISTENTES}` 
+          description: `Tags relacionados: ${TAGS_EXISTENTES}` 
+        },
+        ubicacion_especifica: { 
+          type: "string", 
+          description: "Departamento o Ciudad mencionada (ej: Paraguari, Cordillera, Altos). Dejar vacío si no menciona." 
         }
       },
-      required: ["presupuesto", "personas", "tags_busqueda"]
+      required: ["presupuesto", "personas", "tags_busqueda", "ubicacion_especifica"]
     };
 
     const interaction = await ai.interactions.create({
       model: "gemini-3.6-flash",
-      input: `Analiza la frase: "${frase}". Si no hay presupuesto usa 1500000. Si no hay personas usa 2. Mapea la intención a los tags: ${TAGS_EXISTENTES}`,
+      input: `Analiza la intención del usuario paraguayo: "${frase}". 
+              Extrae el presupuesto, personas y si menciona una zona específica (Departamento o Ciudad).`,
       response_format: {
         type: "text",
         mime_type: "application/json",
@@ -38,15 +44,23 @@ export async function buscarEscapadaAction(frase: string) {
     if (!textResponse) throw new Error("IA sin respuesta");
     const aiData = JSON.parse(textResponse);
 
-    // 1. CONSULTA A SUPABASE
-    let { data: destinos, error: dbError } = await supabase
-        .from('escapadas')
-        .select('*')
-        .overlaps('tags', aiData.tags_busqueda);
+    // 2. CONSTRUCCIÓN DE LA CONSULTA A SUPABASE
+    let query = supabase.from('escapadas').select('*');
 
-    if (dbError || !destinos) return { error: "No encontramos lugares con esa vibra." };
+    // Filtro 1: Por Ubicación (Si el usuario pidió una zona específica)
+    if (aiData.ubicacion_especifica) {
+        query = query.or(`departamento.ilike.%${aiData.ubicacion_especifica}%,ciudad.ilike.%${aiData.ubicacion_especifica}%`);
+    } else {
+        // Filtro 2: Por Tags (Solo si no hay ubicación específica, para no limitar de más)
+        if (aiData.tags_busqueda.length > 0) {
+            query = query.overlaps('tags', aiData.tags_busqueda);
+        }
+    }
 
-    // 2. LÓGICA DE CÁLCULO "GASTO SEGURO"
+    const { data: destinos, error: dbError } = await query;
+    if (dbError || !destinos) return { error: "Error al consultar la base de datos." };
+
+    // 3. LÓGICA MATEMÁTICA Y FILTRO DE PRESUPUESTO ESTRICTO
     const PRECIO_NAFTA = 7500;
     const COMIDA_DIARIA_PP = 85000;
 
@@ -64,24 +78,24 @@ export async function buscarEscapadaAction(frase: string) {
         ...d,
         gastoProbable,
         colchon,
-        // ENVIAMOS EL DESGLOSE PARA EL ACORDEÓN
-        detalles: {
-          nafta,
-          peajes,
-          alojamiento,
-          entradas,
-          comida
-        },
-        esViable: colchon >= -70000
+        detalles: { nafta, peajes, alojamiento, entradas, comida }
       };
     });
 
-    return recomendaciones
-      .filter(r => r.esViable)
-      .sort((a, b) => b.colchon - a.colchon);
+    // 4. LIMPIEZA FINAL: Solo lo que realmente entra en el presupuesto
+    const filtrados = recomendaciones
+      .filter(r => r.colchon >= 0) // ELIMINAMOS cualquier opción que supere el presupuesto
+      .sort((a, b) => b.colchon - a.colchon); // El que más sobra, primero
+
+    if (filtrados.length === 0) {
+        return { error: `Hína... con Gs. ${new Intl.NumberFormat('es-PY').format(aiData.presupuesto)} no llegamos a opciones disponibles en ${aiData.ubicacion_especifica || 'esa zona'}. Probá subiendo el monto.` };
+    }
+
+    // Si no pidió ubicación, limitamos a 6 resultados variados para no abrumar
+    return aiData.ubicacion_especifica ? filtrados : filtrados.slice(0, 6);
 
   } catch (error: any) {
     console.error("Error:", error);
-    return { error: "Hubo un error al procesar tu idea. Intentá de nuevo." };
+    return { error: "Ocurrió un error al procesar la búsqueda inteligente." };
   }
 }
