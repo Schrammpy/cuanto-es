@@ -2,10 +2,18 @@
 import React from 'react';
 import Link from 'next/link';
 import BenefitList from '@/components/BenefitList';
-import { Calculator, Wrench, ShieldAlert, Sparkles, ChevronRight, Truck } from 'lucide-react';
+import { Calculator, Wrench, ShieldAlert, Sparkles, ChevronRight, Truck, Map } from 'lucide-react';
 
 export default function HomePage() {
   const tools = [
+    {
+    name: 'Date una Escapada',
+    desc: '¿Hasta dónde llegás con tu presupuesto? Encontrá tu destino ideal.',
+    icon: <Map className="w-6 h-6 text-emerald-600" />,
+    href: '/escapadas',
+    color: 'bg-emerald-50',
+    isNew: true // Podemos usar esto para un badge de "NUEVO"
+    },
     {
       name: 'Dividir Gastos',
       desc: 'Para el asado, el fútbol o la cena entre amigos.',

@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { buscarEscapadaAction } from './action';
 import Footer from '@/components/Footer';
+import { track } from '@vercel/analytics';
 
 export default function EscapadasHome() {
   const [loading, setLoading] = useState(false);
@@ -33,6 +34,26 @@ export default function EscapadasHome() {
     try {
         const formData = new FormData(e.currentTarget);
         const consulta = formData.get('consulta') as string;
+
+        if (!consulta) {
+            setLoading(false);
+            return;
+        }
+
+        // --- RASTREO DE EVENTOS ---
+        
+        // 1. Google Analytics (Para el reporte histórico gratis)
+        if (typeof window !== 'undefined' && (window as any).gtag) {
+          (window as any).gtag('event', 'buscar_escapada', {
+            'frase_usuario': consulta
+          });
+        }
+
+        // 2. Vercel Analytics ( track )
+        track('buscar_escapada', { frase: consulta });
+
+        // --- FIN RASTREO ---
+
         const data = await buscarEscapadaAction(consulta);
         
         if (data && 'error' in data) {

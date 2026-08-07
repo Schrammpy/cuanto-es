@@ -15,6 +15,7 @@ export default function Navbar() {
 
   const menuItems = [
     { name: 'Inicio', icon: <Sparkles className="w-5 h-5" />, href: '/' },
+    { name: 'Date una Escapada', icon: <Map className="w-5 h-5" />, href: '/escapadas' }, // <-- NUEVO
     { name: 'Dividir Gastos', icon: <Calculator className="w-5 h-5" />, href: '/divisor' },
     { name: 'Presupuestos', icon: <Wrench className="w-5 h-5" />, href: '/presupuesto' },
     { name: 'Cotizador Delivery', icon: <Truck className="w-5 h-5" />, href: '/delivery/crear' },
