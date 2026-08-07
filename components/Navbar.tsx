@@ -1,27 +1,25 @@
 'use client';
 import React, { useState } from 'react';
-import { usePathname } from 'next/navigation'; // <--- AGREGAMOS ESTO
-import { Menu, X, Sparkles, Calculator, Wrench, ShieldAlert, Truck } from 'lucide-react';
+import { usePathname } from 'next/navigation';
+// 1. Le ponemos un alias a Map -> MapIcon para evitar el choque con HTML
+import { Menu, X, Sparkles, Calculator, Wrench, ShieldAlert, Truck, Map as MapIcon } from 'lucide-react';
 import Link from 'next/link';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const pathname = usePathname(); // Obtenemos la página actual
+  const pathname = usePathname();
 
-  // LÓGICA: Si la página empieza con /muro, no mostramos nada
-  if (pathname.startsWith('/muro')) {
-    return null;
-  }
+  if (pathname.startsWith('/muro')) return null;
 
   const menuItems = [
     { name: 'Inicio', icon: <Sparkles className="w-5 h-5" />, href: '/' },
-    { name: 'Date una Escapada', icon: <Map className="w-5 h-5" />, href: '/escapadas' }, // <-- NUEVO
+    // 2. Usamos el alias MapIcon aquí
+    { name: 'Date una Escapada', icon: <MapIcon className="w-5 h-5" />, href: '/escapadas' }, 
     { name: 'Dividir Gastos', icon: <Calculator className="w-5 h-5" />, href: '/divisor' },
     { name: 'Presupuestos', icon: <Wrench className="w-5 h-5" />, href: '/presupuesto' },
     { name: 'Cotizador Delivery', icon: <Truck className="w-5 h-5" />, href: '/delivery/crear' },
     { name: 'Multas de Tránsito', icon: <ShieldAlert className="w-5 h-5" />, href: '/multas' },
   ];
-
   return (
     <>
       <nav className="flex items-center justify-between px-4 py-4 max-w-md mx-auto w-full sticky top-0 bg-[#F8FAFC]/80 backdrop-blur-md z-[150]">
