@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import dynamic from 'next/dynamic';
-import { MapPin, Send, Loader2, Navigation, ExternalLink, Clock, ChevronRight } from 'lucide-react';
+import { MapPin, Send, Loader2, Navigation, ExternalLink, Clock, ChevronRight, Receipt } from 'lucide-react';
 import Footer from '@/components/Footer';
 import 'leaflet/dist/leaflet.css';
 
