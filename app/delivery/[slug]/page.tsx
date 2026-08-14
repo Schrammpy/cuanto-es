@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react'; // Agregamos useRef
 import { supabase } from '@/lib/supabase';
 import dynamic from 'next/dynamic';
 import { 
@@ -10,7 +10,6 @@ import {
 import Footer from '@/components/Footer';
 import 'leaflet/dist/leaflet.css';
 
-// Cargamos componentes de mapa solo en el cliente para evitar errores de Vercel
 const MapContainer = dynamic(() => import('react-leaflet').then(mod => mod.MapContainer), { ssr: false });
 const TileLayer = dynamic(() => import('react-leaflet').then(mod => mod.TileLayer), { ssr: false });
 const Marker = dynamic(() => import('react-leaflet').then(mod => mod.Marker), { ssr: false });
@@ -25,6 +24,9 @@ export default function DeliveryCliente({ params }: { params: Promise<{ slug: st
   const [costoTotal, setCostoTotal] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
   const [L, setL] = useState<any>(null);
+
+  // 1. CREAMOS LA REFERENCIA PARA EL SCROLL
+  const resultRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     import('leaflet').then(leaflet => setL(leaflet));
@@ -42,14 +44,13 @@ export default function DeliveryCliente({ params }: { params: Promise<{ slug: st
     setLoading(false);
   }
 
-  // --- LÓGICA DE CÁLCULO MOTO PARAGUAY (Estilo Bolt) ---
   const calcularDistancia = (lat1: number, lon1: number, lat2: number, lon2: number) => {
     const R = 6371; 
     const dLat = (lat2 - lat1) * Math.PI / 180;
     const dLon = (lon2 - lon1) * Math.PI / 180;
     const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180) * Math.cos(lat2*Math.PI/180) * Math.sin(dLon/2)**2;
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return (R * c) * 1.25; // 25% extra por curvas y calles reales
+    return (R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))) * 1.25; 
   };
 
   const onMapClick = (e: any) => {
@@ -61,8 +62,13 @@ export default function DeliveryCliente({ params }: { params: Promise<{ slug: st
     const extra = dist > shop.km_base ? (dist - shop.km_base) * shop.precio_extra_km : 0;
     const total = shop.precio_base + extra;
     
-    // Redondeo al 1.000 más cercano (Estándar delivery Py)
     setCostoTotal(Math.round(total / 1000) * 1000);
+
+    // 2. DISPARAMOS EL SCROLL AUTOMÁTICO
+    // Usamos un pequeño timeout para dar tiempo a que React dibuje el componente del resultado
+    setTimeout(() => {
+        resultRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 100);
   };
 
   const MapEvents = () => {
@@ -75,14 +81,10 @@ export default function DeliveryCliente({ params }: { params: Promise<{ slug: st
   if (loading || !L) return <div className="h-screen flex flex-col items-center justify-center gap-4 bg-white"><Loader2 className="animate-spin text-blue-600 w-10 h-10" /><p className="text-xs font-black uppercase text-slate-400 tracking-widest">Cargando Cotizador...</p></div>;
   if (!shop) return <div className="h-screen flex items-center justify-center font-bold text-slate-500 uppercase italic">Tienda no encontrada</div>;
 
-  // Determinamos colores según nivel (Nivel 2 y 3 usan el color de su marca)
-  const brandColor = (shop.pack_nivel >= 2 && shop.color_hex) ? shop.color_hex : '#2563EB';
-
   return (
     <main className="min-h-screen bg-[#F8FAFC] p-4 flex justify-center items-start pb-10 text-slate-700">
       <div className="max-w-md w-full space-y-6">
         
-        {/* SECCIÓN PREMIUM: LOGO Y MENÚ (PRO Y PREMIUM) */}
         {shop.pack_nivel >= 2 && (
             <div className="space-y-4 animate-in fade-in duration-700">
                 {shop.logo_url && (
@@ -98,12 +100,10 @@ export default function DeliveryCliente({ params }: { params: Promise<{ slug: st
 
         <header className="text-center space-y-1">
             <h1 className="text-2xl font-black uppercase italic tracking-tighter leading-none">{shop.nombre}</h1>
-            
-            {/* TIEMPO DE ENTREGA: SOLO PARA PREMIUM (Nivel 3) */}
             {shop.pack_nivel === 3 && shop.mostrar_tiempo && distancia && (
                 <div className="flex items-center justify-center gap-1.5 text-emerald-600 mt-2">
                     <Clock className="w-3 h-3 animate-pulse" />
-                    <span className="text-[10px] font-black uppercase tracking-widest">Entrega en: {Math.round(distancia * 2 + 15)} min aprox.</span>
+                    <span className="text-[10px] font-black uppercase tracking-widest leading-none mt-0.5">Entrega en: {Math.round(distancia * 2 + 15)} min aprox.</span>
                 </div>
             )}
         </header>
@@ -113,7 +113,6 @@ export default function DeliveryCliente({ params }: { params: Promise<{ slug: st
             <p className="text-[11px] font-bold text-blue-900 leading-tight">Tocá en el mapa dónde es tu casa para calcular el envío automáticamente.</p>
         </div>
 
-        {/* MAPA */}
         <div className="h-[400px] w-full rounded-[2.5rem] overflow-hidden shadow-2xl border-4 border-white relative z-0">
           <MapContainer center={[shop.lat_origen, shop.lng_origen]} zoom={14} style={{ height: '100%', width: '100%' }}>
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
@@ -123,9 +122,9 @@ export default function DeliveryCliente({ params }: { params: Promise<{ slug: st
           </MapContainer>
         </div>
 
-        {/* CUADRO DE RESULTADO */}
+        {/* 3. ASIGNAMOS EL REF AL CONTENEDOR DEL RESULTADO */}
         {costoTotal && (
-          <div className="bg-slate-900 p-6 rounded-[2.5rem] text-center animate-in zoom-in-95 border-b-8 border-blue-600 shadow-2xl">
+          <div ref={resultRef} className="bg-slate-900 p-6 rounded-[2.5rem] text-center animate-in zoom-in-95 border-b-8 border-blue-600 shadow-2xl">
             <div className="flex justify-around mb-4">
                 <div className="text-center">
                     <p className="text-[8px] font-black text-blue-400 uppercase tracking-widest leading-none">Distancia</p>
@@ -145,16 +144,15 @@ export default function DeliveryCliente({ params }: { params: Promise<{ slug: st
                 }} 
                 className="w-full bg-[#25D366] text-white font-[900] py-4 rounded-2xl flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-all uppercase tracking-tighter"
             >
-                <Send className="w-4 h-4" /> CONFIRMAR UBICACIÓN Y PEDIR
+                <Send className="w-4 h-4" /> CONFIRMAR Y PEDIR
             </button>
           </div>
         )}
 
-        {/* FOOTER CONDICIONAL: SI ES NIVEL 2 O 3, FOOTER DE MARCA BLANCA */}
         {shop.pack_nivel >= 2 ? (
             <footer className="mt-10 pb-12 text-center space-y-6 animate-in fade-in duration-700">
                 {shop.slogan && (
-                    <p className="text-xs font-semibold text-slate-400 italic px-8">
+                    <p className="text-xs font-semibold text-slate-400 italic px-8 italic">
                         "{shop.slogan}"
                     </p>
                 )}
@@ -168,10 +166,16 @@ export default function DeliveryCliente({ params }: { params: Promise<{ slug: st
                 </div>
             </footer>
         ) : (
-            /* SI ES NIVEL 1 (GRATIS), FOOTER GLOBAL CON "APOYA AL CREADOR" */
             <Footer />
         )}
       </div>
     </main>
   );
+}
+
+function MapEventsHandler({ onMapClick }: { onMapClick: (e: any) => void }) {
+    // @ts-ignore
+    const { useMapEvents } = require('react-leaflet');
+    useMapEvents({ click: onMapClick });
+    return null;
 }
