@@ -135,10 +135,18 @@ export default function DeliveryCliente({ params }: { params: Promise<{ slug: st
             </div>
             
             <button 
-                onClick={() => {
-                    const msg = `🛵 *PEDIDO - ${shop.nombre.toUpperCase()}*\n━━━━━━━━━━━━━━━━━━\n📍 *Ubicación:* https://www.google.com/maps?q=${clientPos?.[0]},${clientPos?.[1]}\n📏 *Distancia:* ${distancia?.toFixed(1)} km\n💰 *Delivery:* Gs. ${new Intl.NumberFormat('es-PY').format(costoTotal!)}\n━━━━━━━━━━━━━━━━━━\n✅ _Cotizado en tu link profesional_`;
-                    window.open(`https://api.whatsapp.com/send?phone=${shop.whatsapp}&text=${encodeURIComponent(msg)}`);
-                }} 
+               onClick={() => {
+                const msg = `¡Hola! 👋 Quiero realizar un pedido. Ya verifiqué mi ubicación y el costo de envío en su mapa interactivo:\n\n` +
+                `━━━━━━━━━━━━━━━━━━\n` +
+                `📍 *Mi ubicación:* https://www.google.com/maps?q=${clientPos?.[0]},${clientPos?.[1]}\n` +
+                `📏 *Distancia aprox:* ${distancia?.toFixed(1)} km\n` +
+                `💰 *Costo Delivery:* Gs. ${new Intl.NumberFormat('es-PY').format(costoTotal!)}\n` +
+                `━━━━━━━━━━━━━━━━━━\n\n` +
+                `¿Me confirman si les queda bien para proceder? ¡Gracias! ✅\n\n` +
+                `_Cotizado vía web oficial de ${shop.nombre}_`;
+                
+              window.open(`https://api.whatsapp.com/send?phone=${shop.whatsapp}&text=${encodeURIComponent(msg)}`);
+              }}
                 className="w-full bg-[#25D366] text-white font-[900] py-4 rounded-2xl flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-all uppercase tracking-tighter"
             >
                 <Send className="w-4 h-4" /> CONFIRMAR Y PEDIR
