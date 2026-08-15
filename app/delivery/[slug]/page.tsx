@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect, useRef } from 'react'; // Agregamos useRef
+import React, { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
 import dynamic from 'next/dynamic';
 import { 
@@ -25,7 +25,7 @@ export default function DeliveryCliente({ params }: { params: Promise<{ slug: st
   const [loading, setLoading] = useState(true);
   const [L, setL] = useState<any>(null);
 
-  // 1. CREAMOS LA REFERENCIA PARA EL SCROLL
+  // REFERENCIA PARA EL SCROLL
   const resultRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -34,12 +34,7 @@ export default function DeliveryCliente({ params }: { params: Promise<{ slug: st
   }, [slug]);
 
   async function fetchShop() {
-    const { data, error } = await supabase
-      .from('comercios')
-      .select('*')
-      .eq('slug', slug)
-      .single();
-    
+    const { data } = await supabase.from('comercios').select('*').eq('slug', slug).single();
     if (data) setShop(data);
     setLoading(false);
   }
@@ -50,7 +45,7 @@ export default function DeliveryCliente({ params }: { params: Promise<{ slug: st
     const dLon = (lon2 - lon1) * Math.PI / 180;
     const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180) * Math.cos(lat2*Math.PI/180) * Math.sin(dLon/2)**2;
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return (R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))) * 1.25; 
+    return (R * c) * 1.25; 
   };
 
   const onMapClick = (e: any) => {
@@ -64,10 +59,12 @@ export default function DeliveryCliente({ params }: { params: Promise<{ slug: st
     
     setCostoTotal(Math.round(total / 1000) * 1000);
 
-    // 2. DISPARAMOS EL SCROLL AUTOMÁTICO
-    // Usamos un pequeño timeout para dar tiempo a que React dibuje el componente del resultado
+    // --- SCROLL SUAVE AL BORDE INFERIOR ---
     setTimeout(() => {
-        resultRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        resultRef.current?.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'end' // Alinea el fondo del elemento con el fondo de la pantalla
+        });
     }, 100);
   };
 
@@ -78,7 +75,7 @@ export default function DeliveryCliente({ params }: { params: Promise<{ slug: st
     return null;
   };
 
-  if (loading || !L) return <div className="h-screen flex flex-col items-center justify-center gap-4 bg-white"><Loader2 className="animate-spin text-blue-600 w-10 h-10" /><p className="text-xs font-black uppercase text-slate-400 tracking-widest">Cargando Cotizador...</p></div>;
+  if (loading || !L) return <div className="h-screen flex flex-col items-center justify-center gap-4 bg-white"><Loader2 className="animate-spin text-blue-600 w-10 h-10" /><p className="text-xs font-black uppercase text-slate-400 tracking-widest">Cargando...</p></div>;
   if (!shop) return <div className="h-screen flex items-center justify-center font-bold text-slate-500 uppercase italic">Tienda no encontrada</div>;
 
   return (
@@ -103,14 +100,14 @@ export default function DeliveryCliente({ params }: { params: Promise<{ slug: st
             {shop.pack_nivel === 3 && shop.mostrar_tiempo && distancia && (
                 <div className="flex items-center justify-center gap-1.5 text-emerald-600 mt-2">
                     <Clock className="w-3 h-3 animate-pulse" />
-                    <span className="text-[10px] font-black uppercase tracking-widest leading-none mt-0.5">Entrega en: {Math.round(distancia * 2 + 15)} min aprox.</span>
+                    <span className="text-[10px] font-black uppercase tracking-widest">Entrega en: {Math.round(distancia * 2 + 15)} min aprox.</span>
                 </div>
             )}
         </header>
 
         <div className="bg-blue-50 border border-blue-100 p-4 rounded-3xl flex items-center gap-3 shadow-sm">
             <div className="bg-blue-600 p-2 rounded-xl text-white shrink-0"><Navigation className="w-4 h-4" /></div>
-            <p className="text-[11px] font-bold text-blue-900 leading-tight">Tocá en el mapa dónde es tu casa para calcular el envío automáticamente.</p>
+            <p className="text-[11px] font-bold text-blue-900 leading-tight tracking-tight text-pretty">Tocá en el mapa dónde es tu casa para calcular el envío automáticamente.</p>
         </div>
 
         <div className="h-[400px] w-full rounded-[2.5rem] overflow-hidden shadow-2xl border-4 border-white relative z-0">
@@ -122,8 +119,8 @@ export default function DeliveryCliente({ params }: { params: Promise<{ slug: st
           </MapContainer>
         </div>
 
-        {/* 3. ASIGNAMOS EL REF AL CONTENEDOR DEL RESULTADO */}
         {costoTotal && (
+          /* ASIGNAMOS REF Y EL SCROLL LO LLEVARÁ AL FINAL DE LA PANTALLA */
           <div ref={resultRef} className="bg-slate-900 p-6 rounded-[2.5rem] text-center animate-in zoom-in-95 border-b-8 border-blue-600 shadow-2xl">
             <div className="flex justify-around mb-4">
                 <div className="text-center">
@@ -176,6 +173,6 @@ export default function DeliveryCliente({ params }: { params: Promise<{ slug: st
 function MapEventsHandler({ onMapClick }: { onMapClick: (e: any) => void }) {
     // @ts-ignore
     const { useMapEvents } = require('react-leaflet');
-    useMapEvents({ click: onMapClick });
+    const map = useMapEvents({ click: onMapClick });
     return null;
 }
