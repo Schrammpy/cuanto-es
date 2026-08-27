@@ -3,17 +3,17 @@ import React from 'react';
 import Link from 'next/link';
 import BenefitList from '@/components/BenefitList';
 import Footer from '@/components/Footer';
-// CORRECCIÓN: PaintBucket con B mayúscula
 import { 
   Search, Sparkles, ChevronRight, Calculator, Wrench, 
   ShieldAlert, Truck, PaintBucket, Wind, Package 
 } from 'lucide-react';
 
 export default function Home() {
+  // Guardamos la referencia al componente, no el JSX armado
   const categories = [
-    { name: 'Pintura', icon: <PaintBucket />, color: 'bg-orange-500', href: '/servicios/pintura' },
-    { name: 'Aire Ac.', icon: <Wind />, color: 'bg-blue-400', href: '/servicios/aire' },
-    { name: 'Mudanzas', icon: <Package />, color: 'bg-emerald-500', href: '/servicios/fletes' },
+    { name: 'Pintura', Icon: PaintBucket, color: 'bg-orange-500', href: '/servicios/pintura' },
+    { name: 'Aire Ac.', Icon: Wind, color: 'bg-blue-400', href: '/servicios/aire' },
+    { name: 'Mudanzas', Icon: Package, color: 'bg-emerald-500', href: '/servicios/fletes' },
   ];
 
   return (
@@ -33,8 +33,7 @@ export default function Home() {
             Precios actualizados de servicios, construcción y trámites. Calculá tu presupuesto y conectá con profesionales.
           </p>
 
-          {/* BUSCADOR TIPO GOOGLE */}
-          <div className="max-w-2xl mx-auto bg-white p-2 rounded-2xl md:rounded-full shadow-2xl flex flex-col md:flex-row items-center gap-2">
+          <div className="max-w-2xl mx-auto bg-white p-2 rounded-2xl md:rounded-full shadow-2xl flex flex-col md:flex-row items-center gap-2 mt-8">
             <div className="flex items-center flex-1 px-4 gap-3 w-full">
               <Search className="w-5 h-5 text-slate-400" />
               <input 
@@ -50,37 +49,38 @@ export default function Home() {
       </section>
 
       {/* CATEGORÍAS RÁPIDAS */}
-      <section className="max-w-7xl mx-auto px-4 -mt-8 relative z-20">
-        <div className="grid grid-cols-3 md:grid-cols-6 gap-3 md:gap-6 text-slate-700">
+      <section className="max-w-7xl mx-auto px-4 -mt-10 relative z-20">
+        <div className="grid grid-cols-3 md:grid-cols-6 gap-4 md:gap-6">
           {categories.map((cat, i) => (
-            <Link key={i} href={cat.href} className="bg-white p-4 md:p-6 rounded-[2rem] shadow-xl border border-slate-50 flex flex-col items-center gap-3 hover:translate-y-[-5px] transition-all">
-              <div className={`${cat.color} p-3 rounded-2xl text-white`}>
-                {React.cloneElement(cat.icon as React.ReactElement, { className: 'w-6 h-6' })}
+            <Link key={i} href={cat.href} className="bg-white p-4 md:p-6 rounded-[2rem] shadow-xl border border-slate-50 flex flex-col items-center gap-3 hover:translate-y-[-5px] transition-all group">
+              <div className={`${cat.color} p-3 rounded-2xl text-white group-hover:rotate-6 transition-transform`}>
+                {/* Renderizamos el componente directamente con sus props */}
+                <cat.Icon className="w-6 h-6" />
               </div>
-              <span className="text-[10px] md:text-xs font-black uppercase tracking-tight">{cat.name}</span>
+              <span className="text-[10px] md:text-xs font-black text-slate-700 uppercase tracking-tight">{cat.name}</span>
             </Link>
           ))}
         </div>
       </section>
 
-      {/* SECCIÓN DE HERRAMIENTAS ACTUALES */}
-      <section className="max-w-7xl mx-auto px-4 py-20 grid md:grid-cols-2 gap-12 items-center">
+      {/* HERRAMIENTAS */}
+      <section className="max-w-7xl mx-auto px-4 py-24 grid md:grid-cols-2 gap-16 items-center text-slate-700">
         <div>
-          <h2 className="text-3xl font-[900] text-slate-800 tracking-tighter leading-none mb-4 uppercase">
+          <h2 className="text-3xl md:text-4xl font-[900] text-slate-800 tracking-tighter leading-none mb-6 uppercase">
             Herramientas de <br/> <span className="text-blue-600 italic">uso diario</span>
           </h2>
-          <p className="text-slate-500 text-sm font-medium leading-relaxed mb-8">
-            Las soluciones rápidas que ya conocés, ahora integradas en un solo lugar. Gratis y sin descargar apps.
+          <p className="text-slate-500 text-sm md:text-base font-medium leading-relaxed mb-10">
+            Las soluciones rápidas que ya conocés, ahora integradas en un solo lugar. Gratis, rápido y optimizado para todo dispositivo.
           </p>
           <div className="grid gap-4">
             {[
-              { name: 'Dividir Gastos', href: '/divisor', icon: <Calculator className="text-blue-600 w-5 h-5" /> },
-              { name: 'Multas de Tránsito', href: '/multas', icon: <ShieldAlert className="text-red-600 w-5 h-5" /> },
-              { name: 'SaaS para Delivery', href: '/delivery/crear', icon: <Truck className="text-emerald-600 w-5 h-5" /> },
+              { name: 'Dividir Gastos', href: '/divisor', icon: Calculator, color: 'text-blue-600' },
+              { name: 'Multas de Tránsito', href: '/multas', icon: ShieldAlert, color: 'text-red-600' },
+              { name: 'Delivery Business', href: '/delivery/crear', icon: Truck, color: 'text-emerald-600' },
             ].map(tool => (
-              <Link key={tool.href} href={tool.href} className="bg-slate-50 p-4 rounded-2xl flex items-center justify-between hover:bg-blue-50 transition-colors group">
+              <Link key={tool.href} href={tool.href} className="bg-slate-50 p-5 rounded-[1.5rem] flex items-center justify-between hover:bg-white hover:shadow-lg hover:border-slate-100 border border-transparent transition-all group">
                 <div className="flex items-center gap-4">
-                  {tool.icon}
+                  <tool.icon className={`${tool.color} w-6 h-6`} />
                   <span className="font-bold text-slate-700">{tool.name}</span>
                 </div>
                 <ChevronRight className="w-5 h-5 text-slate-300 group-hover:text-blue-600 transition-colors" />
@@ -88,13 +88,19 @@ export default function Home() {
             ))}
           </div>
         </div>
-        <div className="hidden md:block bg-blue-600 rounded-[3rem] h-[400px] shadow-2xl shadow-blue-200 relative overflow-hidden group">
-           {/* Mockup visual */}
-           <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-blue-800 flex items-center justify-center">
-              <Calculator className="w-32 h-32 text-white/20 scale-150 rotate-12" />
-              <div className="absolute bottom-10 left-10 text-white">
-                <p className="text-4xl font-black italic uppercase">CuantoEs.py</p>
-                <p className="text-sm font-bold opacity-70 uppercase tracking-widest">Calculadora Social</p>
+        
+        {/* MOCKUP VISUAL */}
+        <div className="hidden md:block bg-blue-600 rounded-[4rem] h-[450px] shadow-2xl shadow-blue-200 relative overflow-hidden">
+           <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-blue-900 flex items-center justify-center p-12">
+              <Calculator className="w-48 h-48 text-white/10 scale-150 rotate-12 absolute -top-10 -right-10" />
+              <div className="relative z-10 text-white space-y-4">
+                <div className="bg-white/10 backdrop-blur-md p-6 rounded-3xl border border-white/20">
+                  <p className="text-4xl font-black italic uppercase leading-none">CuantoEs.py</p>
+                  <p className="text-xs font-bold opacity-60 uppercase tracking-[0.3em] mt-2">Calculadora Social</p>
+                </div>
+                <p className="text-sm font-medium opacity-80 max-w-xs leading-relaxed italic">
+                  "La forma más rápida de organizar los gastos del asado o el fútbol con tus socios."
+                </p>
               </div>
            </div>
         </div>
