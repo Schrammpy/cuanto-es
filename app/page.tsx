@@ -20,7 +20,7 @@ export default function Home() {
           <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-500 rounded-full blur-[120px] animate-pulse delay-1000"></div>
         </div>
 
-        <div className="max-w-4xl mx-auto relative z-10 space-y-8">
+        <div className="max-w-4xl mx-auto relative z-10 space-y-8 text-slate-700">
           <div className="inline-flex items-center gap-2 bg-blue-600/10 text-blue-400 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] border border-blue-500/20 shadow-sm shadow-blue-500/10">
             <Sparkles className="w-3 h-3" /> El índice de precios de Paraguay
           </div>
@@ -48,7 +48,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CATEGORÍAS RÁPIDAS */}
+      {/* CATEGORÍAS */}
       <section className="max-w-7xl mx-auto px-4 -mt-12 relative z-20">
         <div className="grid grid-cols-3 md:grid-cols-6 gap-4 md:gap-8">
           {categories.map((cat, i) => (
