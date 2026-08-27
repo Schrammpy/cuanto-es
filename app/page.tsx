@@ -3,11 +3,15 @@ import React from 'react';
 import Link from 'next/link';
 import BenefitList from '@/components/BenefitList';
 import Footer from '@/components/Footer';
-import { Search, Sparkles, ChevronRight, Calculator, Wrench, ShieldAlert, Truck, Paintbucket, Wind, Package } from 'lucide-react';
+// CORRECCIÓN: PaintBucket con B mayúscula
+import { 
+  Search, Sparkles, ChevronRight, Calculator, Wrench, 
+  ShieldAlert, Truck, PaintBucket, Wind, Package 
+} from 'lucide-react';
 
 export default function Home() {
   const categories = [
-    { name: 'Pintura', icon: <Paintbucket />, color: 'bg-orange-500', href: '/servicios/pintura' },
+    { name: 'Pintura', icon: <PaintBucket />, color: 'bg-orange-500', href: '/servicios/pintura' },
     { name: 'Aire Ac.', icon: <Wind />, color: 'bg-blue-400', href: '/servicios/aire' },
     { name: 'Mudanzas', icon: <Package />, color: 'bg-emerald-500', href: '/servicios/fletes' },
   ];
@@ -47,13 +51,13 @@ export default function Home() {
 
       {/* CATEGORÍAS RÁPIDAS */}
       <section className="max-w-7xl mx-auto px-4 -mt-8 relative z-20">
-        <div className="grid grid-cols-3 md:grid-cols-6 gap-3 md:gap-6">
+        <div className="grid grid-cols-3 md:grid-cols-6 gap-3 md:gap-6 text-slate-700">
           {categories.map((cat, i) => (
             <Link key={i} href={cat.href} className="bg-white p-4 md:p-6 rounded-[2rem] shadow-xl border border-slate-50 flex flex-col items-center gap-3 hover:translate-y-[-5px] transition-all">
               <div className={`${cat.color} p-3 rounded-2xl text-white`}>
                 {React.cloneElement(cat.icon as React.ReactElement, { className: 'w-6 h-6' })}
               </div>
-              <span className="text-[10px] md:text-xs font-black text-slate-700 uppercase tracking-tight">{cat.name}</span>
+              <span className="text-[10px] md:text-xs font-black uppercase tracking-tight">{cat.name}</span>
             </Link>
           ))}
         </div>
@@ -70,9 +74,9 @@ export default function Home() {
           </p>
           <div className="grid gap-4">
             {[
-              { name: 'Divisor de Gastos', href: '/divisor', icon: <Calculator className="text-blue-600" /> },
-              { name: 'Multas de Tránsito', href: '/multas', icon: <ShieldAlert className="text-red-600" /> },
-              { name: 'SaaS para Delivery', href: '/delivery/crear', icon: <Truck className="text-emerald-600" /> },
+              { name: 'Dividir Gastos', href: '/divisor', icon: <Calculator className="text-blue-600 w-5 h-5" /> },
+              { name: 'Multas de Tránsito', href: '/multas', icon: <ShieldAlert className="text-red-600 w-5 h-5" /> },
+              { name: 'SaaS para Delivery', href: '/delivery/crear', icon: <Truck className="text-emerald-600 w-5 h-5" /> },
             ].map(tool => (
               <Link key={tool.href} href={tool.href} className="bg-slate-50 p-4 rounded-2xl flex items-center justify-between hover:bg-blue-50 transition-colors group">
                 <div className="flex items-center gap-4">
@@ -84,12 +88,19 @@ export default function Home() {
             ))}
           </div>
         </div>
-        <div className="hidden md:block bg-blue-600 rounded-[3rem] h-[400px] shadow-2xl shadow-blue-200">
-           {/* Aquí podrías poner una imagen o mockup de la web en mobile */}
+        <div className="hidden md:block bg-blue-600 rounded-[3rem] h-[400px] shadow-2xl shadow-blue-200 relative overflow-hidden group">
+           {/* Mockup visual */}
+           <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-blue-800 flex items-center justify-center">
+              <Calculator className="w-32 h-32 text-white/20 scale-150 rotate-12" />
+              <div className="absolute bottom-10 left-10 text-white">
+                <p className="text-4xl font-black italic uppercase">CuantoEs.py</p>
+                <p className="text-sm font-bold opacity-70 uppercase tracking-widest">Calculadora Social</p>
+              </div>
+           </div>
         </div>
       </section>
 
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-4xl mx-auto px-4">
         <BenefitList />
       </div>
 
