@@ -1,109 +1,75 @@
 'use client';
-import React, { useState } from 'react';
-import { Beer, Copy, Check, Heart, ShieldCheck } from 'lucide-react';
+import React from 'react';
+import Link from 'next/link';
+import { ShieldCheck, Mail, Linkedin, Info, Globe } from 'lucide-react';
 
 export default function Footer() {
-  const [showAlias, setShowAlias] = useState(false);
-  const [copied, setCopied] = useState(false);
-
-  const ALIAS_PAGO = "4409055"; // <--- TU ALIAS REAL
-
-  const copiarAlias = () => {
-    navigator.clipboard.writeText(ALIAS_PAGO);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
-  // Función para borrar los datos locales
-  const borrarDatos = () => {
-    const confirmar = confirm("¿Querés borrar tus datos de cobro guardados?");
-    if (confirmar) {
-      // Limpia datos de Divisor
-      localStorage.removeItem('titular');
-      localStorage.removeItem('banco');
-      localStorage.removeItem('tipoAlias');
-      localStorage.removeItem('alias');
-      
-      // Limpia datos de Presupuesto
-      localStorage.removeItem('p_titular');
-      localStorage.removeItem('p_banco');
-      localStorage.removeItem('p_tipoAlias');
-      localStorage.removeItem('p_alias');
-
-       localStorage.removeItem('cuantoes_chat_user');
-
-      window.location.reload();
-    }
-  };
+  const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="mt-4 pb-16 px-4 flex flex-col items-center gap-8">
-      {/* SECCIÓN DE PRIVACIDAD Y MARCA */}
-      <div className="text-center space-y-5 px-6">
-        <div className="flex items-center justify-center gap-1.5 text-slate-600">
-            <ShieldCheck className="w-3 h-3" />
-            <span className="text-[9px] font-black uppercase tracking-widest">Seguridad Garantizada</span>
-        </div>
+    <footer className="bg-slate-900 text-slate-400 py-16 px-4 border-t border-white/5">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
         
-        <p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest leading-loose italic max-w-[320px] mx-auto">
-            Esta herramienta no guarda tus datos, la información queda exclusivamente en tu dispositivo y la puedes borrar <button onClick={borrarDatos} className="text-red-500 underline decoration-red-200 underline-offset-2 hover:text-red-700 transition-colors">AQUÍ</button>.
-        </p>
-
-
-        {/* SECCIÓN DE GRATITUD */}
-        <div className="w-full max-w-xs flex flex-col items-center">
-        {!showAlias ? (
-          <button 
-            onClick={() => setShowAlias(true)}
-            className="flex items-center gap-2 bg-amber-50 text-amber-700 px-5 py-2.5 rounded-full border border-amber-200 active:scale-95 transition-all shadow-sm"
-          >
-            <Beer className="w-4 h-4" />
-            <span className="text-[10px] font-black uppercase tracking-widest italic">Apoya al creador</span>
-          </button>
-        ) : (
-          <div className="bg-white border-2 border-amber-100 p-6 rounded-[2.5rem] w-full animate-in zoom-in-95 duration-300 shadow-xl shadow-amber-50 flex flex-col items-center border-dashed">
-            <Heart className="w-5 h-5 text-red-500 mb-2 fill-red-500" />
-            <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest mb-4 text-center px-2 leading-relaxed italic">
-                Tu apoyo ayuda a mantener el sitio.
-            </p>
-            
-            <div className="flex items-center justify-between bg-slate-50 w-full p-3 rounded-2xl border border-slate-200">
-                <div className="flex flex-col">
-                    <span className="text-[8px] text-slate-400 font-bold uppercase tracking-tighter">Alias para donacion</span>
-                    <span className="text-sm font-black text-slate-800 leading-none">{ALIAS_PAGO}</span>
-                </div>
-                <button 
-                    onClick={copiarAlias}
-                    className="bg-amber-600 text-white p-2 rounded-xl active:scale-90 transition-all shadow-md shadow-amber-100"
-                >
-                    {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                </button>
+        {/* COLUMNA 1: MARCA */}
+        <div className="space-y-4 text-center md:text-left">
+          <div className="flex items-center justify-center md:justify-start gap-2">
+            <div className="bg-blue-600 p-1.5 rounded-lg rotate-3">
+              <span className="text-white font-black text-[10px]">Gs.</span>
             </div>
-            
-            <button 
-                onClick={() => setShowAlias(false)}
-                className="mt-4 text-[9px] font-bold text-slate-400 uppercase tracking-widest hover:text-slate-600 transition-colors"
-            >
-                Cerrar
-            </button>
+            <span className="text-white font-black tracking-tighter text-xl uppercase">CuantoEs</span>
           </div>
-        )}
+          <p className="text-xs leading-relaxed opacity-80 uppercase font-bold tracking-widest">
+            Referencia de costos y servicios en Paraguay. Cuentas claras, amistades largas.
+          </p>
+        </div>
+
+        {/* COLUMNA 2: SERVICIOS */}
+        <div className="space-y-4 text-center md:text-left">
+          <h3 className="text-white font-black text-[10px] uppercase tracking-[0.2em]">Servicios</h3>
+          <ul className="text-xs space-y-3 font-bold uppercase tracking-tight">
+            <li><Link href="/servicios/pintura" className="hover:text-blue-400 transition-colors">Pintura de Casas</Link></li>
+            <li><Link href="/servicios/aire" className="hover:text-blue-400 transition-colors">Instalación de Aire</Link></li>
+            <li><Link href="/servicios/fletes" className="hover:text-blue-400 transition-colors">Fletes y Mudanzas</Link></li>
+          </ul>
+        </div>
+
+        {/* COLUMNA 3: HERRAMIENTAS */}
+        <div className="space-y-4 text-center md:text-left">
+          <h3 className="text-white font-black text-[10px] uppercase tracking-[0.2em]">Herramientas</h3>
+          <ul className="text-xs space-y-3 font-bold uppercase tracking-tight">
+            <li><Link href="/divisor" className="hover:text-blue-400 transition-colors">Dividir Gastos</Link></li>
+            <li><Link href="/multas" className="hover:text-blue-400 transition-colors">Multas de Tránsito</Link></li>
+            <li><Link href="/delivery/crear" className="hover:text-blue-400 transition-colors">CuantoEs Business</Link></li>
+          </ul>
+        </div>
+
+        {/* COLUMNA 4: CONTACTO Y LEGAL */}
+        <div className="space-y-4 text-center md:text-left">
+          <h3 className="text-white font-black text-[10px] uppercase tracking-[0.2em]">Contacto</h3>
+          <div className="flex flex-col items-center md:items-start gap-4">
+            <a href="mailto:info@cuantoes.com.py" className="flex items-center gap-2 text-xs hover:text-white transition-colors">
+              <Mail className="w-4 h-4 text-blue-500" /> info@cuantoes.com.py
+            </a>
+            <div className="flex gap-4">
+              <a href="https://www.linkedin.com/in/diegoschramm/" target="_blank" className="p-2 bg-white/5 rounded-xl hover:bg-blue-600 transition-all">
+                <Linkedin className="w-4 h-4 text-white" />
+              </a>
+              <Link href="/legal" className="p-2 bg-white/5 rounded-xl hover:bg-slate-700 transition-all">
+                <ShieldCheck className="w-4 h-4 text-white" />
+              </Link>
+            </div>
+          </div>
+        </div>
       </div>
 
-        <div className="space-y-1 pt-4 border-t border-slate-100 text-slate-600">
-            <p className="text-[10px] font-black uppercase tracking-[0.2em]">
-              2026 © CUANTOES.COM.PY
-            </p>
-            <p className="text-[8px] font-bold uppercase tracking-widest italic text-slate-500">
-              Un proyecto de <a 
-                href="https://www.linkedin.com/in/diegoschramm" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="text-blue-600 hover:text-blue-800 underline decoration-blue-200 underline-offset-2 transition-colors"
-              >
-                Diego Schramm
-              </a> Analista de Sistemas 🇵🇾
-            </p>
+      {/* COPYRIGHT FINAL */}
+      <div className="max-w-7xl mx-auto mt-16 pt-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-4">
+        <p className="text-[9px] font-black uppercase tracking-[0.3em]">
+          © {currentYear} — CUANTOES.COM.PY
+        </p>
+        <div className="flex items-center gap-1.5 opacity-40">
+          <Globe className="w-3 h-3" />
+          <span className="text-[8px] font-black uppercase tracking-widest">Hecho en Luque, Paraguay</span>
         </div>
       </div>
     </footer>
