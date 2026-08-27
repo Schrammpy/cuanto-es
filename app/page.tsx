@@ -2,89 +2,98 @@
 import React from 'react';
 import Link from 'next/link';
 import BenefitList from '@/components/BenefitList';
-import { Calculator, Wrench, ShieldAlert, Sparkles, ChevronRight, Truck, Map as MapIcon } from 'lucide-react';
+import Footer from '@/components/Footer';
+import { Search, Sparkles, ChevronRight, Calculator, Wrench, ShieldAlert, Truck, Paintbucket, Wind, Package } from 'lucide-react';
 
-export default function HomePage() {
-  const tools = [
-    {
-    name: 'Date una Escapada',
-    desc: '¿Hasta dónde llegás con tu presupuesto? Encontrá tu destino ideal.',
-    icon: <MapIcon className="w-6 h-6 text-emerald-600" />,
-    href: '/escapadas',
-    color: 'bg-emerald-50',
-    isNew: true // Podemos usar esto para un badge de "NUEVO"
-    },
-    {
-      name: 'Dividir Gastos',
-      desc: 'Para el asado, el fútbol o la cena entre amigos.',
-      icon: <Calculator className="w-6 h-6 text-blue-600" />,
-      href: '/divisor',
-      color: 'bg-blue-50',
-    },
-    {
-      name: 'Presupuestos',
-      desc: 'Genera Presupuestos Pro para tus clientes de forma sencilla.',
-      icon: <Wrench className="w-6 h-6 text-orange-600" />,
-      href: '/presupuesto',
-      color: 'bg-orange-50',
-    },
-     {
-    name: 'Delivery Automático',
-    desc: 'Emprendedores: Coticen envíos sin pedir ubicación por WhatsApp.',
-    icon: <Truck className="w-6 h-6 text-emerald-600" />,
-    href: '/delivery/crear', // Lleva a que el vendedor cree su link
-    color: 'bg-emerald-50',
-    },
-    {
-      name: 'Multas Py',
-      desc: 'Conocé los costos de infracciones de tránsito.',
-      icon: <ShieldAlert className="w-6 h-6 text-red-600" />,
-      href: '/multas',
-      color: 'bg-red-50',
-    }
+export default function Home() {
+  const categories = [
+    { name: 'Pintura', icon: <Paintbucket />, color: 'bg-orange-500', href: '/servicios/pintura' },
+    { name: 'Aire Ac.', icon: <Wind />, color: 'bg-blue-400', href: '/servicios/aire' },
+    { name: 'Mudanzas', icon: <Package />, color: 'bg-emerald-500', href: '/servicios/fletes' },
   ];
 
   return (
-    <main className="min-h-screen bg-[#F8FAFC] p-4 flex flex-col items-center">
-      <div className="max-w-md w-full space-y-8 pt-4">
-        
-        {/* HERO SECTION */}
-        <section className="text-center space-y-2">
-            <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest animate-pulse">
-                <Sparkles className="w-3 h-3" /> ¡Nuevas herramientas!
-            </div>
-            <h1 className="text-3xl font-[900] text-slate-800 tracking-tighter">
-                ¿Qué vamos a <br/> <span className="text-blue-600 italic">calcular hoy?</span>
-            </h1>
-            <p className="text-xs font-medium text-slate-400 px-8 leading-relaxed">
-                Elegí la herramienta que necesitás. Rápido, gratis y fácil de compartir.
-            </p>
-        </section>
-
-        {/* GRID DE HERRAMIENTAS */}
-        <div className="grid grid-cols-1 gap-4">
-            {tools.map((tool, i) => (
-                <Link 
-                    key={i} 
-                    href={tool.href}
-                    className="group bg-white p-5 rounded-[2rem] border border-slate-100 shadow-sm flex items-center gap-5 active:scale-95 transition-all hover:border-blue-200"
-                >
-                    <div className={`${tool.color} p-4 rounded-2xl shrink-0 group-hover:scale-110 transition-transform`}>
-                        {tool.icon}
-                    </div>
-                    <div className="flex-1">
-                        <h3 className="font-[800] text-slate-800 text-sm uppercase tracking-tight">{tool.name}</h3>
-                        <p className="text-[11px] text-slate-400 font-medium leading-tight mt-1">{tool.desc}</p>
-                    </div>
-                    <ChevronRight className="w-5 h-5 text-slate-200 group-hover:text-blue-400 transition-colors" />
-                </Link>
-            ))}
+    <main className="min-h-screen bg-white">
+      {/* HERO SECTION */}
+      <section className="bg-slate-900 py-16 md:py-24 px-4 text-center relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
+          <div className="absolute top-0 left-1/4 w-64 h-64 bg-blue-500 rounded-full blur-[100px] animate-pulse"></div>
+          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-600 rounded-full blur-[120px] animate-pulse delay-700"></div>
         </div>
 
-        {/* SECCIÓN DE BENEFICIOS (Para mantener el enganche diario) */}
-        <BenefitList />
+        <div className="max-w-4xl mx-auto relative z-10 space-y-6">
+          <h1 className="text-4xl md:text-6xl font-[900] text-white tracking-tighter leading-none">
+            ¿Cuánto cuesta esto <br/> en <span className="text-blue-500 italic">Paraguay?</span>
+          </h1>
+          <p className="text-slate-400 text-sm md:text-lg font-medium max-w-2xl mx-auto leading-relaxed">
+            Precios actualizados de servicios, construcción y trámites. Calculá tu presupuesto y conectá con profesionales.
+          </p>
 
+          {/* BUSCADOR TIPO GOOGLE */}
+          <div className="max-w-2xl mx-auto bg-white p-2 rounded-2xl md:rounded-full shadow-2xl flex flex-col md:flex-row items-center gap-2">
+            <div className="flex items-center flex-1 px-4 gap-3 w-full">
+              <Search className="w-5 h-5 text-slate-400" />
+              <input 
+                placeholder="Ej: Pintar una pieza de 4x4..." 
+                className="w-full py-3 outline-none text-slate-700 font-bold"
+              />
+            </div>
+            <button className="w-full md:w-auto bg-blue-600 text-white px-8 py-3 rounded-xl md:rounded-full font-black text-xs uppercase tracking-widest active:scale-95 transition-all">
+              Consultar
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* CATEGORÍAS RÁPIDAS */}
+      <section className="max-w-7xl mx-auto px-4 -mt-8 relative z-20">
+        <div className="grid grid-cols-3 md:grid-cols-6 gap-3 md:gap-6">
+          {categories.map((cat, i) => (
+            <Link key={i} href={cat.href} className="bg-white p-4 md:p-6 rounded-[2rem] shadow-xl border border-slate-50 flex flex-col items-center gap-3 hover:translate-y-[-5px] transition-all">
+              <div className={`${cat.color} p-3 rounded-2xl text-white`}>
+                {React.cloneElement(cat.icon as React.ReactElement, { className: 'w-6 h-6' })}
+              </div>
+              <span className="text-[10px] md:text-xs font-black text-slate-700 uppercase tracking-tight">{cat.name}</span>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* SECCIÓN DE HERRAMIENTAS ACTUALES */}
+      <section className="max-w-7xl mx-auto px-4 py-20 grid md:grid-cols-2 gap-12 items-center">
+        <div>
+          <h2 className="text-3xl font-[900] text-slate-800 tracking-tighter leading-none mb-4 uppercase">
+            Herramientas de <br/> <span className="text-blue-600 italic">uso diario</span>
+          </h2>
+          <p className="text-slate-500 text-sm font-medium leading-relaxed mb-8">
+            Las soluciones rápidas que ya conocés, ahora integradas en un solo lugar. Gratis y sin descargar apps.
+          </p>
+          <div className="grid gap-4">
+            {[
+              { name: 'Divisor de Gastos', href: '/divisor', icon: <Calculator className="text-blue-600" /> },
+              { name: 'Multas de Tránsito', href: '/multas', icon: <ShieldAlert className="text-red-600" /> },
+              { name: 'SaaS para Delivery', href: '/delivery/crear', icon: <Truck className="text-emerald-600" /> },
+            ].map(tool => (
+              <Link key={tool.href} href={tool.href} className="bg-slate-50 p-4 rounded-2xl flex items-center justify-between hover:bg-blue-50 transition-colors group">
+                <div className="flex items-center gap-4">
+                  {tool.icon}
+                  <span className="font-bold text-slate-700">{tool.name}</span>
+                </div>
+                <ChevronRight className="w-5 h-5 text-slate-300 group-hover:text-blue-600 transition-colors" />
+              </Link>
+            ))}
+          </div>
+        </div>
+        <div className="hidden md:block bg-blue-600 rounded-[3rem] h-[400px] shadow-2xl shadow-blue-200">
+           {/* Aquí podrías poner una imagen o mockup de la web en mobile */}
+        </div>
+      </section>
+
+      <div className="max-w-4xl mx-auto">
+        <BenefitList />
       </div>
+
+      <Footer />
     </main>
   );
 }
