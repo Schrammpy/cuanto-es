@@ -1,6 +1,10 @@
 'use client';
 import React, { useState } from 'react';
-import { PaintBucket, Info, ChevronRight, CheckCircle2, Calculator, ArrowLeft, Loader2, User, Phone, MapPin, X, Check } from 'lucide-react';
+import { 
+  PaintBucket, Info, ChevronRight, CheckCircle2, 
+  Calculator, ArrowLeft, Loader2, User, Phone, 
+  MapPin, X, Check, Send 
+} from 'lucide-react';
 import Link from 'next/link';
 import Footer from '@/components/Footer';
 import { enviarLeadPintura } from './action';
@@ -20,7 +24,11 @@ export default function PinturaPage() {
     setLoading(true);
     const metros = parseFloat(m2);
     setTimeout(() => {
-        if (!metros) { alert("Ingresá los m2"); setLoading(false); return; }
+        if (!metros) { 
+            alert("Ingresá los m2 para calcular"); 
+            setLoading(false); 
+            return; 
+        }
         const precioM2 = tipo === 'interior' ? 18000 : 26000;
         const materiales = metros * 13500;
         const manoObra = metros * precioM2;
@@ -43,7 +51,10 @@ export default function PinturaPage() {
     const res = await enviarLeadPintura(data);
     if (res.success) {
         setLeadSent(true);
-        setTimeout(() => { setShowForm(false); setLeadSent(false); }, 3000);
+        setTimeout(() => { 
+            setShowForm(false); 
+            setLeadSent(false); 
+        }, 3000);
     } else {
         alert(res.message);
     }
@@ -60,16 +71,16 @@ export default function PinturaPage() {
 
       <section className="max-w-7xl mx-auto px-4 py-12 grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
         <div className="space-y-8">
-          <div className="space-y-4 text-slate-700">
+          <div className="space-y-4">
             <div className="inline-flex items-center gap-2 bg-orange-100 text-orange-700 px-4 py-1.5 rounded-full">
               <PaintBucket className="w-4 h-4" />
-              <span className="text-[10px] font-black uppercase tracking-[0.2em]">Construcción</span>
+              <span className="text-[10px] font-black uppercase tracking-[0.2em]">Hogar y Construcción</span>
             </div>
             <h1 className="text-4xl md:text-6xl font-[900] text-slate-900 tracking-tighter leading-none">
               ¿Cuánto cuesta <br/> <span className="text-blue-600 italic font-black">pintar hoy?</span>
             </h1>
             <p className="text-slate-500 text-lg font-medium leading-relaxed italic">
-                Calculá un presupuesto real de mano de obra y materiales. Sin vueltas.
+                Calculá un presupuesto real de mano de obra y materiales. Basado en precios de Paraguay.
             </p>
           </div>
 
@@ -93,7 +104,14 @@ export default function PinturaPage() {
               <div className="bg-slate-50 p-6 rounded-3xl border-2 border-transparent focus-within:border-blue-600 focus-within:bg-white transition-all text-slate-700">
                 <label className="text-[10px] font-black text-slate-400 uppercase mb-3 block tracking-widest">Superficie a pintar (m2)</label>
                 <div className="flex items-baseline gap-2">
-                    <input type="number" inputMode="numeric" value={m2} onChange={(e) => setM2(e.target.value)} placeholder="0" className="bg-transparent w-full outline-none font-[900] text-5xl text-slate-800 placeholder:text-slate-200" />
+                    <input 
+                      type="number" 
+                      inputMode="numeric" 
+                      value={m2} 
+                      onChange={(e) => setM2(e.target.value)} 
+                      placeholder="0" 
+                      className="bg-transparent w-full outline-none font-[900] text-5xl text-slate-800 placeholder:text-slate-200" 
+                    />
                     <span className="text-xl font-black text-slate-300 uppercase">m²</span>
                 </div>
               </div>
@@ -121,9 +139,9 @@ export default function PinturaPage() {
                     </p>
                 </div>
 
-                <button onClick={() => setShowForm(true)} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-5 rounded-[2rem] shadow-xl shadow-blue-200 flex items-center justify-center gap-3 active:scale-95 transition-all">
+                <button onClick={() => setShowForm(true)} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-5 rounded-[2rem] shadow-xl shadow-blue-200 flex items-center justify-center gap-3 active:scale-95 transition-all group">
                   <span className="uppercase tracking-widest text-xs font-black leading-none">Solicitar Pintor Verificado</span>
-                  <ChevronRight className="w-4 h-4" />
+                  <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </button>
               </div>
             )}
@@ -134,7 +152,7 @@ export default function PinturaPage() {
       {showForm && (
         <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 animate-in fade-in duration-300">
             <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={() => setShowForm(false)}></div>
-            <div className="bg-white rounded-[3rem] p-8 md:p-10 w-full max-w-sm relative z-10 shadow-2xl">
+            <div className="bg-white rounded-[3rem] p-8 md:p-10 w-full max-w-sm relative z-10 shadow-2xl text-slate-700">
                 <button onClick={() => setShowForm(false)} className="absolute top-6 right-6 text-slate-300 hover:text-slate-600"><X /></button>
                 
                 {leadSent ? (
@@ -147,7 +165,7 @@ export default function PinturaPage() {
                     <form onSubmit={handleLeadSubmit} className="space-y-6">
                         <div className="text-center space-y-1">
                             <h3 className="text-xl font-black text-slate-800 uppercase tracking-tighter">Presupuesto Real</h3>
-                            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest leading-tight">Dejanos tus datos para conectar con un pintor</p>
+                            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest leading-tight text-pretty">Dejanos tus datos para conectar con un pintor</p>
                         </div>
                         
                         <div className="space-y-3">
@@ -166,7 +184,7 @@ export default function PinturaPage() {
                         </div>
 
                         <button disabled={formLoading} className="w-full bg-blue-600 text-white font-black py-5 rounded-[2rem] shadow-xl shadow-blue-100 flex items-center justify-center gap-2 active:scale-95 transition-all text-xs uppercase tracking-widest">
-                            {formLoading ? <Loader2 className="animate-spin" /> : <><Send className="w-4 h-4" /> Enviar Solicitud</>}
+                            {formLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Send className="w-4 h-4" /> Enviar Solicitud</>}
                         </button>
                     </form>
                 )}
