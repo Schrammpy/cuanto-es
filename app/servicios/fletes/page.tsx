@@ -9,6 +9,8 @@ import Link from 'next/link';
 import Footer from '@/components/Footer';
 import { enviarLeadFlete } from './action';
 
+
+
 export default function FletesPage() {
   const [tamano, setTamano] = useState('estandar');
   const [ayudantes, setAyudantes] = useState(1);

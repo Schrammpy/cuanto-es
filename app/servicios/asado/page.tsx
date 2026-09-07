@@ -9,6 +9,8 @@ import Link from 'next/link';
 import Footer from '@/components/Footer';
 import { enviarLeadAsado } from './action';
 
+
+
 export default function AsadoPage() {
   const [personas, setPersonas] = useState(10);
   const [tipo, setTipo] = useState('completo'); // solo_mano, completo, premium

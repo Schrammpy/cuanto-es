@@ -5,6 +5,8 @@ import Link from 'next/link';
 import Footer from '@/components/Footer';
 import { enviarLeadAire } from './action';
 
+
+
 export default function AirePage() {
   const [btu, setBtu] = useState('12000');
   const [tipo, setTipo] = useState('instalacion');
