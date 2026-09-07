@@ -9,11 +9,6 @@ import Link from 'next/link';
 import Footer from '@/components/Footer';
 import { enviarLeadPintura } from './action';
 
-export const metadata = {
-  title: "¿Cuánto cuesta pintar una casa en Paraguay? - Precios 2024",
-  description: "Calculá el costo por m2 de mano de obra y materiales para pintura interior y exterior. Precios actualizados para Asunción y Gran Asunción.",
-  keywords: ["precio pintura m2 paraguay", "cuanto cuesta pintar casa asuncion", "mano de obra pintura paraguay"]
-};
 
 export default function PinturaPage() {
   const [m2, setM2] = useState('');
