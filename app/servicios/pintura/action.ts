@@ -1,62 +1,58 @@
 'use server'
 import { supabase } from "@/lib/supabase";
 
+// 1. ENVÍO DE LEADS A TU GMAIL (Ya funcionaba)
 export async function enviarLeadPintura(formData: any) {
-  // 1. Formateamos el monto para el correo (ej: 1.500.000)
   const montoFormateado = new Intl.NumberFormat('es-PY').format(formData.total);
 
   try {
-    // 2. GUARDAR EN SUPABASE (Tu respaldo de seguridad)
     const { error: dbError } = await supabase
       .from('leads_servicios')
-      .insert([
-        {
-          nombre_completo: formData.nombre,
-          telefono: formData.telefono,
-          ciudad: formData.ciudad,
-          servicio_tag: 'pintura',
-          detalles_calculo: {
-            m2: formData.m2,
-            tipo: formData.tipo,
-            estimado: formData.total
-          }
-        }
-      ]);
+      .insert([{
+        nombre_completo: formData.nombre,
+        telefono: formData.telefono,
+        ciudad: formData.ciudad,
+        servicio_tag: 'pintura',
+        detalles_calculo: { m2: formData.m2, tipo: formData.tipo, estimado: formData.total }
+      }]);
 
-    if (dbError) throw new Error("Error al guardar en base de datos");
+    if (dbError) throw new Error("Error DB");
 
-    // 3. ENVIAR A FORMSPREE (Aviso directo a tu Gmail)
-    const response = await fetch("https://formspree.io/f/mkjnojzj", {
+    await fetch("https://formspree.io/f/mkjnojzj", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json"
-      },
+      headers: { "Content-Type": "application/json", "Accept": "application/json" },
       body: JSON.stringify({
-        subject: `🚨 NUEVO LEAD: Pintura para ${formData.nombre}`,
+        subject: `🚨 NUEVO LEAD PINTURA: ${formData.nombre}`,
         cliente: formData.nombre,
         telefono: formData.telefono,
         ciudad: formData.ciudad,
         detalles: `${formData.m2}m² - Pintura ${formData.tipo}`,
-        presupuesto_sugerido: `Gs. ${montoFormateado}`,
-        link_admin: `https://supabase.com/dashboard/project/YOUR_PROJECT_ID/editor` // Opcional
+        presupuesto_sugerido: `Gs. ${montoFormateado}`
       })
     });
 
-    if (!response.ok) {
-        console.error("Error al enviar a Formspree");
-    }
+    return { success: true, message: "¡Solicitud recibida! Un pintor te contactará pronto." };
+  } catch (error) {
+    return { success: false, message: "Error al procesar pedido." };
+  }
+}
 
-    return { 
-        success: true, 
-        message: "¡Solicitud recibida! Un profesional te contactará pronto." 
-    };
+// 2. CROWDSOURCING: GUARDAR PRECIO REPORTADO POR EL USUARIO (NUEVO DEL PDF)
+export async function guardarPrecioReportado(data: any) {
+  try {
+    const { error } = await supabase
+      .from('precios_reportados')
+      .insert([{
+        servicio_slug: 'pintura',
+        monto_pagado: parseInt(data.monto.replace(/\./g, "")),
+        ciudad: data.ciudad,
+        incluyo_materiales: data.materiales,
+        comentario: data.comentario
+      }]);
 
-  } catch (error: any) {
-    console.error("Error crítico:", error);
-    return { 
-        success: false, 
-        message: "Ocurrió un error al procesar tu pedido. Por favor, reintentá." 
-    };
+    if (error) throw error;
+    return { success: true };
+  } catch (err) {
+    return { success: false };
   }
 }
