@@ -94,15 +94,15 @@ export default function PinturaPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-6">
             <div className="bg-white/5 border border-white/10 p-6 rounded-3xl backdrop-blur-sm">
               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Precio Promedio</p>
-              <p className="text-3xl font-black">Gs. 22.000 <span className="text-xs font-normal opacity-50">/m²</span></p>
+              <p className="text-2xl lg:text-3xl font-black whitespace-nowrap">Gs. 22.000 <span className="text-xs font-normal opacity-50">/m²</span></p>
             </div>
             <div className="bg-white/5 border border-white/10 p-6 rounded-3xl text-emerald-400 backdrop-blur-sm">
               <p className="text-[10px] font-bold text-emerald-500/60 uppercase tracking-widest mb-1">Rango Habitual</p>
-              <p className="text-3xl font-black">15mil — 35mil <span className="text-xs font-normal opacity-50">/m²</span></p>
+              <p className="text-2xl lg:text-3xl font-black whitespace-nowrap">15 a 35 mil <span className="text-xs font-normal opacity-50">/m²</span></p>
             </div>
             <div className="bg-white/5 border border-white/10 p-6 rounded-3xl backdrop-blur-sm">
               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Certeza de Datos</p>
-              <p className="text-3xl font-black text-blue-400">Alta <span className="text-xs font-normal text-slate-400">✓</span></p>
+              <p className="text-2xl lg:text-3xl font-black text-blue-400 whitespace-nowrap">Alta <span className="text-xs font-normal text-slate-400">✓</span></p>
             </div>
           </div>
         </div>

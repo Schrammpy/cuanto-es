@@ -108,17 +108,17 @@ export default function AireCostosPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-6">
             <div className="bg-white/5 border border-white/10 p-6 rounded-3xl backdrop-blur-sm">
               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Instalación Estándar (12mil BTU)</p>
-              <p className="text-3xl font-black">Gs. 380.000 <span className="text-xs font-normal opacity-50">promedio</span></p>
+              <p className="text-2xl lg:text-3xl font-black whitespace-nowrap">Gs. 380.000 <span className="text-xs font-normal opacity-50">promedio</span></p>
             </div>
-            <div className="bg-white/5 border border-white/10 p-6 rounded-3xl text-emerald-400 backdrop-blur-sm">
+          <div className="bg-white/5 border border-white/10 p-6 rounded-3xl text-emerald-400 backdrop-blur-sm">
               <p className="text-[10px] font-bold text-emerald-500/60 uppercase tracking-widest mb-1">Rango Habitual en Plaza</p>
-              <p className="text-3xl font-black">300 mil — 850 mil</p>
-            </div>
-            <div className="bg-white/5 border border-white/10 p-6 rounded-3xl backdrop-blur-sm">
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Limpieza / Mantenimiento</p>
-              <p className="text-3xl font-black text-blue-400">180 mil <span className="text-xs font-normal text-slate-400">base</span></p>
-            </div>
+              <p className="text-2xl lg:text-3xl font-black whitespace-nowrap">300 a 850 mil</p>
           </div>
+          <div className="bg-white/5 border border-white/10 p-6 rounded-3xl backdrop-blur-sm">
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Limpieza / Mantenimiento</p>
+              <p className="text-2xl lg:text-3xl font-black text-blue-400 whitespace-nowrap">180 mil <span className="text-xs font-normal text-slate-400">base</span></p>
+          </div>
+        </div>
         </div>
       </section>
 
