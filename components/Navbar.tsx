@@ -19,6 +19,7 @@ export default function Navbar() {
     { name: 'Instalación de Aire', href: '/costos/aire' },
     { name: 'Fletes y Mudanzas', href: '/costos/fletes' },
     { name: 'Asado a Domicilio', href: '/costos/asado' },
+    { name: 'Plomería y Destranques', href: '/costos/plomeria' },
   ];
 
   const tools = [
