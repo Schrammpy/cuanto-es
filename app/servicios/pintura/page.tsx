@@ -98,7 +98,7 @@ export default function PinturaPage() {
             </div>
             <div className="bg-white/5 border border-white/10 p-6 rounded-3xl text-emerald-400 backdrop-blur-sm">
               <p className="text-[10px] font-bold text-emerald-500/60 uppercase tracking-widest mb-1">Rango Habitual</p>
-              <p className="text-3xl font-black">15k — 35k <span className="text-xs font-normal opacity-50">/m²</span></p>
+              <p className="text-3xl font-black">15mil — 35mil <span className="text-xs font-normal opacity-50">/m²</span></p>
             </div>
             <div className="bg-white/5 border border-white/10 p-6 rounded-3xl backdrop-blur-sm">
               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Certeza de Datos</p>
