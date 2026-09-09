@@ -8,9 +8,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${baseUrl}/multas`, lastModified: new Date(), priority: 0.8 },
     { url: `${baseUrl}/divisor`, lastModified: new Date(), priority: 0.5 },
     { url: `${baseUrl}/presupuesto`, lastModified: new Date(), priority: 0.5 },
-    { url: `${baseUrl}/servicios/pintura`, lastModified: new Date(), priority: 0.9 },
-    { url: `${baseUrl}/servicios/aire`, lastModified: new Date(), priority: 0.9 },
-    { url: `${baseUrl}/servicios/fletes`, lastModified: new Date(), priority: 0.9 },
-    { url: `${baseUrl}/servicios/asado`, lastModified: new Date(), priority: 0.9 },
+    { url: `${baseUrl}/costos/pintura`, lastModified: new Date(), priority: 0.9 },
+    { url: `${baseUrl}/costos/aire`, lastModified: new Date(), priority: 0.9 },
+    { url: `${baseUrl}/costos/fletes`, lastModified: new Date(), priority: 0.9 },
+    { url: `${baseUrl}/costos/asado`, lastModified: new Date(), priority: 0.9 },
   ]
 }

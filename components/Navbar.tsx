@@ -15,10 +15,10 @@ export default function Navbar() {
   if (pathname.startsWith('/muro')) return null;
 
   const services = [
-    { name: 'Pintura de Casas', href: '/servicios/pintura' },
-    { name: 'Instalación de Aire', href: '/servicios/aire' },
-    { name: 'Fletes y Mudanzas', href: '/servicios/fletes' },
-    { name: 'Asado a Domicilio', href: '/servicios/asado' },
+    { name: 'Pintura de Casas', href: '/costos/pintura' },
+    { name: 'Instalación de Aire', href: '/costos/aire' },
+    { name: 'Fletes y Mudanzas', href: '/costos/fletes' },
+    { name: 'Asado a Domicilio', href: '/costos/asado' },
   ];
 
   const tools = [

@@ -27,9 +27,9 @@ export default function Footer() {
         <div className="space-y-4 text-center md:text-left">
           <h3 className="text-white font-black text-[10px] uppercase tracking-[0.2em] opacity-50">Servicios</h3>
           <ul className="text-xs space-y-3 font-bold uppercase tracking-tight text-slate-400">
-            <li><Link href="/servicios/pintura" className="hover:text-blue-400 transition-colors">Pintura de Casas</Link></li>
-            <li><Link href="/servicios/aire" className="hover:text-blue-400 transition-colors">Instalación de Aire</Link></li>
-            <li><Link href="/servicios/fletes" className="hover:text-blue-400 transition-colors">Fletes y Mudanzas</Link></li>
+            <li><Link href="/costos/pintura" className="hover:text-blue-400 transition-colors">Pintura de Casas</Link></li>
+            <li><Link href="/costos/aire" className="hover:text-blue-400 transition-colors">Instalación de Aire</Link></li>
+            <li><Link href="/costos/fletes" className="hover:text-blue-400 transition-colors">Fletes y Mudanzas</Link></li>
           </ul>
         </div>
 

@@ -13,20 +13,20 @@ export default function Home() {
   const router = useRouter();
 
   const categories = [
-    { name: 'Pintura', Icon: PaintBucket, color: 'bg-orange-500', href: '/servicios/pintura' },
-    { name: 'Aire Ac.', Icon: Wind, color: 'bg-blue-400', href: '/servicios/aire' },
-    { name: 'Mudanzas', Icon: Package, color: 'bg-emerald-500', href: '/servicios/fletes' },
-    { name: 'Asadacho', Icon: Beef, color: 'bg-red-500', href: '/servicios/asado' }, // NUEVO
+    { name: 'Pintura', Icon: PaintBucket, color: 'bg-orange-500', href: '/costos/pintura' },
+    { name: 'Aire Ac.', Icon: Wind, color: 'bg-blue-400', href: '/costos/aire' },
+    { name: 'Mudanzas', Icon: Package, color: 'bg-emerald-500', href: '/costos/fletes' },
+    { name: 'Asadacho', Icon: Beef, color: 'bg-red-500', href: '/costos/asado' }, // NUEVO
   ];
 
   // Lógica de búsqueda sencilla
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     const q = query.toLowerCase();
-    if (q.includes('pinto') || q.includes('pared')) router.push('/servicios/pintura');
-    else if (q.includes('aire') || q.includes('clima')) router.push('/servicios/aire');
-    else if (q.includes('flete') || q.includes('mudan')) router.push('/servicios/fletes');
-    else if (q.includes('asado') || q.includes('parri')) router.push('/servicios/asado');
+    if (q.includes('pinto') || q.includes('pared')) router.push('/costos/pintura');
+    else if (q.includes('aire') || q.includes('clima')) router.push('/costos/aire');
+    else if (q.includes('flete') || q.includes('mudan')) router.push('/costos/fletes');
+    else if (q.includes('asado') || q.includes('parri')) router.push('/costos/asado');
     else alert("Próximamente agregaremos más servicios. Probá con: Pintura, Aire, Fletes o Asado.");
   };
 
