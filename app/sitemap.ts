@@ -14,5 +14,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${baseUrl}/costos/asado`, lastModified: new Date(), priority: 0.9 },
     { url: `${baseUrl}/costos/plomeria`, lastModified: new Date(), priority: 0.9 },
     { url: `${baseUrl}/costos/electricidad`, lastModified: new Date(), priority: 0.9 },
+    { url: `${baseUrl}/costos/limpieza`, lastModified: new Date(), priority: 0.9 },
+    { url: `${baseUrl}/costos/albanileria`, lastModified: new Date(), priority: 0.9 },
   ]
 }

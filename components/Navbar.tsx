@@ -21,6 +21,8 @@ export default function Navbar() {
     { name: 'Asado a Domicilio', href: '/costos/asado' },
     { name: 'Plomería y Destranques', href: '/costos/plomeria' },
     { name: 'Electricidad y Tableros', href: '/costos/electricidad' },
+    { name: 'Limpieza y Fin de Obra', href: '/costos/limpieza' },
+    { name: 'Albañilería y Murallas', href: '/costos/albanileria' },
   ];
 
   const tools = [
