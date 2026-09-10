@@ -6,7 +6,8 @@ import Footer from '@/components/Footer';
 import { 
   Search, ChevronRight, Calculator, Wrench, ShieldAlert, 
   Truck, PaintBucket, Wind, Package, Sparkles, Beef, 
-  Droplets, Zap, Sparkle, Hammer, UserPlus, ArrowUpRight 
+  Droplets, Zap, Sparkle, Hammer, UserPlus, ArrowUpRight,
+  Info  
 } from 'lucide-react';
 
 export default function Home() {
