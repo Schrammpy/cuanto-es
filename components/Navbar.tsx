@@ -20,6 +20,7 @@ export default function Navbar() {
     { name: 'Fletes y Mudanzas', href: '/costos/fletes' },
     { name: 'Asado a Domicilio', href: '/costos/asado' },
     { name: 'Plomería y Destranques', href: '/costos/plomeria' },
+    { name: 'Electricidad y Tableros', href: '/costos/electricidad' },
   ];
 
   const tools = [
