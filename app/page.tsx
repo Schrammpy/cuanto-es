@@ -178,36 +178,36 @@ export default function Home() {
               Unite a la red de profesionales de CuantoEs. Recibí solicitudes directas de clientes en tu ciudad que ya conocen los precios estimados del mercado.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 pt-2">
-              <a 
-                href="https://api.whatsapp.com/send?phone=595992685363&text=Hola!%20Soy%20profesional%20y%20quiero%20recibir%20pedidos%20en%20CuantoEs.com.py" 
-                target="_blank" 
-                rel="noopener noreferrer"
+              {/* CAMBIO AQUÍ: Ahora lleva a la landing de profesionales */}
+              <Link 
+                href="/profesionales" 
                 className="bg-slate-900 hover:bg-blue-600 text-white px-8 py-4 rounded-2xl font-[900] text-xs uppercase tracking-widest flex items-center justify-center gap-2 shadow-xl shadow-slate-900/20 active:scale-95 transition-all"
               >
                 <UserPlus className="w-4 h-4 text-blue-400" /> Registrarme como Profesional
-              </a>
+              </Link>
+              {/* CAMBIO AQUÍ: Botón para leer la Metodología */}
               <Link 
-                href="/divisor" 
+                href="/metodologia" 
                 className="bg-white border-2 border-slate-200 text-slate-700 px-8 py-4 rounded-2xl font-[900] text-xs uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-slate-100 active:scale-95 transition-all"
               >
-                Ver herramientas gratis
+                <Info className="w-4 h-4 text-slate-400" /> Metodología de Precios
               </Link>
             </div>
           </div>
 
           <div className="flex-1 w-full grid grid-cols-1 gap-4">
             <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100 flex items-start gap-4">
-              <div className="bg-blue-50 p-3 rounded-2xl text-blue-600 shrink-0"><Sparkles className="w-5 h-5" /></div>
+              <div className="bg-blue-50 p-3 rounded-xl text-blue-600"><Sparkles className="w-5 h-5" /></div>
               <div>
                 <h4 className="font-black text-slate-800 text-sm uppercase">Presencia Digital Inmediata</h4>
-                <p className="text-xs text-slate-400 font-medium mt-1 leading-snug">Aparecé como técnico recomendado en la calculadora de tu zona.</p>
+                <p className="text-[11px] text-slate-400 font-medium mt-1 leading-snug">Aparecé como técnico recomendado en la calculadora de tu zona.</p>
               </div>
             </div>
-            <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100 flex items-start gap-4 ml-0 md:ml-6">
-              <div className="bg-emerald-50 p-3 rounded-2xl text-emerald-600 shrink-0"><ArrowUpRight className="w-5 h-5" /></div>
+            <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100 flex items-start gap-4 ml-0 md:ml-8">
+              <div className="bg-emerald-50 p-3 rounded-xl text-emerald-600"><ArrowUpRight className="w-5 h-5" /></div>
               <div>
                 <h4 className="font-black text-slate-800 text-sm uppercase">Clientes con Presupuesto Real</h4>
-                <p className="text-xs text-slate-400 font-medium mt-1 leading-snug">El cliente ya calculó el estimado antes de contactarte. Cero regateo.</p>
+                <p className="text-[11px] text-slate-400 font-medium mt-1 leading-snug">El cliente ya calculó el estimado antes de contactarte. Cero regateo.</p>
               </div>
             </div>
           </div>
