@@ -5,6 +5,8 @@ import Footer from '@/components/Footer';
 import { UserPlus, Target, TrendingUp, ShieldCheck, CheckCircle2, ArrowRight, Wrench } from 'lucide-react';
 
 export default function ProfesionalesPage() {
+  const formLink = "https://docs.google.com/forms/d/e/1FAIpQLSddkD8aKJxoljsdkTLJDwOM57AqGUzi2ppVQAtXSvi6DM1kAA/viewform";
+
   return (
     <main className="min-h-screen bg-slate-50 text-slate-800">
       
@@ -19,7 +21,7 @@ export default function ProfesionalesPage() {
           </p>
           <div className="pt-4">
             <a 
-              href="https://api.whatsapp.com/send?phone=595992685363&text=Hola!%20Soy%20profesional%20y%20quiero%20recibir%20leads%20de%20CuantoEs"
+              href={formLink}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex bg-blue-600 hover:bg-blue-700 text-white font-black px-10 py-5 rounded-full uppercase tracking-widest text-xs active:scale-95 transition-all shadow-xl shadow-blue-200 gap-2 items-center"
@@ -77,13 +79,22 @@ export default function ProfesionalesPage() {
                 </ul>
             </div>
             <div className="bg-white/5 border border-white/10 p-8 rounded-[2rem] backdrop-blur-sm">
-                <ShieldCheck className="w-8 h-8 text-emerald-400 mb-4" />
-                <h3 className="text-lg font-black uppercase tracking-tight mb-2">Requisitos de Ingreso</h3>
-                <p className="text-xs text-slate-400 font-medium leading-relaxed mb-6">
-                    Para mantener la calidad de nuestra red, solicitamos foto de cédula, referencias de trabajos anteriores y compromiso de buenas prácticas con el cliente.
-                </p>
-                <a href="https://api.whatsapp.com/send?phone=595992685363&text=Hola!%20Quiero%20registrarme%20como%20profesional." target="_blank" className="flex items-center justify-center gap-2 w-full bg-white text-slate-900 font-black py-4 rounded-xl text-[10px] uppercase tracking-widest hover:bg-slate-200 transition-colors">
-                    Contactar Administración <ArrowRight className="w-4 h-4" />
+    <ShieldCheck className="w-8 h-8 text-emerald-400 mb-4" />
+    <h3 className="text-lg font-black uppercase tracking-tight mb-2">Requisitos de Ingreso</h3>
+    <p className="text-xs text-slate-400 font-medium leading-relaxed mb-6">
+        Para mantener la calidad de nuestra red y cuidarte a vos y a los clientes, solo pedimos:
+        <br/><br/>
+        • <b>Zona de trabajo clara:</b> Para pasarte clientes que realmente puedas atender. <br/>
+        • <b>Fotos o redes:</b> Algún lugar donde podamos ver cómo trabajás (Instagram, Facebook o fotos de tus obras). <br/>
+        • <b>Puntualidad:</b> Compromiso de responder rápido cuando te pasamos un presupuesto.
+            </p>
+                <a 
+                    href={formLink} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 w-full bg-white text-slate-900 font-black py-4 rounded-xl text-[10px] uppercase tracking-widest hover:bg-slate-200 transition-colors"
+                >
+                Completar Formulario <ArrowRight className="w-4 h-4" />
                 </a>
             </div>
         </div>
