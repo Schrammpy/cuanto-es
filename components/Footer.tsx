@@ -38,11 +38,6 @@ export default function Footer() {
               <h3 className="text-white font-black text-[10px] uppercase tracking-[0.2em] opacity-50">Desarrollo y Análisis</h3>
               <p className="text-sm font-bold text-slate-300">Proyecto Independiente</p>
           </div>
-          
-          <div className="flex flex-col items-center md:items-end gap-3">
-            <a href="mailto:info@cuantoes.com.py" className="flex items-center gap-2 text-xs hover:text-white transition-colors font-bold text-slate-400 bg-white/5 px-4 py-2 rounded-xl border border-white/5 hover:border-white/20">
-              <Mail className="w-4 h-4 text-blue-500" /> info@cuantoes.com.py
-            </a>
             
             <a href="https://www.linkedin.com/in/diegoschramm/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-xs hover:text-white transition-colors font-bold text-slate-400 bg-white/5 px-4 py-2 rounded-xl border border-white/5 hover:border-white/20">
               {/* SVG MANUAL DE LINKEDIN */}
