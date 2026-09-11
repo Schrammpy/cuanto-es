@@ -32,11 +32,11 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* COLUMNA 2: EL CREADOR Y CONTACTO */}
+        {/* COLUMNA 2: CONTACTO B2B */}
         <div className="space-y-6 text-center md:text-right flex flex-col items-center md:items-end">
           <div className="space-y-1">
               <h3 className="text-white font-black text-[10px] uppercase tracking-[0.2em] opacity-50">Desarrollo y Análisis</h3>
-              <p className="text-sm font-bold text-slate-300">Diego Schramm</p>
+              <p className="text-sm font-bold text-slate-300">Proyecto Independiente</p>
           </div>
           
           <div className="flex flex-col items-center md:items-end gap-3">
@@ -47,7 +47,7 @@ export default function Footer() {
             <a href="https://www.linkedin.com/in/diegoschramm/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-xs hover:text-white transition-colors font-bold text-slate-400 bg-white/5 px-4 py-2 rounded-xl border border-white/5 hover:border-white/20">
               {/* SVG MANUAL DE LINKEDIN */}
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
-              Conectar en LinkedIn
+              Perfil Profesional
             </a>
           </div>
         </div>
