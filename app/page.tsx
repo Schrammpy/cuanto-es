@@ -7,7 +7,7 @@ import {
   Search, ChevronRight, Calculator, Wrench, ShieldAlert, 
   Truck, PaintBucket, Wind, Package, Sparkles, Beef, 
   Droplets, Zap, Sparkle, Hammer, UserPlus, ArrowUpRight,
-  Info  
+  Info // <--- Import del icono Info agregado aquí
 } from 'lucide-react';
 
 export default function Home() {
@@ -16,65 +16,16 @@ export default function Home() {
 
   // 8 SERVICIOS: 4 arriba y 4 abajo en Desktop
   const categories = [
-    { 
-      name: 'Pintura', 
-      sub: 'Casas y Fachadas', 
-      Icon: PaintBucket, 
-      color: 'bg-orange-500', 
-      href: '/costos/pintura' 
-    },
-    { 
-      name: 'Aire Split', 
-      sub: 'Colocación y Limpieza', 
-      Icon: Wind, 
-      color: 'bg-sky-500', 
-      href: '/costos/aire' 
-    },
-    { 
-      name: 'Fletes', 
-      sub: 'Mudanzas y Cargas', 
-      Icon: Truck, 
-      color: 'bg-emerald-500', 
-      href: '/costos/fletes' 
-    },
-    { 
-      name: 'Asado', 
-      sub: 'Parrilleros a Domicilio', 
-      Icon: Beef, 
-      color: 'bg-red-500', 
-      href: '/costos/asado' 
-    },
-    { 
-      name: 'Plomería', 
-      sub: 'Destranques y Fugas', 
-      Icon: Droplets, 
-      color: 'bg-blue-600', 
-      href: '/costos/plomeria' 
-    },
-    { 
-      name: 'Electricidad', 
-      sub: 'Tableros y Cableado', 
-      Icon: Zap, 
-      color: 'bg-amber-500', 
-      href: '/costos/electricidad' 
-    },
-    { 
-      name: 'Limpieza', 
-      sub: 'Hogar y Fin de Obra', 
-      Icon: Sparkle, 
-      color: 'bg-teal-500', 
-      href: '/costos/limpieza' 
-    },
-    { 
-      name: 'Albañilería', 
-      sub: 'Murallas y Reformas', 
-      Icon: Hammer, 
-      color: 'bg-stone-600', 
-      href: '/costos/albanileria' 
-    },
+    { name: 'Pintura', sub: 'Casas y Fachadas', Icon: PaintBucket, color: 'bg-orange-500', href: '/costos/pintura' },
+    { name: 'Aire Split', sub: 'Colocación y Limpieza', Icon: Wind, color: 'bg-sky-500', href: '/costos/aire' },
+    { name: 'Fletes', sub: 'Mudanzas y Cargas', Icon: Truck, color: 'bg-emerald-500', href: '/costos/fletes' },
+    { name: 'Asado', sub: 'Parrilleros a Domicilio', Icon: Beef, color: 'bg-red-500', href: '/costos/asado' },
+    { name: 'Plomería', sub: 'Destranques y Fugas', Icon: Droplets, color: 'bg-blue-600', href: '/costos/plomeria' },
+    { name: 'Electricidad', sub: 'Tableros y Cableado', Icon: Zap, color: 'bg-amber-500', href: '/costos/electricidad' },
+    { name: 'Limpieza', sub: 'Hogar y Fin de Obra', Icon: Sparkle, color: 'bg-teal-500', href: '/costos/limpieza' },
+    { name: 'Albañilería', sub: 'Murallas y Reformas', Icon: Hammer, color: 'bg-stone-600', href: '/costos/albanileria' },
   ];
 
-  // Buscador predictivo por palabras clave de los 8 servicios
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     const q = query.toLowerCase().trim();
@@ -140,7 +91,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CATEGORÍAS EN GRILLA 4 ARRIBA Y 4 ABAJO (Desktop) / 2x4 (Móvil) */}
+      {/* CATEGORÍAS EN GRILLA */}
       <section className="max-w-7xl mx-auto px-4 -mt-12 relative z-20">
         <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-4 gap-3 md:gap-5">
           {categories.map((cat, i) => (
@@ -179,14 +130,18 @@ export default function Home() {
               Unite a la red de profesionales de CuantoEs. Recibí solicitudes directas de clientes en tu ciudad que ya conocen los precios estimados del mercado.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 pt-2">
-              {/* CAMBIO AQUÍ: Ahora lleva a la landing de profesionales */}
-              <Link 
-                href="/profesionales" 
+              
+              {/* CAMBIO AQUÍ: Link directo al Google Form */}
+              <a 
+                href="https://docs.google.com/forms/d/e/1FAIpQLSddkD8aKJxoljsdkTLJDwOM57AqGUzi2ppVQAtXSvi6DM1kAA/viewform?usp=publish-editor" 
+                target="_blank" 
+                rel="noopener noreferrer"
                 className="bg-slate-900 hover:bg-blue-600 text-white px-8 py-4 rounded-2xl font-[900] text-xs uppercase tracking-widest flex items-center justify-center gap-2 shadow-xl shadow-slate-900/20 active:scale-95 transition-all"
               >
                 <UserPlus className="w-4 h-4 text-blue-400" /> Registrarme como Profesional
-              </Link>
-              {/* CAMBIO AQUÍ: Botón para leer la Metodología */}
+              </a>
+              
+              {/* Botón a Metodología */}
               <Link 
                 href="/metodologia" 
                 className="bg-white border-2 border-slate-200 text-slate-700 px-8 py-4 rounded-2xl font-[900] text-xs uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-slate-100 active:scale-95 transition-all"
