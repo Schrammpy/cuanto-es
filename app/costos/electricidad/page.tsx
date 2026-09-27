@@ -2,34 +2,54 @@
 import React, { useState } from 'react';
 import { 
   Zap, Info, TrendingUp, Calculator, ChevronRight, 
-  CheckCircle2, Loader2, User, Phone, MapPin, X, Send 
+  CheckCircle2, Loader2, User, Phone, MapPin, X, Send, ShieldCheck 
 } from 'lucide-react';
 import Link from 'next/link';
 import Footer from '@/components/Footer';
 import { enviarLeadElectricidad, guardarPrecioElectricidad } from './action';
 
+// Componente de Tomás Ojeda integrado
+const ProfessionalCard = ({ pro }: { pro: any }) => (
+  <div className="bg-white p-6 rounded-[2.5rem] shadow-sm border border-blue-100 my-8">
+    <div className="flex items-center gap-4 mb-4">
+      <div className="w-16 h-16 rounded-2xl bg-blue-600 flex items-center justify-center text-white font-black text-xl shadow-lg">{pro.nombre.charAt(0)}</div>
+      <div>
+        <div className="flex items-center gap-1 text-emerald-600">
+          <ShieldCheck className="w-4 h-4 fill-emerald-100" />
+          <span className="text-[10px] font-black uppercase tracking-widest">Profesional Verificado</span>
+        </div>
+        <h3 className="text-lg font-black text-slate-800">{pro.nombre}</h3>
+        <p className="text-[10px] font-bold text-slate-400 uppercase">{pro.experiencia}</p>
+      </div>
+    </div>
+    <p className="text-xs text-slate-600 leading-relaxed italic mb-6">"{pro.bio}"</p>
+    <a 
+      href={`https://api.whatsapp.com/send?phone=${pro.whatsapp}&text=Hola%20${pro.nombre}%2C%20vi%20tu%20perfil%20en%20CuantoEs.com.py%20y%20necesito%20un%20presupuesto.`} 
+      target="_blank" 
+      className="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-4 rounded-2xl flex items-center justify-center gap-2 active:scale-95 transition-all uppercase text-[10px] tracking-widest"
+    >
+      <Send className="w-4 h-4" /> Contactar a {pro.nombre.split(' ')[0]}
+    </a>
+  </div>
+);
+
 export default function ElectricidadCostosPage() {
   const currentYear = new Date().getFullYear();
   const currentMonth = new Intl.DateTimeFormat('es-PY', { month: 'long' }).format(new Date());
 
-  // Estados
   const [servicio, setServicio] = useState('por_boca');
   const [bocas, setBocas] = useState(4);
   const [urgencia, setUrgencia] = useState('normal');
   const [loading, setLoading] = useState(false);
   const [resultado, setResultado] = useState<any>(null);
   
-  // Modales
   const [showForm, setShowForm] = useState(false);
   const [leadSent, setLeadSent] = useState(false);
   const [formLoading, setFormLoading] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
   const [reportSent, setReportSent] = useState(false);
 
-  // FUNCIÓN NECESARIA QUE FALTABA
-  const formatGs = (num: number) => {
-    return new Intl.NumberFormat('es-PY').format(Math.round(num));
-  };
+  const formatGs = (num: number) => new Intl.NumberFormat('es-PY').format(Math.round(num));
 
   const calcular = () => {
     setLoading(true);
@@ -40,10 +60,8 @@ export default function ElectricidadCostosPage() {
         else if (servicio === 'corto') precioBase = 350000;
         else if (servicio === 'ventilador') precioBase = 150000 * bocas;
 
-        let total = precioBase;
-        if (urgencia === 'urgente') total = Math.round(total * 1.3);
-
-        setResultado({ total, bocas, servicio, urgencia });
+        let total = urgencia === 'urgente' ? Math.round(precioBase * 1.3) : precioBase;
+        setResultado({ total });
         setLoading(false);
     }, 500);
   };
@@ -114,7 +132,14 @@ export default function ElectricidadCostosPage() {
 
       <section className="max-w-4xl mx-auto px-4 -mt-10 relative z-10">
         <div className="bg-white rounded-[3rem] shadow-2xl p-8 md:p-12 border border-slate-100 space-y-8">
-            {/* ... Formulario igual al anterior ... */}
+            <div className="flex items-center gap-3 border-b border-slate-100 pb-6">
+                <div className="bg-amber-50 p-3 rounded-2xl text-amber-600"><Zap className="w-6 h-6" /></div>
+                <div>
+                    <h2 className="text-xl font-black uppercase tracking-tight text-slate-900">Calculá tu trabajo</h2>
+                    <p className="text-xs text-slate-400 font-medium">Elegí la tarea y la cantidad de puntos</p>
+                </div>
+            </div>
+
             <div className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {[
@@ -147,11 +172,59 @@ export default function ElectricidadCostosPage() {
               <div className="pt-8 border-t border-slate-100 space-y-6">
                 <p className="text-center text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Estimado Mano de Obra</p>
                 <p className="text-5xl font-[900] text-emerald-600 tracking-tighter italic text-center">Gs. {formatGs(resultado.total)}</p>
-                <button onClick={() => setShowForm(true)} className="w-full bg-blue-600 text-white font-black py-5 rounded-2xl">SOLICITAR ELECTRICISTA</button>
+                
+                <ProfessionalCard pro={{
+                    nombre: "Tomas Ojeda",
+                    experiencia: "3 años de exp. • +35 instalaciones realizadas",
+                    bio: "Especialista en tableros y reparaciones. Garantizo trabajos limpios, seguros y bajo norma INTN.",
+                    whatsapp: "595985268047"
+                }} />
+
+                <button onClick={() => setShowForm(true)} className="w-full bg-blue-600 text-white font-black py-5 rounded-2xl uppercase text-xs tracking-widest">SOLICITAR ELECTRICISTA</button>
               </div>
             )}
         </div>
       </section>
+      
+      <section className="max-w-4xl mx-auto px-4 py-20 text-center">
+        <button onClick={() => setShowReportModal(true)} className="bg-slate-900 text-white font-black px-8 py-4 rounded-full uppercase text-[10px] tracking-widest">¿Cuánto pagaste por tu último arreglo?</button>
+      </section>
+
+      {/* MODALES */}
+      {showForm && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
+            <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={() => setShowForm(false)}></div>
+            <div className="bg-white p-8 rounded-[2rem] w-full max-w-sm relative z-10 shadow-2xl">
+                <button onClick={() => setShowForm(false)} className="absolute top-6 right-6 text-slate-300"><X /></button>
+                {leadSent ? <p className="text-center font-bold text-emerald-600">¡Solicitud enviada!</p> : (
+                    <form onSubmit={handleLeadSubmit} className="space-y-3">
+                        <input name="nombre" required placeholder="Tu Nombre" className="w-full bg-slate-50 p-3.5 rounded-2xl text-xs font-bold outline-none border focus:border-blue-500" />
+                        <input name="telefono" required type="tel" placeholder="WhatsApp" className="w-full bg-slate-50 p-3.5 rounded-2xl text-xs font-bold outline-none border focus:border-blue-500" />
+                        <input name="ciudad" required placeholder="Ciudad" className="w-full bg-slate-50 p-3.5 rounded-2xl text-xs font-bold outline-none border focus:border-blue-500" />
+                        <button className="w-full bg-blue-600 text-white py-4 rounded-2xl font-black uppercase text-xs">Enviar</button>
+                    </form>
+                )}
+            </div>
+        </div>
+      )}
+
+      {showReportModal && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
+            <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={() => setShowReportModal(false)}></div>
+            <div className="bg-white p-8 rounded-[2rem] w-full max-w-sm relative z-10 shadow-2xl">
+                <button onClick={() => setShowReportModal(false)} className="absolute top-6 right-6 text-slate-300"><X /></button>
+                {reportSent ? <p className="text-center font-bold text-blue-600">¡Aporte guardado!</p> : (
+                    <form onSubmit={handleReportSubmit} className="space-y-3">
+                        <input name="monto" required placeholder="Monto pagado" className="w-full bg-slate-50 p-3.5 rounded-2xl text-xs font-bold outline-none border" />
+                        <input name="ciudad" required placeholder="Ciudad" className="w-full bg-slate-50 p-3.5 rounded-2xl text-xs font-bold outline-none border" />
+                        <select name="incluyoMateriales" className="w-full bg-slate-50 p-3.5 rounded-2xl text-xs font-bold border"><option value="no">Solo mano de obra</option><option value="si">Incluyó materiales</option></select>
+                        <textarea name="comentario" placeholder="Detalles" className="w-full bg-slate-50 p-3.5 rounded-2xl text-xs font-bold outline-none border" />
+                        <button className="w-full bg-slate-900 text-white py-4 rounded-2xl font-black uppercase text-xs">Guardar</button>
+                    </form>
+                )}
+            </div>
+        </div>
+      )}
       <Footer />
     </main>
   );
