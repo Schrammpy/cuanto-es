@@ -186,7 +186,7 @@ export default function ElectricidadCostosPage() {
                 <ProfessionalCard pro={{
                     nombre: "Tomas Ojeda",
                     experiencia: "3 años de exp. • +35 instalaciones realizadas",
-                    bio: "Especialista en tableros y reparaciones. Garantizo trabajos limpios, seguros y bajo norma INTN. Cubro Luque y Gran Asunción.",
+                    bio: "Especialista en tableros y reparaciones. Garantizo trabajos limpios, seguros y bajo norma INTN. Cubro Gran Asunción.",
                     whatsapp: "595985268047"
                 }} />
 
