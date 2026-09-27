@@ -9,7 +9,6 @@ import Link from 'next/link';
 import Footer from '@/components/Footer';
 import { enviarLeadElectricidad, guardarPrecioElectricidad } from './action';
 
-// Componente del Profesional del Mes (Estructura de autoridad)
 const ProfessionalCard = ({ pro }: { pro: any }) => (
   <div className="bg-white p-8 rounded-[2.5rem] shadow-2xl border border-blue-50 my-10 animate-in fade-in slide-in-from-bottom-4">
     <div className="flex items-center gap-5 mb-6">
@@ -19,9 +18,9 @@ const ProfessionalCard = ({ pro }: { pro: any }) => (
       <div>
         <div className="flex items-center gap-1 text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full w-fit mb-2">
           <Award className="w-4 h-4" />
-          <span className="text-[9px] font-black uppercase tracking-widest">Profesional Destacado del Mes</span>
+          <span className="text-[9px] font-black uppercase tracking-widest">Profesional Destacado</span>
         </div>
-        <h3 className="text-xl font-black text-slate-800">{pro.nombre}</h3>
+        <h3 className="text-lg font-black text-slate-800">{pro.nombre}</h3>
         <div className="flex text-amber-400">
             {[...Array(5)].map((_, i) => <Star key={i} className="w-3 h-3 fill-amber-400" />)}
         </div>
@@ -30,7 +29,7 @@ const ProfessionalCard = ({ pro }: { pro: any }) => (
     <p className="text-sm text-slate-600 leading-relaxed italic mb-6">"{pro.bio}"</p>
     <div className="space-y-2 mb-6">
         <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Validado por:</p>
-        <p className="text-xs font-bold text-slate-700">✓ +35 instalaciones residenciales <br/> ✓ Certificación FAEP vigente</p>
+        <p className="text-xs font-bold text-slate-700">✓ +35 instalaciones realizadas <br/> ✓ Certificación FAEP vigente</p>
     </div>
     <a 
       href={`https://api.whatsapp.com/send?phone=${pro.whatsapp}&text=Hola%20${pro.nombre}%2C%20vi%20tu%20perfil%20destacado%20en%20CuantoEs.com.py%20y%20necesito%20un%20presupuesto.`} 
@@ -38,7 +37,7 @@ const ProfessionalCard = ({ pro }: { pro: any }) => (
       rel="noopener noreferrer"
       className="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-5 rounded-2xl flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-all uppercase text-xs tracking-widest"
     >
-      <MessageCircle className="w-4 h-4" /> SOLICITAR A {pro.nombre.split(' ')[0].toUpperCase()}
+      <MessageCircle className="w-4 h-4" /> CONTACTAR A {pro.nombre.split(' ')[0].toUpperCase()}
     </a>
   </div>
 );
@@ -69,6 +68,7 @@ export default function ElectricidadCostosPage() {
         else if (servicio === 'tablero') precioBase = 450000 + (bocas > 1 ? (bocas - 1) * 120000 : 0);
         else if (servicio === 'corto') precioBase = 350000;
         else if (servicio === 'ventilador') precioBase = 150000 * bocas;
+        
         let total = urgencia === 'urgente' ? Math.round(precioBase * 1.3) : precioBase;
         setResultado({ total });
         setLoading(false);
@@ -178,7 +178,7 @@ export default function ElectricidadCostosPage() {
             <button onClick={calcular} className="w-full bg-slate-900 text-white font-black py-5 rounded-2xl uppercase text-xs tracking-widest">Calcular</button>
 
             {resultado && (
-              <div className="pt-8 border-t border-slate-100 space-y-6">
+              <div className="pt-8 border-t border-slate-100 space-y-6 animate-in fade-in">
                 <p className="text-center text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Estimado Mano de Obra</p>
                 <p className="text-5xl font-[900] text-emerald-600 tracking-tighter italic text-center">Gs. {formatGs(resultado.total)}</p>
                 
@@ -196,12 +196,12 @@ export default function ElectricidadCostosPage() {
       </section>
       
       <section className="max-w-4xl mx-auto px-4 py-20 text-center">
-        <button onClick={() => setShowReportModal(true)} className="bg-slate-900 text-white font-black px-8 py-4 rounded-full uppercase text-[10px] tracking-widest">¿Cuánto pagaste por tu último arreglo?</button>
+        <button onClick={() => setShowReportModal(true)} className="bg-slate-900 text-white font-black px-8 py-4 rounded-full uppercase text-[10px] tracking-widest">Aportar mi precio</button>
       </section>
 
       {/* MODAL 1 */}
       {showForm && (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 animate-in fade-in">
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 animate-in fade-in duration-200">
             <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={() => setShowForm(false)}></div>
             <div className="bg-white p-8 rounded-[2rem] w-full max-w-sm relative z-10 shadow-2xl">
                 <button onClick={() => setShowForm(false)} className="absolute top-6 right-6 text-slate-300"><X /></button>
@@ -219,7 +219,7 @@ export default function ElectricidadCostosPage() {
 
       {/* MODAL 2 */}
       {showReportModal && (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 animate-in fade-in">
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 animate-in fade-in duration-200">
             <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={() => setShowReportModal(false)}></div>
             <div className="bg-white p-8 rounded-[2rem] w-full max-w-sm relative z-10 shadow-2xl">
                 <button onClick={() => setShowReportModal(false)} className="absolute top-6 right-6 text-slate-300"><X /></button>
