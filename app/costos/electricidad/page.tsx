@@ -9,6 +9,7 @@ import Link from 'next/link';
 import Footer from '@/components/Footer';
 import { enviarLeadElectricidad, guardarPrecioElectricidad } from './action';
 
+// --- COMPONENTE PROFESIONAL ---
 const ProfessionalCard = ({ pro }: { pro: any }) => (
   <div className="bg-white p-8 rounded-[2.5rem] shadow-2xl border border-blue-50 my-10 animate-in fade-in slide-in-from-bottom-4">
     <div className="flex items-center gap-5 mb-6">
@@ -178,7 +179,7 @@ export default function ElectricidadCostosPage() {
             <button onClick={calcular} className="w-full bg-slate-900 text-white font-black py-5 rounded-2xl uppercase text-xs tracking-widest">Calcular</button>
 
             {resultado && (
-              <div className="pt-8 border-t border-slate-100 space-y-6 animate-in fade-in">
+              <div className="pt-8 border-t border-slate-100 space-y-6 animate-in fade-in duration-500">
                 <p className="text-center text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Estimado Mano de Obra</p>
                 <p className="text-5xl font-[900] text-emerald-600 tracking-tighter italic text-center">Gs. {formatGs(resultado.total)}</p>
                 
