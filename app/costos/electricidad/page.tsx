@@ -196,9 +196,23 @@ export default function ElectricidadCostosPage() {
         </div>
       </section>
       
-      <section className="max-w-4xl mx-auto px-4 py-20 text-center">
-        <button onClick={() => setShowReportModal(true)} className="bg-slate-900 text-white font-black px-8 py-4 rounded-full uppercase text-[10px] tracking-widest">Aportar mi precio</button>
-      </section>
+      {/* 3. CROWDSOURCING: ¿CUÁNTO PAGASTE? */}
+<section className="max-w-4xl mx-auto px-4 py-20">
+    <div className="bg-blue-50 rounded-[3rem] p-8 md:p-12 flex flex-col md:flex-row gap-8 items-center border border-blue-100 shadow-sm">
+        <div className="flex-1 space-y-3 text-center md:text-left">
+            <h3 className="text-2xl font-black uppercase text-blue-950 tracking-tight">¿Ya contrataste un electricista hace poco?</h3>
+            <p className="text-xs text-blue-900/70 font-medium leading-relaxed">
+                Ayudá a que los precios en Paraguay sean justos y transparentes. Reportá tu costo de forma 100% anónima para actualizar el índice.
+            </p>
+        </div>
+        <button 
+            onClick={() => setShowReportModal(true)}
+            className="bg-blue-600 hover:bg-blue-700 text-white font-black px-8 py-4 rounded-2xl shadow-lg active:scale-95 transition-all text-xs uppercase tracking-widest shrink-0"
+        >
+            APORTAR MI PRECIO
+        </button>
+    </div>
+</section>
 
       {/* MODAL 1 */}
       {showForm && (
