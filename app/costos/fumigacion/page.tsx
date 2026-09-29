@@ -1146,30 +1146,6 @@ export default function FumigacionPage() {
                   "
                 />
 
-                <select
-                  name="incluyoMateriales"
-                  className="
-                    w-full
-                    bg-slate-50
-                    p-3.5
-                    rounded-2xl
-                    text-xs
-                    font-bold
-                    border
-                    text-slate-500
-                  "
-                >
-
-                  <option value="no">
-                    Solo mano de obra
-                  </option>
-
-                  <option value="si">
-                    Incluyó materiales
-                  </option>
-
-                </select>
-
                 <textarea
                   name="comentario"
                   placeholder="Detalles"
