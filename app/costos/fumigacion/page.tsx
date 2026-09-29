@@ -125,7 +125,15 @@ export default function FumigacionPage() {
                     <div>
                         <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Superficie (m²)</p>
                     </div>
-                    <input type="number" value={m2} onChange={(e) => setM2(e.target.value)} placeholder="0" className="w-20 bg-transparent outline-none font-black text-2xl text-slate-800 text-right" />
+                    <input
+                        type="number"
+                        min="1"
+                        step="1"
+                        value={m2}
+                        onChange={(e) => setM2(e.target.value)}
+                        placeholder="Ej: 120"
+                        className="w-32 bg-white border border-slate-200 rounded-xl px-3 py-2 outline-none font-black text-2xl text-slate-800 text-right"
+                        />
                 </div>
             </div>
 
