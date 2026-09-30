@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { 
   Car, Wrench, Settings, TrendingUp, Calculator, 
   ChevronRight, CheckCircle2, Loader2, User, 
-  Phone, MapPin, X, Send, Activity, Settings2, Check 
+  Phone, MapPin, X, Send, Activity, Settings2, Check, Info 
 } from 'lucide-react';
 import Link from 'next/link';
 import Footer from '@/components/Footer';
