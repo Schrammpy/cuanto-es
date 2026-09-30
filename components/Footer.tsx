@@ -35,8 +35,8 @@ export default function Footer() {
         {/* COLUMNA 2: CONTACTO B2B */}
         <div className="space-y-6 text-center md:text-right flex flex-col items-center md:items-end">
           <div className="space-y-1">
-              <h3 className="text-white font-black text-[10px] uppercase tracking-[0.2em] opacity-50">Desarrollo y Análisis</h3>
-              <p className="text-sm font-bold text-slate-300">Proyecto Independiente</p>
+              <h3 className="text-white font-black text-[10px] uppercase tracking-[0.2em] opacity-50">Análisis y Desarrollo</h3>
+              <p className="text-sm font-bold text-slate-300">Diego Schramm</p>
           </div>
           
           <div className="flex flex-col items-center md:items-end gap-3">  
