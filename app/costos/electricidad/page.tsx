@@ -187,7 +187,7 @@ export default function ElectricidadCostosPage() {
                     nombre: "Tomas Ojeda",
                     experiencia: "3 años de exp. • +35 instalaciones realizadas",
                     bio: "Especialista en tableros y reparaciones. Garantizo trabajos limpios, seguros y bajo norma INTN. Cubro Gran Asunción.",
-                    whatsapp: "595985268047"
+                    whatsapp: "595972258888"
                 }} />
 
                 <button onClick={() => setShowForm(true)} className="w-full bg-blue-600 text-white font-black py-5 rounded-2xl uppercase tracking-widest text-xs">Solicitar Electricista</button>
