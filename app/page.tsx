@@ -113,77 +113,137 @@ const categories = [
   },
 ];
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    const q = query.toLowerCase().trim();
-    if (!q) return;
+const handleSearch = (e: React.FormEvent) => {
+  e.preventDefault();
 
-    if (q.includes('pinto') || q.includes('pintar') || q.includes('pared') || q.includes('fachada')) {
-      router.push('/costos/pintura');
-    } else if (q.includes('aire') || q.includes('split') || q.includes('clima') || q.includes('acondicionador') || q.includes('btu')) {
-      router.push('/costos/aire');
-    } else if (q.includes('flete') || q.includes('mudan') || q.includes('camion') || q.includes('traslado')) {
-      router.push('/costos/fletes');
-    } else if (q.includes('asado') || q.includes('parri') || q.includes('carne') || q.includes('asador')) {
-      router.push('/costos/asado');
-    } else if (q.includes('plomer') || q.includes('agua') || q.includes('fuga') || q.includes('cano') || q.includes('caño') || q.includes('destranq') || q.includes('termo')) {
-      router.push('/costos/plomeria');
-    } else if (q.includes('electr') || q.includes('luz') || q.includes('cable') || q.includes('tablero') || q.includes('enchufe') || q.includes('corto')) {
-      router.push('/costos/electricidad');
-    } else if (q.includes('limp') || q.includes('aseo') || q.includes('limpieza') || q.includes('obra')) {
-      router.push('/costos/limpieza');
-    } else if (q.includes('albañil') || q.includes('albanil') || q.includes('muro') || q.includes('muralla') || q.includes('revoque') || q.includes('piso') || q.includes('techo')) {
-      router.push('/costos/albanileria');
-    } else if (
-  q.includes('fumig') ||
-  q.includes('plaga') ||
-  q.includes('insecto') ||
-  q.includes('cucaracha') ||
-  q.includes('mosquito')
-) {
-  router.push('/costos/fumigacion');
+  const q = query.toLowerCase().trim();
 
-} else if (
-  q.includes('mantenimiento auto') ||
-  q.includes('mantenimiento de auto') ||
-  q.includes('vehiculo') ||
-  q.includes('vehículo') ||
-  q.includes('aceite') ||
-  q.includes('freno') ||
-  q.includes('alineacion') ||
-  q.includes('alineación') ||
-  q.includes('balanceo') ||
-  q.includes('taller')
-) {
-  router.push('/costos/mantenimiento-auto');
+  if (!q) return;
 
-} else if (
-  q.includes('electrodom') ||
-  q.includes('heladera') ||
-  q.includes('freezer') ||
-  q.includes('lavarropas') ||
-  q.includes('microondas') ||
-  q.includes('televisor') ||
-  q.includes('tv')
-) {
-  router.push('/costos/electrodomesticos');
+  if (
+    q.includes('pinto') ||
+    q.includes('pintar') ||
+    q.includes('pared') ||
+    q.includes('fachada')
+  ) {
+    router.push('/costos/pintura');
 
-} else if (
-  q.includes('celular') ||
-  q.includes('smartphone') ||
-  q.includes('iphone') ||
-  q.includes('android') ||
-  q.includes('bateria celular') ||
-  q.includes('batería celular') ||
-  q.includes('pin de carga')
-) {
-  router.push('/costos/reparacion-celulares');
+  } else if (
+    q.includes('aire') ||
+    q.includes('split') ||
+    q.includes('clima') ||
+    q.includes('acondicionador') ||
+    q.includes('btu')
+  ) {
+    router.push('/costos/aire');
 
-} else {
-      alert(
-  "No encontramos ese término exacto. Probá buscando: pintura, aire, flete, asado, plomería, electricidad, limpieza, albañilería, fumigación, mantenimiento de auto, electrodomésticos o celulares."
-);
-  };
+  } else if (
+    q.includes('flete') ||
+    q.includes('mudan') ||
+    q.includes('camion') ||
+    q.includes('traslado')
+  ) {
+    router.push('/costos/fletes');
+
+  } else if (
+    q.includes('asado') ||
+    q.includes('parri') ||
+    q.includes('carne') ||
+    q.includes('asador')
+  ) {
+    router.push('/costos/asado');
+
+  } else if (
+    q.includes('plomer') ||
+    q.includes('agua') ||
+    q.includes('fuga') ||
+    q.includes('cano') ||
+    q.includes('caño') ||
+    q.includes('destranq') ||
+    q.includes('termo')
+  ) {
+    router.push('/costos/plomeria');
+
+  } else if (
+    q.includes('electr') ||
+    q.includes('luz') ||
+    q.includes('cable') ||
+    q.includes('tablero') ||
+    q.includes('enchufe') ||
+    q.includes('corto')
+  ) {
+    router.push('/costos/electricidad');
+
+  } else if (
+    q.includes('limp') ||
+    q.includes('aseo') ||
+    q.includes('limpieza') ||
+    q.includes('obra')
+  ) {
+    router.push('/costos/limpieza');
+
+  } else if (
+    q.includes('albañil') ||
+    q.includes('albanil') ||
+    q.includes('muro') ||
+    q.includes('muralla') ||
+    q.includes('revoque') ||
+    q.includes('piso') ||
+    q.includes('techo')
+  ) {
+    router.push('/costos/albanileria');
+
+  } else if (
+    q.includes('fumig') ||
+    q.includes('plaga') ||
+    q.includes('insecto') ||
+    q.includes('cucaracha') ||
+    q.includes('mosquito')
+  ) {
+    router.push('/costos/fumigacion');
+
+  } else if (
+    q.includes('mantenimiento auto') ||
+    q.includes('mantenimiento de auto') ||
+    q.includes('vehiculo') ||
+    q.includes('vehículo') ||
+    q.includes('aceite') ||
+    q.includes('freno') ||
+    q.includes('alineacion') ||
+    q.includes('alineación') ||
+    q.includes('balanceo') ||
+    q.includes('taller')
+  ) {
+    router.push('/costos/mantenimiento-auto');
+
+  } else if (
+    q.includes('electrodom') ||
+    q.includes('heladera') ||
+    q.includes('freezer') ||
+    q.includes('lavarropas') ||
+    q.includes('microondas') ||
+    q.includes('televisor') ||
+    q.includes('tv')
+  ) {
+    router.push('/costos/electrodomesticos');
+
+  } else if (
+    q.includes('celular') ||
+    q.includes('smartphone') ||
+    q.includes('iphone') ||
+    q.includes('android') ||
+    q.includes('bateria celular') ||
+    q.includes('batería celular') ||
+    q.includes('pin de carga')
+  ) {
+    router.push('/costos/reparacion-celulares');
+
+  } else {
+    alert(
+      'No encontramos ese término exacto. Probá buscando: pintura, aire, flete, asado, plomería, electricidad, limpieza, albañilería, fumigación, mantenimiento de auto, electrodomésticos o celulares.'
+    );
+  }
+};
 
   return (
     <main className="min-h-screen bg-white">
