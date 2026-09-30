@@ -1,23 +1,54 @@
-
-
 import type { Metadata } from "next";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/react";
 import Script from "next/script";
-import Navbar from "@/components/Navbar"; // 1. Importamos el Navbar
+import Navbar from "@/components/Navbar";
 
 export const metadata: Metadata = {
-  title: "CuantoEs.com.py — Cuentas Claras en Paraguay",
-  description: "Calculá los gastos del asado, el fútbol o la cena. Consultá multas de tránsito y beneficios bancarios en un solo lugar.",
-  openGraph: {
-    title: "CuantoEs.com.py — Cuentas Claras",
-    description: "La herramienta paraguaya para dividir gastos y consultar multas.",
-    url: 'https://cuantoes.com.py',
-    siteName: 'CuantoEs.py',
-    locale: 'es_PY',
-    type: 'website',
+  // Dominio base oficial del sitio
+  metadataBase: new URL("https://www.cuantoes.com.py"),
+
+  // Nombre de la aplicación/sitio
+  applicationName: "CuantoEs.com.py",
+
+  // Título global + preparado para títulos individuales por categoría
+  title: {
+    default: "Precios de Servicios en Paraguay | CuantoEs.com.py",
+    template: "%s | CuantoEs.com.py",
   },
-  // Tu código de verificación de Google que ya tenés...
+
+  // Descripción general actualizada al objetivo real del sitio
+  description:
+    "Consultá precios de referencia y calculá costos de servicios en Paraguay: pintura, aire acondicionado, plomería, electricidad, fumigación, reparaciones y más.",
+
+  // Información general del proyecto
+  creator: "CuantoEs.com.py",
+  publisher: "CuantoEs.com.py",
+
+  // Open Graph: WhatsApp, Facebook, LinkedIn, etc.
+  openGraph: {
+    title: "Precios de Servicios en Paraguay | CuantoEs.com.py",
+    description:
+      "Consultá precios de referencia y calculá costos de servicios en Paraguay: pintura, aire acondicionado, plomería, electricidad, fumigación, reparaciones y más.",
+    siteName: "CuantoEs.com.py",
+    locale: "es_PY",
+    type: "website",
+  },
+
+  // Permitimos indexación y previews amplios en Google
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
+
+  // Verificación existente de Google Search Console
   verification: {
     google: "hHy60sdyIMfmiO5K5wUbbn5O00mvM8vCN6lBbkkFX7o",
   },
@@ -29,13 +60,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es">
+    <html lang="es-PY">
       <body className="antialiased bg-[#F8FAFC]">
         {/* GOOGLE ANALYTICS */}
         <Script
-          src={`https://www.googletagmanager.com/gtag/js?id=G-VNDCH7QL6Q`}
+          src="https://www.googletagmanager.com/gtag/js?id=G-VNDCH7QL6Q"
           strategy="afterInteractive"
         />
+
         <Script id="google-analytics" strategy="afterInteractive">
           {`
             window.dataLayer = window.dataLayer || [];
@@ -45,12 +77,10 @@ export default function RootLayout({
           `}
         </Script>
 
-        {/* 2. EL NAVBAR APARECE AQUÍ (Arriba de todo) */}
         <Navbar />
 
-        {/* 3. El contenido de cada página (page.tsx) se carga aquí */}
         {children}
-        
+
         <Analytics />
       </body>
     </html>
