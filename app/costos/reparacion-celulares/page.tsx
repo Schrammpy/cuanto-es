@@ -1,8 +1,25 @@
 'use client';
 import React, { useState } from 'react';
 import { 
-  Smartphone, MonitorSmartphone, BatteryCharging, Check, Info, TrendingUp, 
-  Calculator, ChevronRight, CheckCircle2, Loader2, User, Phone, MapPin, X, Send 
+  Smartphone,
+  MonitorSmartphone,
+  BatteryCharging,
+  Check,
+  Info,
+  TrendingUp,
+  Calculator,
+  ChevronRight,
+  CheckCircle2,
+  Loader2,
+  User,
+  Phone,
+  MapPin,
+  X,
+  Send,
+  Droplets,
+  Zap,
+  Wrench,
+  Search
 } from 'lucide-react';
 import Link from 'next/link';
 import Footer from '@/components/Footer';
