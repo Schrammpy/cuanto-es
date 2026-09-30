@@ -7,24 +7,111 @@ import {
   Search, ChevronRight, Calculator, Wrench, ShieldAlert, 
   Truck, PaintBucket, Wind, Package, Sparkles, Beef, 
   Droplets, Zap, Sparkle, Hammer, UserPlus, ArrowUpRight,
-  Info // <--- Import del icono Info agregado aquí
+  Info, Bug, Car, Plug, Smartphone
 } from 'lucide-react';
 
 export default function Home() {
   const [query, setQuery] = useState('');
   const router = useRouter();
 
-  // 8 SERVICIOS: 4 arriba y 4 abajo en Desktop
-  const categories = [
-    { name: 'Pintura', sub: 'Casas y Fachadas', Icon: PaintBucket, color: 'bg-orange-500', href: '/costos/pintura' },
-    { name: 'Aire Split', sub: 'Colocación y Limpieza', Icon: Wind, color: 'bg-sky-500', href: '/costos/aire' },
-    { name: 'Fletes', sub: 'Mudanzas y Cargas', Icon: Truck, color: 'bg-emerald-500', href: '/costos/fletes' },
-    { name: 'Asado', sub: 'Parrilleros a Domicilio', Icon: Beef, color: 'bg-red-500', href: '/costos/asado' },
-    { name: 'Plomería', sub: 'Destranques y Fugas', Icon: Droplets, color: 'bg-blue-600', href: '/costos/plomeria' },
-    { name: 'Electricidad', sub: 'Tableros y Cableado', Icon: Zap, color: 'bg-amber-500', href: '/costos/electricidad' },
-    { name: 'Limpieza', sub: 'Hogar y Fin de Obra', Icon: Sparkle, color: 'bg-teal-500', href: '/costos/limpieza' },
-    { name: 'Albañilería', sub: 'Murallas y Reformas', Icon: Hammer, color: 'bg-stone-600', href: '/costos/albanileria' },
-  ];
+  // 12 SERVICIOS: 4 por fila en Desktop
+const categories = [
+  { 
+    name: 'Pintura', 
+    sub: 'Casas y Fachadas', 
+    Icon: PaintBucket, 
+    color: 'bg-orange-500', 
+    href: '/costos/pintura' 
+  },
+
+  { 
+    name: 'Aire Split', 
+    sub: 'Colocación y Limpieza', 
+    Icon: Wind, 
+    color: 'bg-sky-500', 
+    href: '/costos/aire' 
+  },
+
+  { 
+    name: 'Fletes', 
+    sub: 'Mudanzas y Cargas', 
+    Icon: Truck, 
+    color: 'bg-emerald-500', 
+    href: '/costos/fletes' 
+  },
+
+  { 
+    name: 'Asado', 
+    sub: 'Parrilleros a Domicilio', 
+    Icon: Beef, 
+    color: 'bg-red-500', 
+    href: '/costos/asado' 
+  },
+
+  { 
+    name: 'Plomería', 
+    sub: 'Destranques y Fugas', 
+    Icon: Droplets, 
+    color: 'bg-blue-600', 
+    href: '/costos/plomeria' 
+  },
+
+  { 
+    name: 'Electricidad', 
+    sub: 'Tableros y Cableado', 
+    Icon: Zap, 
+    color: 'bg-amber-500', 
+    href: '/costos/electricidad' 
+  },
+
+  { 
+    name: 'Limpieza', 
+    sub: 'Hogar y Fin de Obra', 
+    Icon: Sparkle, 
+    color: 'bg-teal-500', 
+    href: '/costos/limpieza' 
+  },
+
+  { 
+    name: 'Albañilería', 
+    sub: 'Murallas y Reformas', 
+    Icon: Hammer, 
+    color: 'bg-stone-600', 
+    href: '/costos/albanileria' 
+  },
+
+  { 
+    name: 'Fumigación', 
+    sub: 'Hogares y Comercios', 
+    Icon: Bug, 
+    color: 'bg-lime-600', 
+    href: '/costos/fumigacion' 
+  },
+
+  { 
+    name: 'Mantenimiento Auto', 
+    sub: 'Service y Mantenimiento', 
+    Icon: Car, 
+    color: 'bg-blue-700', 
+    href: '/costos/mantenimiento-auto' 
+  },
+
+  { 
+    name: 'Electrodomésticos', 
+    sub: 'Reparación y Diagnóstico', 
+    Icon: Plug, 
+    color: 'bg-indigo-600', 
+    href: '/costos/electrodomesticos' 
+  },
+
+  { 
+    name: 'Celulares', 
+    sub: 'Reparación y Servicio', 
+    Icon: Smartphone, 
+    color: 'bg-violet-600', 
+    href: '/costos/reparacion-celulares' 
+  },
+];
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,9 +134,55 @@ export default function Home() {
       router.push('/costos/limpieza');
     } else if (q.includes('albañil') || q.includes('albanil') || q.includes('muro') || q.includes('muralla') || q.includes('revoque') || q.includes('piso') || q.includes('techo')) {
       router.push('/costos/albanileria');
-    } else {
-      alert("No encontramos ese término exacto. Probá buscando: pintura, aire, flete, asado, plomería, electricidad, limpieza o albañilería.");
-    }
+    } else if (
+  q.includes('fumig') ||
+  q.includes('plaga') ||
+  q.includes('insecto') ||
+  q.includes('cucaracha') ||
+  q.includes('mosquito')
+) {
+  router.push('/costos/fumigacion');
+
+} else if (
+  q.includes('mantenimiento auto') ||
+  q.includes('mantenimiento de auto') ||
+  q.includes('vehiculo') ||
+  q.includes('vehículo') ||
+  q.includes('aceite') ||
+  q.includes('freno') ||
+  q.includes('alineacion') ||
+  q.includes('alineación') ||
+  q.includes('balanceo') ||
+  q.includes('taller')
+) {
+  router.push('/costos/mantenimiento-auto');
+
+} else if (
+  q.includes('electrodom') ||
+  q.includes('heladera') ||
+  q.includes('freezer') ||
+  q.includes('lavarropas') ||
+  q.includes('microondas') ||
+  q.includes('televisor') ||
+  q.includes('tv')
+) {
+  router.push('/costos/electrodomesticos');
+
+} else if (
+  q.includes('celular') ||
+  q.includes('smartphone') ||
+  q.includes('iphone') ||
+  q.includes('android') ||
+  q.includes('bateria celular') ||
+  q.includes('batería celular') ||
+  q.includes('pin de carga')
+) {
+  router.push('/costos/reparacion-celulares');
+
+} else {
+      alert(
+  "No encontramos ese término exacto. Probá buscando: pintura, aire, flete, asado, plomería, electricidad, limpieza, albañilería, fumigación, mantenimiento de auto, electrodomésticos o celulares."
+);
   };
 
   return (
