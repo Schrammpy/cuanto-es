@@ -16,5 +16,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${baseUrl}/costos/electricidad`, lastModified: new Date(), priority: 0.9 },
     { url: `${baseUrl}/costos/limpieza`, lastModified: new Date(), priority: 0.9 },
     { url: `${baseUrl}/costos/albanileria`, lastModified: new Date(), priority: 0.9 },
+    { url: `${baseUrl}/costos/fumigacion`, lastModified: new Date(), priority: 0.9 },
+    { url: `${baseUrl}/costos/mantenimiento-auto`, lastModified: new Date(), priority: 0.9 },
+    { url: `${baseUrl}/costos/electrodomesticos`, lastModified: new Date(), priority: 0.9 },
+    { url: `${baseUrl}/costos/reparacion-celulares`, lastModified: new Date(), priority: 0.9 },
   ]
 }
