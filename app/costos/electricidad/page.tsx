@@ -137,6 +137,33 @@ export default function ElectricidadCostosPage() {
               <p className="text-2xl lg:text-3xl font-black text-blue-400 whitespace-nowrap">350 mil <span className="text-xs font-normal text-slate-400">base</span></p>
             </div>
           </div>
+          {/* VISITA TÉCNICA - REFERENCIA INFORMATIVA */}
+<div className="mt-4 bg-amber-400/10 border border-amber-400/20 rounded-2xl p-4 md:p-5 flex items-start gap-4">
+
+  <div className="bg-amber-400/10 p-2.5 rounded-xl shrink-0">
+    <Info className="w-5 h-5 text-amber-300" />
+  </div>
+
+  <div className="space-y-1">
+    <p className="text-[10px] font-black text-amber-300 uppercase tracking-widest">
+      Visita Técnica
+    </p>
+
+    <p className="text-xl md:text-2xl font-black text-white">
+      Gs. 100.000 a 150.000
+      <span className="text-[10px] md:text-xs font-normal text-slate-400 ml-2">
+        referencia
+      </span>
+    </p>
+
+    <p className="text-[11px] text-slate-400 font-medium leading-relaxed">
+      Costo referencial por visita e inspección técnica del electricista.
+    </p>
+  </div>
+
+</div>
+
+          
         </div>
       </section>
 
