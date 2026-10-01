@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from 'react';
 
 import {
-  Wind,
   ThermometerSnowflake,
   Info,
   TrendingUp,
@@ -23,7 +22,10 @@ import {
 } from './action';
 
 
-type TipoServicio = 'instalacion' | 'mantenimiento' | 'otros';
+type TipoServicio =
+  | 'instalacion'
+  | 'mantenimiento'
+  | 'otros';
 
 
 interface PrecioServicio {
@@ -82,16 +84,22 @@ export default function AireCostosPage() {
   // PRECIOS
   // ============================================================
 
-  const [precios, setPrecios] = useState<PrecioServicio[]>([]);
-  const [preciosLoading, setPreciosLoading] = useState(true);
-  const [preciosError, setPreciosError] = useState('');
+  const [precios, setPrecios] =
+    useState<PrecioServicio[]>([]);
+
+  const [preciosLoading, setPreciosLoading] =
+    useState(true);
+
+  const [preciosError, setPreciosError] =
+    useState('');
 
 
   // ============================================================
-  // ESTADOS CALCULADORA
+  // CALCULADORA
   // ============================================================
 
-  const [btu, setBtu] = useState('12000');
+  const [btu, setBtu] =
+    useState('12000');
 
   const [tipo, setTipo] =
     useState<TipoServicio>('instalacion');
@@ -99,35 +107,132 @@ export default function AireCostosPage() {
   const [otroServicio, setOtroServicio] =
     useState('visita_tecnica');
 
-  const [cantidad, setCantidad] = useState(1);
+  const [cantidad, setCantidad] =
+    useState(1);
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] =
+    useState(false);
 
-  const [resultado, setResultado] = useState<any>(null);
+  const [resultado, setResultado] =
+    useState<any>(null);
 
 
   // ============================================================
   // MODALES
   // ============================================================
 
-  const [showForm, setShowForm] = useState(false);
+  const [showForm, setShowForm] =
+    useState(false);
 
-  const [leadSent, setLeadSent] = useState(false);
+  const [leadSent, setLeadSent] =
+    useState(false);
 
-  const [formLoading, setFormLoading] = useState(false);
+  const [formLoading, setFormLoading] =
+    useState(false);
 
-  const [showReportModal, setShowReportModal] = useState(false);
+  const [showReportModal, setShowReportModal] =
+    useState(false);
 
-  const [reportSent, setReportSent] = useState(false);
+  const [reportSent, setReportSent] =
+    useState(false);
 
 
   // ============================================================
-  // FORMATO
+  // FORMATOS
   // ============================================================
 
   const formatGs = (valor: number) => {
 
     return new Intl.NumberFormat('es-PY').format(valor);
+
+  };
+
+
+  /*
+   * Formato utilizado únicamente en las tarjetas superiores.
+   *
+   * 300000 -> 300
+   * 450000 -> 450
+   *
+   * Resultado:
+   * Gs. 300 a 450 mil
+   */
+  const formatRangoCompacto = (
+    minimo: number,
+    maximo: number
+  ) => {
+
+    /*
+     * Ambos valores menores a un millón.
+     */
+
+    if (maximo < 1000000) {
+
+      const minMiles =
+        Math.round(minimo / 1000);
+
+      const maxMiles =
+        Math.round(maximo / 1000);
+
+
+      if (minimo === maximo) {
+
+        return `Gs. ${minMiles} mil`;
+
+      }
+
+
+      return `Gs. ${minMiles} a ${maxMiles} mil`;
+
+    }
+
+
+    /*
+     * Ambos valores desde un millón.
+     */
+
+    if (
+      minimo >= 1000000 &&
+      maximo >= 1000000
+    ) {
+
+      const formatter =
+        new Intl.NumberFormat('es-PY', {
+          maximumFractionDigits: 2
+        });
+
+
+      const minMillones =
+        formatter.format(minimo / 1000000);
+
+      const maxMillones =
+        formatter.format(maximo / 1000000);
+
+
+      if (minimo === maximo) {
+
+        return `Gs. ${minMillones} mill.`;
+
+      }
+
+
+      return `Gs. ${minMillones} a ${maxMillones} mill.`;
+
+    }
+
+
+    /*
+     * Caso poco habitual:
+     * rango que cruza un millón.
+     *
+     * Ejemplo:
+     * 900.000 a 1.200.000
+     */
+
+    return (
+      `Gs. ${formatGs(minimo)} ` +
+      `a ${formatGs(maximo)}`
+    );
 
   };
 
@@ -145,18 +250,10 @@ export default function AireCostosPage() {
         setPreciosLoading(true);
         setPreciosError('');
 
-        const res: any = await obtenerPreciosAire();
 
+        const res: any =
+          await obtenerPreciosAire();
 
-        /*
-         * Permitimos que la action retorne:
-         *
-         * { success: true, data: [...] }
-         *
-         * o directamente:
-         *
-         * [...]
-         */
 
         const data: PrecioServicio[] =
           Array.isArray(res)
@@ -180,25 +277,36 @@ export default function AireCostosPage() {
         }
 
 
-        // Si visita_tecnica no existe, seleccionamos
-        // el primer servicio adicional disponible.
+        /*
+         * Si visita_tecnica no existe,
+         * dejamos seleccionado el primer
+         * servicio adicional disponible.
+         */
 
-        const otrosDisponibles = OTROS_SERVICIOS.filter(
-          servicio =>
-            data.some(
-              precio => precio.servicio === servicio.id
-            )
-        );
+        const disponibles =
+          OTROS_SERVICIOS.filter(
+            item =>
+              data.some(
+                precio =>
+                  precio.servicio === item.id
+              )
+          );
 
 
-        if (
-          otrosDisponibles.length > 0 &&
-          !otrosDisponibles.some(
-            item => item.id === otroServicio
-          )
-        ) {
+        if (disponibles.length > 0) {
 
-          setOtroServicio(otrosDisponibles[0].id);
+          setOtroServicio(prev => {
+
+            const existeActual =
+              disponibles.some(
+                item => item.id === prev
+              );
+
+            return existeActual
+              ? prev
+              : disponibles[0].id;
+
+          });
 
         }
 
@@ -208,6 +316,7 @@ export default function AireCostosPage() {
           'Error cargando precios de aire acondicionado:',
           error
         );
+
 
         setPreciosError(
           'No pudimos cargar los precios de referencia.'
@@ -228,21 +337,32 @@ export default function AireCostosPage() {
 
 
   // ============================================================
-  // UTILIDADES DE PRECIOS
+  // UTILIDADES
   // ============================================================
 
-  const buscarPrecio = (servicio: string) => {
+  const buscarPrecio = (
+    servicio: string
+  ) => {
 
     return precios.find(
-      precio => precio.servicio === servicio
+      precio =>
+        precio.servicio === servicio
     );
 
   };
 
 
-  const rangoServicio = (servicio: string) => {
+  /*
+   * Rango compacto utilizado en las
+   * tarjetas superiores.
+   */
+  const rangoServicio = (
+    servicio: string
+  ) => {
 
-    const precio = buscarPrecio(servicio);
+    const precio =
+      buscarPrecio(servicio);
+
 
     if (!precio) {
 
@@ -251,66 +371,89 @@ export default function AireCostosPage() {
     }
 
 
-    const minimo = Number(precio.precio_min);
+    const minimo =
+      Number(precio.precio_min);
 
-    const maximo = Number(precio.precio_max);
-
-
-    if (minimo === maximo) {
-
-      return `Gs. ${formatGs(minimo)}`;
-
-    }
+    const maximo =
+      Number(precio.precio_max);
 
 
-    return `Gs. ${formatGs(minimo)} a ${formatGs(maximo)}`;
+    return formatRangoCompacto(
+      minimo,
+      maximo
+    );
 
   };
 
 
-  const calcularRangoGeneralInstalacion = () => {
+  /*
+   * Busca el valor mínimo y máximo
+   * considerando todas las instalaciones.
+   */
+  const calcularRangoGeneralInstalacion =
+    () => {
 
-    const servicios = [
-      buscarPrecio('instalacion_12k'),
-      buscarPrecio('instalacion_18k'),
-      buscarPrecio('instalacion_24k')
-    ].filter(Boolean) as PrecioServicio[];
+      const servicios = [
 
+        buscarPrecio(
+          'instalacion_12k'
+        ),
 
-    if (servicios.length === 0) {
+        buscarPrecio(
+          'instalacion_18k'
+        ),
 
-      return 'Consultá';
+        buscarPrecio(
+          'instalacion_24k'
+        )
 
-    }
-
-
-    const minimos = servicios.map(
-      p => Number(p.precio_min)
-    );
-
-    const maximos = servicios.map(
-      p => Number(p.precio_max)
-    );
-
-
-    const minimo = Math.min(...minimos);
-    const maximo = Math.max(...maximos);
+      ].filter(Boolean) as PrecioServicio[];
 
 
-    return `${formatGs(minimo)} a ${formatGs(maximo)}`;
+      if (servicios.length === 0) {
 
-  };
+        return 'Consultá';
+
+      }
+
+
+      const minimos =
+        servicios.map(
+          p => Number(p.precio_min)
+        );
+
+      const maximos =
+        servicios.map(
+          p => Number(p.precio_max)
+        );
+
+
+      const minimo =
+        Math.min(...minimos);
+
+      const maximo =
+        Math.max(...maximos);
+
+
+      return formatRangoCompacto(
+        minimo,
+        maximo
+      );
+
+    };
 
 
   // ============================================================
-  // SERVICIOS ADICIONALES DISPONIBLES
+  // OTROS SERVICIOS DISPONIBLES
   // ============================================================
 
   const otrosServiciosDisponibles =
     OTROS_SERVICIOS.filter(
       servicio =>
         precios.some(
-          precio => precio.servicio === servicio.id
+          precio =>
+            precio.servicio ===
+            servicio.id
         )
     );
 
@@ -332,26 +475,30 @@ export default function AireCostosPage() {
 
       if (tipo === 'instalacion') {
 
-        codigoServicio = INSTALACIONES[btu];
+        codigoServicio =
+          INSTALACIONES[btu];
 
       }
 
 
       if (tipo === 'mantenimiento') {
 
-        codigoServicio = 'mantenimiento_preventivo';
+        codigoServicio =
+          'mantenimiento_preventivo';
 
       }
 
 
       if (tipo === 'otros') {
 
-        codigoServicio = otroServicio;
+        codigoServicio =
+          otroServicio;
 
       }
 
 
-      const precio = buscarPrecio(codigoServicio);
+      const precio =
+        buscarPrecio(codigoServicio);
 
 
       if (!precio) {
@@ -383,16 +530,12 @@ export default function AireCostosPage() {
         precioMax * cantidad;
 
 
-      /*
-       * Conservamos "total" para no modificar
-       * la estructura utilizada actualmente
-       * por enviarLeadAire().
-       *
-       * Ahora también enviamos totalMin y totalMax.
-       */
-
       setResultado({
 
+        /*
+         * Mantenemos total por compatibilidad
+         * con el sistema actual de leads.
+         */
         total: totalMin,
 
         totalMin,
@@ -403,7 +546,8 @@ export default function AireCostosPage() {
 
         precioMax,
 
-        servicio: codigoServicio,
+        servicio:
+          codigoServicio,
 
         descripcion:
           precio.descripcion_breve || '',
@@ -428,8 +572,7 @@ export default function AireCostosPage() {
 
 
   // ============================================================
-  // LEAD
-  // NO SE MODIFICA SU FUNCIONAMIENTO
+  // LEAD PARA TÉCNICOS
   // ============================================================
 
   const handleLeadSubmit =
@@ -441,8 +584,10 @@ export default function AireCostosPage() {
 
       setFormLoading(true);
 
+
       const formData =
         new FormData(e.currentTarget);
+
 
       const data = {
 
@@ -456,10 +601,13 @@ export default function AireCostosPage() {
           formData.get('ciudad'),
 
         detalles: {
+
           ...resultado,
+
           total:
             new Intl.NumberFormat('es-PY')
               .format(resultado.total)
+
         }
 
       };
@@ -472,6 +620,7 @@ export default function AireCostosPage() {
       if (res.success) {
 
         setLeadSent(true);
+
 
         setTimeout(() => {
 
@@ -490,7 +639,6 @@ export default function AireCostosPage() {
 
   // ============================================================
   // APORTE DE PRECIOS
-  // NO SE MODIFICA SU FUNCIONAMIENTO
   // ============================================================
 
   const handleReportSubmit =
@@ -500,8 +648,10 @@ export default function AireCostosPage() {
 
       e.preventDefault();
 
+
       const formData =
         new FormData(e.currentTarget);
+
 
       const data = {
 
@@ -528,6 +678,7 @@ export default function AireCostosPage() {
 
         setReportSent(true);
 
+
         setTimeout(() => {
 
           setShowReportModal(false);
@@ -549,9 +700,9 @@ export default function AireCostosPage() {
     <main className="min-h-screen bg-[#F8FAFC] text-slate-800">
 
 
-      {/* =======================================================
+      {/* =====================================================
           1. RESUMEN DE PRECIOS
-      ======================================================= */}
+      ===================================================== */}
 
       <section className="bg-slate-900 text-white py-16 md:py-24 px-4">
 
@@ -589,26 +740,34 @@ export default function AireCostosPage() {
           </p>
 
 
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-6">
 
 
-            {/* INSTALACIÓN 12K */}
+            {/* INSTALACIÓN ESTÁNDAR */}
 
             <div className="bg-white/5 border border-white/10 p-6 rounded-3xl backdrop-blur-sm">
 
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">
 
                 Instalación Estándar
-                <br />
-                9.000 - 12.000 BTU
+
+                <span className="block mt-1">
+
+                  9.000 - 12.000 BTU
+
+                </span>
 
               </p>
 
-              <p className="text-xl lg:text-2xl font-black">
+
+              <p className="text-2xl lg:text-[28px] font-black whitespace-nowrap tracking-tight">
 
                 {preciosLoading
                   ? 'Cargando...'
-                  : rangoServicio('instalacion_12k')
+                  : rangoServicio(
+                      'instalacion_12k'
+                    )
                 }
 
               </p>
@@ -616,17 +775,19 @@ export default function AireCostosPage() {
             </div>
 
 
+
             {/* RANGO GENERAL */}
 
             <div className="bg-white/5 border border-white/10 p-6 rounded-3xl text-emerald-400 backdrop-blur-sm">
 
-              <p className="text-[10px] font-bold text-emerald-500/60 uppercase tracking-widest mb-1">
+              <p className="text-[10px] font-bold text-emerald-500/60 uppercase tracking-widest mb-2">
 
                 Instalaciones Split
 
               </p>
 
-              <p className="text-xl lg:text-2xl font-black">
+
+              <p className="text-2xl lg:text-[28px] font-black whitespace-nowrap tracking-tight">
 
                 {preciosLoading
                   ? 'Cargando...'
@@ -638,17 +799,19 @@ export default function AireCostosPage() {
             </div>
 
 
+
             {/* MANTENIMIENTO */}
 
             <div className="bg-white/5 border border-white/10 p-6 rounded-3xl backdrop-blur-sm">
 
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">
 
                 Limpieza / Mantenimiento
 
               </p>
 
-              <p className="text-xl lg:text-2xl font-black text-blue-400">
+
+              <p className="text-2xl lg:text-[28px] font-black text-blue-400 whitespace-nowrap tracking-tight">
 
                 {preciosLoading
                   ? 'Cargando...'
@@ -670,9 +833,9 @@ export default function AireCostosPage() {
 
 
 
-      {/* =======================================================
+      {/* =====================================================
           2. CALCULADORA
-      ======================================================= */}
+      ===================================================== */}
 
       <section className="max-w-4xl mx-auto px-4 -mt-10 relative z-10">
 
@@ -696,10 +859,11 @@ export default function AireCostosPage() {
 
               </h2>
 
+
               <p className="text-xs text-slate-400 font-medium">
 
-                Elegí el servicio requerido y obtené
-                un rango de precio de referencia
+                Elegí el servicio requerido y obtené un rango
+                de precio de referencia
 
               </p>
 
@@ -712,14 +876,14 @@ export default function AireCostosPage() {
           <div className="space-y-6">
 
 
-            {/* =================================================
-                TIPO DE SERVICIO
-            ================================================= */}
+            {/* TIPO DE SERVICIO */}
 
             <div className="grid grid-cols-1 sm:grid-cols-3 bg-slate-100 p-2 rounded-2xl gap-2">
 
 
               <button
+
+                type="button"
 
                 onClick={() => {
 
@@ -741,7 +905,10 @@ export default function AireCostosPage() {
               </button>
 
 
+
               <button
+
+                type="button"
 
                 onClick={() => {
 
@@ -763,7 +930,10 @@ export default function AireCostosPage() {
               </button>
 
 
+
               <button
+
+                type="button"
 
                 onClick={() => {
 
@@ -789,14 +959,11 @@ export default function AireCostosPage() {
 
 
 
-            {/* =================================================
-                INSTALACIÓN - CAPACIDAD
-            ================================================= */}
+            {/* INSTALACIÓN */}
 
             {tipo === 'instalacion' && (
 
               <div className="space-y-2">
-
 
                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-2">
 
@@ -806,7 +973,6 @@ export default function AireCostosPage() {
 
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-
 
                   {[
                     {
@@ -824,6 +990,8 @@ export default function AireCostosPage() {
                   ].map(item => (
 
                     <button
+
+                      type="button"
 
                       key={item.id}
 
@@ -852,7 +1020,6 @@ export default function AireCostosPage() {
 
                   ))}
 
-
                 </div>
 
               </div>
@@ -861,9 +1028,7 @@ export default function AireCostosPage() {
 
 
 
-            {/* =================================================
-                MANTENIMIENTO
-            ================================================= */}
+            {/* MANTENIMIENTO */}
 
             {tipo === 'mantenimiento' && (
 
@@ -875,12 +1040,14 @@ export default function AireCostosPage() {
 
                 </p>
 
+
                 <p className="text-sm font-bold text-blue-950">
 
                   Limpieza y mantenimiento preventivo de
                   unidad interior y exterior.
 
                 </p>
+
 
                 {!preciosLoading && (
 
@@ -902,9 +1069,7 @@ export default function AireCostosPage() {
 
 
 
-            {/* =================================================
-                OTROS SERVICIOS
-            ================================================= */}
+            {/* OTROS SERVICIOS */}
 
             {tipo === 'otros' && (
 
@@ -923,7 +1088,10 @@ export default function AireCostosPage() {
 
                   onChange={e => {
 
-                    setOtroServicio(e.target.value);
+                    setOtroServicio(
+                      e.target.value
+                    );
+
                     setResultado(null);
 
                   }}
@@ -968,12 +1136,9 @@ export default function AireCostosPage() {
 
 
 
-            {/* =================================================
-                CANTIDAD
-            ================================================= */}
+            {/* CANTIDAD */}
 
             <div className="bg-slate-50 p-6 rounded-3xl flex justify-between items-center gap-4">
-
 
               <div>
 
@@ -982,6 +1147,7 @@ export default function AireCostosPage() {
                   Cantidad de unidades
 
                 </p>
+
 
                 <p className="text-xs text-slate-500 font-medium">
 
@@ -998,10 +1164,15 @@ export default function AireCostosPage() {
 
                 <button
 
+                  type="button"
+
                   onClick={() => {
 
                     setCantidad(
-                      Math.max(1, cantidad - 1)
+                      Math.max(
+                        1,
+                        cantidad - 1
+                      )
                     );
 
                     setResultado(null);
@@ -1026,9 +1197,14 @@ export default function AireCostosPage() {
 
                 <button
 
+                  type="button"
+
                   onClick={() => {
 
-                    setCantidad(cantidad + 1);
+                    setCantidad(
+                      cantidad + 1
+                    );
+
                     setResultado(null);
 
                   }}
@@ -1051,7 +1227,7 @@ export default function AireCostosPage() {
 
 
 
-          {/* ERROR PRECIOS */}
+          {/* ERROR */}
 
           {preciosError && (
 
@@ -1065,18 +1241,22 @@ export default function AireCostosPage() {
 
 
 
-          {/* ===================================================
-              BOTÓN CALCULAR
-          =================================================== */}
+          {/* CALCULAR */}
 
           <button
+
+            type="button"
 
             onClick={calcular}
 
             disabled={
               loading ||
               preciosLoading ||
-              precios.length === 0
+              precios.length === 0 ||
+              (
+                tipo === 'otros' &&
+                otrosServiciosDisponibles.length === 0
+              )
             }
 
             className="w-full bg-slate-900 hover:bg-black disabled:bg-slate-400 disabled:cursor-not-allowed text-white font-black py-5 rounded-[2rem] active:scale-95 transition-all shadow-xl flex items-center justify-center gap-3 uppercase text-xs tracking-widest"
@@ -1084,11 +1264,9 @@ export default function AireCostosPage() {
           >
 
             {(loading || preciosLoading)
-
               ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
               )
-
               : (
                 <Calculator className="w-5 h-5 text-blue-400" />
               )
@@ -1104,9 +1282,7 @@ export default function AireCostosPage() {
 
 
 
-          {/* ===================================================
-              RESULTADO Y LEAD
-          =================================================== */}
+          {/* RESULTADO */}
 
           {resultado && (
 
@@ -1207,7 +1383,11 @@ export default function AireCostosPage() {
 
               <button
 
-                onClick={() => setShowForm(true)}
+                type="button"
+
+                onClick={() =>
+                  setShowForm(true)
+                }
 
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-5 rounded-[2rem] shadow-xl shadow-blue-200 flex items-center justify-center gap-3 active:scale-95 transition-all group"
 
@@ -1218,6 +1398,7 @@ export default function AireCostosPage() {
                   Pedir Presupuestos a Técnicos Verificados
 
                 </span>
+
 
                 <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
 
@@ -1235,10 +1416,9 @@ export default function AireCostosPage() {
 
 
 
-      {/* =======================================================
-          3. CROWDSOURCING
-          SIN CAMBIOS
-      ======================================================= */}
+      {/* =====================================================
+          3. APORTE DE PRECIOS
+      ===================================================== */}
 
       <section className="max-w-4xl mx-auto px-4 py-20">
 
@@ -1267,6 +1447,8 @@ export default function AireCostosPage() {
 
           <button
 
+            type="button"
+
             onClick={() =>
               setShowReportModal(true)
             }
@@ -1286,9 +1468,9 @@ export default function AireCostosPage() {
 
 
 
-      {/* =======================================================
+      {/* =====================================================
           4. METODOLOGÍA
-      ======================================================= */}
+      ===================================================== */}
 
       <section className="max-w-4xl mx-auto px-4 pb-16">
 
@@ -1298,6 +1480,7 @@ export default function AireCostosPage() {
           <div className="flex items-center gap-2 text-slate-400">
 
             <Info className="w-4 h-4" />
+
 
             <h4 className="text-[10px] font-black uppercase tracking-widest">
 
@@ -1330,10 +1513,9 @@ export default function AireCostosPage() {
 
 
 
-      {/* =======================================================
-          MODAL 1: LEAD
-          SIN CAMBIOS
-      ======================================================= */}
+      {/* =====================================================
+          MODAL LEAD
+      ===================================================== */}
 
       {showForm && (
 
@@ -1341,18 +1523,22 @@ export default function AireCostosPage() {
 
 
           <div
+
             className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
+
             onClick={() =>
               setShowForm(false)
             }
-          >
-          </div>
+
+          />
 
 
           <div className="bg-white rounded-[3rem] p-8 w-full max-w-sm relative z-10 shadow-2xl">
 
 
             <button
+
+              type="button"
 
               onClick={() =>
                 setShowForm(false)
@@ -1412,7 +1598,9 @@ export default function AireCostosPage() {
                   <input
 
                     name="nombre"
+
                     required
+
                     placeholder="Tu Nombre"
 
                     className="w-full bg-slate-50 p-3.5 rounded-2xl text-xs font-bold outline-none border focus:border-blue-500"
@@ -1423,8 +1611,11 @@ export default function AireCostosPage() {
                   <input
 
                     name="telefono"
+
                     required
+
                     type="tel"
+
                     placeholder="WhatsApp (ej: 0981...)"
 
                     className="w-full bg-slate-50 p-3.5 rounded-2xl text-xs font-bold outline-none border focus:border-blue-500"
@@ -1435,7 +1626,9 @@ export default function AireCostosPage() {
                   <input
 
                     name="ciudad"
+
                     required
+
                     placeholder="Ciudad o Barrio"
 
                     className="w-full bg-slate-50 p-3.5 rounded-2xl text-xs font-bold outline-none border focus:border-blue-500"
@@ -1475,10 +1668,9 @@ export default function AireCostosPage() {
 
 
 
-      {/* =======================================================
-          MODAL 2: CROWDSOURCING
-          SIN CAMBIOS
-      ======================================================= */}
+      {/* =====================================================
+          MODAL APORTE DE PRECIO
+      ===================================================== */}
 
       {showReportModal && (
 
@@ -1493,14 +1685,15 @@ export default function AireCostosPage() {
               setShowReportModal(false)
             }
 
-          >
-          </div>
+          />
 
 
           <div className="bg-white rounded-[3rem] p-8 w-full max-w-sm relative z-10 shadow-2xl">
 
 
             <button
+
+              type="button"
 
               onClick={() =>
                 setShowReportModal(false)
@@ -1573,7 +1766,9 @@ export default function AireCostosPage() {
                   <input
 
                     name="monto"
+
                     required
+
                     placeholder="Monto total pagado (Gs)"
 
                     className="w-full bg-slate-50 p-3.5 rounded-2xl text-xs font-bold outline-none border focus:border-blue-500"
@@ -1584,7 +1779,9 @@ export default function AireCostosPage() {
                   <input
 
                     name="ciudad"
+
                     required
+
                     placeholder="Ciudad (ej: Luque, Lambaré)"
 
                     className="w-full bg-slate-50 p-3.5 rounded-2xl text-xs font-bold outline-none border focus:border-blue-500"
@@ -1605,6 +1802,7 @@ export default function AireCostosPage() {
                       Incluyó materiales/gas
 
                     </option>
+
 
                     <option value="no">
 

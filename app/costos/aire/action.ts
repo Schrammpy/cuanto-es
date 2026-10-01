@@ -23,7 +23,9 @@ export async function obtenerPreciosAire() {
         descripcion_breve
       `)
       .eq('categoria', 'clima')
-      .order('servicio', { ascending: true });
+      .order('servicio', {
+        ascending: true
+      });
 
 
     if (error) {
@@ -33,6 +35,7 @@ export async function obtenerPreciosAire() {
         error
       );
 
+
       return {
         success: false,
         data: []
@@ -41,30 +44,32 @@ export async function obtenerPreciosAire() {
     }
 
 
-    /*
-     * Normalizamos los campos numéricos.
-     *
-     * Dependiendo del tipo de columna de Supabase/PostgreSQL,
-     * los valores numeric pueden llegar como string.
-     */
+    const precios =
+      (data ?? []).map(item => ({
 
-    const precios = (data ?? []).map((item) => ({
+        ...item,
 
-      ...item,
+        precio_min:
+          Number(
+            item.precio_min ?? 0
+          ),
 
-      precio_min:
-        Number(item.precio_min ?? 0),
+        precio_max:
+          Number(
+            item.precio_max ?? 0
+          ),
 
-      precio_max:
-        Number(item.precio_max ?? 0),
+        precio_materiales_est:
+          item.precio_materiales_est !== null &&
+          item.precio_materiales_est !== undefined
 
-      precio_materiales_est:
-        item.precio_materiales_est !== null &&
-        item.precio_materiales_est !== undefined
-          ? Number(item.precio_materiales_est)
-          : 0
+            ? Number(
+                item.precio_materiales_est
+              )
 
-    }));
+            : 0
+
+      }));
 
 
     return {
@@ -79,6 +84,7 @@ export async function obtenerPreciosAire() {
       err
     );
 
+
     return {
       success: false,
       data: []
@@ -90,17 +96,12 @@ export async function obtenerPreciosAire() {
 
 
 /* ============================================================
-   FUNCIONES AUXILIARES PARA EL LEAD
+   FUNCIONES AUXILIARES
    ============================================================ */
 
-function obtenerNombreServicio(detalles: any) {
-
-  /*
-   * Esto afecta solamente la descripción que recibe
-   * el correo del lead.
-   *
-   * No modifica el almacenamiento del lead.
-   */
+function obtenerNombreServicio(
+  detalles: any
+) {
 
   const nombres: Record<string, string> = {
 
@@ -139,25 +140,34 @@ function obtenerNombreServicio(detalles: any) {
     nombres[detalles.servicio]
   ) {
 
-    return nombres[detalles.servicio];
+    return nombres[
+      detalles.servicio
+    ];
 
   }
 
 
   /*
-   * Compatibilidad con datos anteriores.
+   * Compatibilidad con los datos
+   * generados por la versión anterior.
    */
 
-  if (detalles?.tipo === 'instalacion') {
+  if (
+    detalles?.tipo === 'instalacion'
+  ) {
 
     return detalles?.btu
+
       ? `Instalación ${detalles.btu} BTU`
+
       : 'Instalación de aire acondicionado';
 
   }
 
 
-  if (detalles?.tipo === 'mantenimiento') {
+  if (
+    detalles?.tipo === 'mantenimiento'
+  ) {
 
     return 'Mantenimiento / Limpieza';
 
@@ -169,45 +179,60 @@ function obtenerNombreServicio(detalles: any) {
 }
 
 
-function formatoGs(valor: any) {
+function formatoGs(
+  valor: any
+) {
 
-  const numero = Number(valor);
+  const numero =
+    Number(valor);
 
-  if (Number.isNaN(numero)) {
+
+  if (
+    Number.isNaN(numero)
+  ) {
+
     return '0';
+
   }
 
-  return new Intl.NumberFormat('es-PY').format(numero);
+
+  return new Intl.NumberFormat(
+    'es-PY'
+  ).format(numero);
 
 }
 
 
-function obtenerPresupuestoLead(detalles: any) {
+function obtenerPresupuestoLead(
+  detalles: any
+) {
 
-  /*
-   * La calculadora nueva trabaja con rango.
-   *
-   * Ejemplo:
-   * Gs. 350.000 - 650.000
-   *
-   * Cuando min = max:
-   * Gs. 100.000
-   */
-
-  const totalMin = Number(detalles?.totalMin ?? 0);
-
-  const totalMax = Number(
-    detalles?.totalMax ??
-    detalles?.totalMin ??
-    0
-  );
+  const totalMin =
+    Number(
+      detalles?.totalMin ?? 0
+    );
 
 
-  if (totalMin > 0 && totalMax > 0) {
+  const totalMax =
+    Number(
+      detalles?.totalMax ??
+      detalles?.totalMin ??
+      0
+    );
 
-    if (totalMin === totalMax) {
 
-      return `Gs. ${formatoGs(totalMin)}`;
+  if (
+    totalMin > 0 &&
+    totalMax > 0
+  ) {
+
+    if (
+      totalMin === totalMax
+    ) {
+
+      return (
+        `Gs. ${formatoGs(totalMin)}`
+      );
 
     }
 
@@ -221,12 +246,17 @@ function obtenerPresupuestoLead(detalles: any) {
 
 
   /*
-   * Compatibilidad con el page.tsx anterior.
+   * Compatibilidad con la versión
+   * anterior de la calculadora.
    */
 
-  if (detalles?.total) {
+  if (
+    detalles?.total
+  ) {
 
-    return `Gs. ${detalles.total}`;
+    return (
+      `Gs. ${detalles.total}`
+    );
 
   }
 
@@ -240,16 +270,15 @@ function obtenerPresupuestoLead(detalles: any) {
    2. LEAD PARA TÉCNICOS
    ============================================================ */
 
-export async function enviarLeadAire(formData: any) {
+export async function enviarLeadAire(
+  formData: any
+) {
 
   try {
 
-    /*
-     * Se conserva exactamente la misma tabla
-     * y estructura principal del lead.
-     */
-
-    const { error: dbError } = await supabase
+    const {
+      error: dbError
+    } = await supabase
       .from('leads_servicios')
       .insert([
         {
@@ -281,72 +310,80 @@ export async function enviarLeadAire(formData: any) {
         dbError
       );
 
+
       throw dbError;
 
     }
 
 
-    /*
-     * Construimos la descripción según el nuevo
-     * servicio seleccionado en la calculadora.
-     */
-
     const nombreServicio =
-      obtenerNombreServicio(formData.detalles);
+      obtenerNombreServicio(
+        formData.detalles
+      );
+
 
     const cantidad =
-      Number(formData.detalles?.cantidad ?? 1);
+      Number(
+        formData.detalles?.cantidad ?? 1
+      );
+
 
     const presupuesto =
-      obtenerPresupuestoLead(formData.detalles);
+      obtenerPresupuestoLead(
+        formData.detalles
+      );
+
+
+    const response =
+      await fetch(
+        'https://formspree.io/f/mkjnojzj',
+        {
+
+          method: 'POST',
+
+          headers: {
+
+            'Content-Type':
+              'application/json',
+
+            'Accept':
+              'application/json'
+
+          },
+
+          body: JSON.stringify({
+
+            subject:
+              `❄️ NUEVO LEAD AIRE: ${formData.nombre}`,
+
+            cliente:
+              formData.nombre,
+
+            telefono:
+              formData.telefono,
+
+            ciudad:
+              formData.ciudad,
+
+            detalles:
+              `${nombreServicio} - ${cantidad} equipo(s)`,
+
+            presupuesto_estimado:
+              presupuesto
+
+          })
+
+        }
+      );
 
 
     /*
-     * Se mantiene el mismo Formspree.
-     */
-
-    const response = await fetch(
-      'https://formspree.io/f/mkjnojzj',
-      {
-
-        method: 'POST',
-
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-
-        body: JSON.stringify({
-
-          subject:
-            `❄️ NUEVO LEAD AIRE: ${formData.nombre}`,
-
-          cliente:
-            formData.nombre,
-
-          telefono:
-            formData.telefono,
-
-          ciudad:
-            formData.ciudad,
-
-          detalles:
-            `${nombreServicio} - ${cantidad} equipo(s)`,
-
-          presupuesto_estimado:
-            presupuesto
-
-        })
-
-      }
-    );
-
-
-    /*
-     * El lead ya fue guardado en Supabase.
+     * El lead ya quedó almacenado
+     * en Supabase.
      *
-     * Registramos el error de Formspree, pero
-     * conservamos el comportamiento general.
+     * Si Formspree presenta algún
+     * inconveniente simplemente
+     * registramos el error.
      */
 
     if (!response.ok) {
@@ -370,6 +407,7 @@ export async function enviarLeadAire(formData: any) {
       err
     );
 
+
     return {
       success: false
     };
@@ -384,28 +422,34 @@ export async function enviarLeadAire(formData: any) {
    ¿CUÁNTO PAGASTE POR TU AIRE?
    ============================================================ */
 
-export async function guardarPrecioAire(data: any) {
+export async function guardarPrecioAire(
+  data: any
+) {
 
   try {
 
     /*
-     * Mantenemos exactamente el mismo mecanismo
-     * y la misma tabla.
+     * Admitimos:
      *
-     * Solo limpiamos correctamente el formato:
-     *
-     * "250.000" -> 250000
-     * "250000"  -> 250000
+     * 250000
+     * 250.000
+     * Gs. 250.000
      */
 
-    const montoLimpio = String(data.monto ?? '')
-      .replace(/\./g, '')
-      .replace(/\s/g, '')
-      .replace(/[^\d]/g, '');
+    const montoLimpio =
+      String(
+        data.monto ?? ''
+      )
+        .replace(/\./g, '')
+        .replace(/\s/g, '')
+        .replace(/[^\d]/g, '');
 
 
     const montoPagado =
-      parseInt(montoLimpio, 10);
+      parseInt(
+        montoLimpio,
+        10
+      );
 
 
     if (
@@ -420,28 +464,29 @@ export async function guardarPrecioAire(data: any) {
     }
 
 
-    const { error } = await supabase
-      .from('precios_reportados')
-      .insert([
-        {
+    const { error } =
+      await supabase
+        .from('precios_reportados')
+        .insert([
+          {
 
-          servicio_slug:
-            'aire_acondicionado',
+            servicio_slug:
+              'aire_acondicionado',
 
-          monto_pagado:
-            montoPagado,
+            monto_pagado:
+              montoPagado,
 
-          ciudad:
-            data.ciudad,
+            ciudad:
+              data.ciudad,
 
-          incluyo_materiales:
-            data.materiales === 'si',
+            incluyo_materiales:
+              data.materiales === 'si',
 
-          comentario:
-            data.comentario
+            comentario:
+              data.comentario
 
-        }
-      ]);
+          }
+        ]);
 
 
     if (error) {
@@ -450,6 +495,7 @@ export async function guardarPrecioAire(data: any) {
         'Error guardando precio reportado:',
         error
       );
+
 
       throw error;
 
@@ -466,6 +512,7 @@ export async function guardarPrecioAire(data: any) {
       'Error guardando aporte de precio:',
       err
     );
+
 
     return {
       success: false
