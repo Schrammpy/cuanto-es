@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next'
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://cuantoes.com.py'
+  const baseUrl = 'https://www.cuantoes.com.py'
   
   return [
     { url: baseUrl, lastModified: new Date(), priority: 1 },
