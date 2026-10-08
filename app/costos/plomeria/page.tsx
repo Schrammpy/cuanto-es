@@ -221,6 +221,291 @@ export default function PlomeriaCostosPage() {
         </div>
       </section>
 
+      
+{/* GUIA SEO DE PRECIOS DE PLOMERIA */}
+<section className="max-w-4xl mx-auto px-4 py-16 space-y-10">
+
+  <div className="space-y-4">
+    <h2 className="text-3xl font-black text-slate-900">
+      Precios de mano de obra de plomería en Paraguay
+    </h2>
+
+    <p className="text-slate-600 leading-relaxed">
+      El costo de contratar un plomero en Paraguay depende
+      del tipo de reparación, la cantidad de artefactos,
+      la dificultad del trabajo y la urgencia del servicio.
+      Los presupuestos de plomería domiciliaria pueden
+      variar entre instalaciones sencillas y reparaciones
+      complejas de cañerías o fugas ocultas.
+    </p>
+
+    <p className="text-slate-600 leading-relaxed">
+      En CuantoEs podés consultar precios orientativos
+      de mano de obra para servicios de plomería en
+      Asunción y Gran Asunción y utilizar una calculadora
+      para estimar el costo de tu trabajo en guaraníes.
+    </p>
+  </div>
+
+  <div className="space-y-4">
+    <h2 className="text-2xl font-black text-slate-900">
+      ¿Cuánto cobra un plomero en Paraguay?
+    </h2>
+
+    <div className="overflow-x-auto rounded-2xl border border-slate-200">
+      <table className="w-full text-sm text-left">
+        <thead className="bg-slate-900 text-white">
+          <tr>
+            <th className="p-4">Servicio de plomería</th>
+            <th className="p-4">Mano de obra base</th>
+          </tr>
+        </thead>
+
+        <tbody className="divide-y divide-slate-100">
+          <tr>
+            <td className="p-4">
+              Destranque de cañería o baño
+            </td>
+            <td className="p-4 font-semibold">
+              Gs. 160.000
+            </td>
+          </tr>
+
+          <tr className="bg-slate-50">
+            <td className="p-4">
+              Cambio de grifería o sifón
+            </td>
+            <td className="p-4 font-semibold">
+              Gs. 120.000
+            </td>
+          </tr>
+
+          <tr>
+            <td className="p-4">
+              Instalación de termocalefón
+            </td>
+            <td className="p-4 font-semibold">
+              Gs. 250.000
+            </td>
+          </tr>
+
+          <tr className="bg-slate-50">
+            <td className="p-4">
+              Reparación de fuga oculta
+            </td>
+            <td className="p-4 font-semibold">
+              Gs. 450.000
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p className="text-xs text-slate-500">
+      Valores base orientativos para un punto o artefacto,
+      utilizados por la calculadora de CuantoEs.
+      No incluyen materiales ni repuestos. Los trabajos
+      urgentes o realizados en domingo tienen un recargo
+      estimado del 30%.
+    </p>
+  </div>
+
+  <div className="space-y-4">
+    <h2 className="text-2xl font-black text-slate-900">
+      ¿Cuánto cuesta destapar una cañería o baño?
+    </h2>
+
+    <p className="text-slate-600 leading-relaxed">
+      Para un destranque sencillo de cañería, pileta
+      o baño, la calculadora utiliza una referencia
+      de Gs. 160.000 de mano de obra.
+    </p>
+
+    <p className="text-slate-600 leading-relaxed">
+      El costo puede aumentar cuando la obstrucción
+      requiere equipos especiales, desmontar artefactos
+      o acceder a cañerías de difícil ubicación.
+      Conviene solicitar un diagnóstico antes de
+      confirmar el presupuesto.
+    </p>
+  </div>
+
+  <div className="space-y-4">
+    <h2 className="text-2xl font-black text-slate-900">
+      ¿Cuánto cobra un plomero por cambiar una canilla?
+    </h2>
+
+    <p className="text-slate-600 leading-relaxed">
+      La referencia para cambiar una grifería, sifón
+      o accesorio sanitario es de Gs. 120.000 de
+      mano de obra por punto.
+    </p>
+
+    <p className="text-slate-600 leading-relaxed">
+      Este valor no incluye la compra de la canilla,
+      flexibles, llaves de paso ni otros repuestos.
+      Si es necesario reparar conexiones existentes,
+      el presupuesto puede variar.
+    </p>
+  </div>
+
+  <div className="space-y-4">
+    <h2 className="text-2xl font-black text-slate-900">
+      Precio de instalación de termocalefón en Paraguay
+    </h2>
+
+    <p className="text-slate-600 leading-relaxed">
+      La calculadora considera Gs. 250.000 como
+      referencia de mano de obra para instalar un
+      termocalefón con conexiones de agua fría y caliente.
+    </p>
+
+    <p className="text-slate-600 leading-relaxed">
+      El precio definitivo depende de las conexiones
+      disponibles, el soporte, las condiciones de
+      instalación y los trabajos adicionales requeridos.
+      La instalación eléctrica debe cumplir las
+      condiciones de seguridad correspondientes.
+    </p>
+  </div>
+
+  <div className="space-y-4">
+    <h2 className="text-2xl font-black text-slate-900">
+      ¿Cuánto cuesta reparar una pérdida de agua?
+    </h2>
+
+    <p className="text-slate-600 leading-relaxed">
+      Para reparar una fuga de agua oculta en pared
+      o piso, la calculadora utiliza una referencia
+      de Gs. 450.000 de mano de obra.
+    </p>
+
+    <p className="text-slate-600 leading-relaxed">
+      Las fugas ocultas pueden requerir localizar
+      la pérdida, abrir una superficie y reemplazar
+      parte de la cañería. El importe estimado no
+      incluye materiales ni necesariamente todas
+      las terminaciones posteriores de albañilería.
+    </p>
+  </div>
+
+  <div className="space-y-4">
+    <h2 className="text-2xl font-black text-slate-900">
+      ¿Cuánto cuesta un plomero de urgencia?
+    </h2>
+
+    <p className="text-slate-600 leading-relaxed">
+      Los servicios urgentes o realizados en domingo
+      pueden tener un costo adicional. La calculadora
+      de CuantoEs utiliza un recargo orientativo del 30%
+      sobre la mano de obra base.
+    </p>
+
+    <p className="text-slate-600 leading-relaxed">
+      Por ejemplo, un destranque con mano de obra base
+      de Gs. 160.000 tendría una estimación de
+      Gs. 208.000 con el recargo por urgencia.
+      Este resultado no incluye materiales.
+    </p>
+  </div>
+
+  <div className="space-y-4">
+    <h2 className="text-2xl font-black text-slate-900">
+      ¿Qué factores influyen en el precio de un plomero?
+    </h2>
+
+    <ul className="list-disc pl-6 space-y-2 text-slate-600">
+      <li>Tipo de instalación o reparación necesaria.</li>
+      <li>Cantidad de puntos o artefactos sanitarios.</li>
+      <li>Accesibilidad de las cañerías.</li>
+      <li>Materiales y repuestos requeridos.</li>
+      <li>Estado de las instalaciones existentes.</li>
+      <li>Horario y urgencia del servicio.</li>
+      <li>Ubicación de la propiedad.</li>
+      <li>Necesidad de trabajos de albañilería.</li>
+    </ul>
+  </div>
+
+  <div className="space-y-4">
+    <h2 className="text-2xl font-black text-slate-900">
+      Preguntas frecuentes sobre plomería
+    </h2>
+
+    <div className="space-y-6">
+      <div>
+        <h3 className="font-bold text-slate-900">
+          ¿El presupuesto incluye los materiales?
+        </h3>
+
+        <p className="mt-2 text-slate-600 leading-relaxed">
+          No. La calculadora estima únicamente la
+          mano de obra. Los materiales, repuestos
+          y trabajos adicionales se presupuestan
+          por separado.
+        </p>
+      </div>
+
+      <div>
+        <h3 className="font-bold text-slate-900">
+          ¿El precio incluye la visita del plomero?
+        </h3>
+
+        <p className="mt-2 text-slate-600 leading-relaxed">
+          Depende del profesional. Algunos incluyen
+          el desplazamiento en su presupuesto y otros
+          cobran una visita de diagnóstico. Conviene
+          confirmar este punto antes de contratar.
+        </p>
+      </div>
+
+      <div>
+        <h3 className="font-bold text-slate-900">
+          ¿Puedo calcular varios trabajos?
+        </h3>
+
+        <p className="mt-2 text-slate-600 leading-relaxed">
+          Sí. La calculadora permite indicar la
+          cantidad de puntos o artefactos para el
+          tipo de servicio seleccionado. Para
+          trabajos diferentes, es conveniente
+          calcular cada tipo por separado.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  
+<div className="bg-blue-50 border border-blue-100 rounded-2xl p-6 space-y-4">
+  <h3 className="text-lg font-bold text-blue-950">
+    Otros trabajos relacionados
+  </h3>
+
+  <p className="text-sm text-slate-600 leading-relaxed">
+    Algunas reparaciones de plomería requieren trabajos
+    adicionales que conviene presupuestar por separado.
+  </p>
+
+  <div className="space-y-3">
+    <Link
+      href="/costos/albanileria"
+      className="block text-sm font-bold text-blue-700 hover:underline"
+    >
+      Consultar precios de albañilería y revoques →
+    </Link>
+
+    <Link
+      href="/costos/electricidad"
+      className="block text-sm font-bold text-blue-700 hover:underline"
+    >
+      Consultar precios de instalaciones eléctricas →
+    </Link>
+  </div>
+</div>
+
+
+</section>
+
+
       {/* 3. CROWDSOURCING: ¿CUÁNTO TE COBRÓ EL PLOMERO? */}
       <section className="max-w-4xl mx-auto px-4 py-20">
         <div className="bg-blue-50 rounded-[3rem] p-8 md:p-12 flex flex-col md:flex-row gap-8 items-center border border-blue-100">

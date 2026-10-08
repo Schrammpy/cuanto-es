@@ -1,11 +1,27 @@
-import { Metadata } from "next";
+
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "¿Cuánto cobra un plomero en Paraguay? - Precios Actualizados",
-  description: "Precios de referencia para destranques, cambio de grifería, instalación de termocalefón y reparación de pérdidas de agua en Asunción y Central.",
-  keywords: ["cuanto cobra un plomero paraguay", "precio plomero asuncion", "destranque de cañerias precio paraguay", "instalacion termocalefon costo"]
+  title: "Precio de Plomería en Paraguay 2026",
+  description:
+    "¿Cuánto cobra un plomero en Paraguay? Consultá precios de destranques, grifería, termocalefones y fugas de agua. Calculá la mano de obra en guaraníes.",
+  alternates: {
+    canonical: "https://www.cuantoes.com.py/costos/plomeria",
+  },
+  openGraph: {
+    title: "Precios de Plomería en Paraguay 2026 | CuantoEs",
+    description:
+      "Conocé los costos de mano de obra para destranques, grifería, termocalefones y reparación de fugas de agua en Paraguay.",
+    url: "https://www.cuantoes.com.py/costos/plomeria",
+    type: "website",
+    locale: "es_PY",
+  },
 };
 
-export default function PlomeriaLayout({ children }: { children: React.ReactNode }) {
+export default function PlomeriaLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return <>{children}</>;
 }
