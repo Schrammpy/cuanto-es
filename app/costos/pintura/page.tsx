@@ -114,7 +114,7 @@ export default function PinturaPage() {
           <div className="flex items-center gap-3 border-b border-slate-100 pb-6">
             <div className="bg-blue-50 p-3 rounded-2xl text-blue-600"><Calculator className="w-6 h-6" /></div>
             <div>
-              <h2 className="text-xl font-black uppercase tracking-tight text-slate-900">Calculá tu caso exacto</h2>
+              <h2 className="text-xl font-black uppercase tracking-tight text-slate-900">Calculá el costo estimado de pintar tu casa</h2>
               <p className="text-xs text-slate-400 font-medium">Ingresá los datos de tu pared o vivienda</p>
             </div>
           </div>
@@ -183,6 +183,222 @@ export default function PinturaPage() {
           )}
         </div>
       </section>
+
+      
+{/* GUIA SEO DE PRECIOS DE PINTURA */}
+<section className="max-w-4xl mx-auto px-4 py-16 space-y-10">
+
+  <div className="space-y-4">
+    <h2 className="text-3xl font-black text-slate-900">
+      Precio de mano de obra de pintura en Paraguay
+    </h2>
+
+    <p className="text-slate-600 leading-relaxed">
+      El precio de pintar una casa en Paraguay depende
+      de la superficie, el tipo de pintura, el estado
+      de las paredes y la cantidad de manos necesarias.
+      La mano de obra suele presupuestarse por metro
+      cuadrado (m²), diferenciando trabajos interiores
+      y exteriores.
+    </p>
+
+    <p className="text-slate-600 leading-relaxed">
+      En CuantoEs podés calcular un presupuesto orientativo
+      de pintura en guaraníes, separando mano de obra
+      y materiales. Los importes son referencias y
+      pueden variar según las condiciones del trabajo.
+    </p>
+  </div>
+
+  <div className="space-y-4">
+    <h2 className="text-2xl font-black text-slate-900">
+      ¿Cuánto cuesta pintar por metro cuadrado en Paraguay?
+    </h2>
+
+    <div className="overflow-x-auto rounded-2xl border border-slate-200">
+      <table className="w-full text-sm text-left">
+        <thead className="bg-slate-900 text-white">
+          <tr>
+            <th className="p-4">Tipo de pintura</th>
+            <th className="p-4">Mano de obra / m²</th>
+            <th className="p-4">Materiales / m²</th>
+          </tr>
+        </thead>
+
+        <tbody className="divide-y divide-slate-100">
+          <tr>
+            <td className="p-4">Pintura interior</td>
+            <td className="p-4 font-semibold">
+              Gs. 18.000
+            </td>
+            <td className="p-4">Gs. 13.500</td>
+          </tr>
+
+          <tr className="bg-slate-50">
+            <td className="p-4">Pintura exterior</td>
+            <td className="p-4 font-semibold">
+              Gs. 26.000
+            </td>
+            <td className="p-4">Gs. 13.500</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p className="text-xs text-slate-500">
+      Valores orientativos utilizados actualmente por
+      la calculadora. No constituyen tarifas oficiales.
+      El costo de preparación de superficies y otros
+      trabajos adicionales debe presupuestarse según
+      las características de cada obra.
+    </p>
+  </div>
+
+  <div className="space-y-4">
+    <h2 className="text-2xl font-black text-slate-900">
+      ¿Cuánto cuesta pintar el interior de una casa?
+    </h2>
+
+    <p className="text-slate-600 leading-relaxed">
+      Para pintura interior, la calculadora utiliza
+      una referencia de Gs. 18.000 por m² de mano
+      de obra y Gs. 13.500 por m² de materiales.
+    </p>
+
+    <p className="text-slate-600 leading-relaxed">
+      Por ejemplo, pintar 50 m² de paredes interiores
+      tendría una estimación de Gs. 900.000 de mano
+      de obra y Gs. 675.000 de materiales, alcanzando
+      un presupuesto orientativo de Gs. 1.575.000.
+    </p>
+  </div>
+
+  <div className="space-y-4">
+    <h2 className="text-2xl font-black text-slate-900">
+      ¿Cuánto cuesta pintar paredes exteriores?
+    </h2>
+
+    <p className="text-slate-600 leading-relaxed">
+      Para pintura exterior, la referencia de mano
+      de obra es de Gs. 26.000 por m², mientras
+      que la estimación de materiales es de
+      Gs. 13.500 por m².
+    </p>
+
+    <p className="text-slate-600 leading-relaxed">
+      En una superficie exterior de 50 m², el costo
+      estimado sería de Gs. 1.300.000 de mano
+      de obra y Gs. 675.000 de materiales,
+      sumando Gs. 1.975.000.
+    </p>
+  </div>
+
+  <div className="space-y-4">
+    <h2 className="text-2xl font-black text-slate-900">
+      ¿Cómo calcular los metros cuadrados para pintar?
+    </h2>
+
+    <p className="text-slate-600 leading-relaxed">
+      Para calcular la superficie de una pared,
+      multiplicá su ancho por su altura.
+      Por ejemplo, una pared de 5 metros de ancho
+      y 3 metros de altura tiene una superficie
+      de 15 m².
+    </p>
+
+    <p className="text-slate-600 leading-relaxed">
+      Si necesitás pintar varias paredes, sumá
+      las superficies correspondientes. También
+      podés descontar puertas y ventanas cuando
+      resulte apropiado para el presupuesto.
+      No confundas los metros cuadrados de piso
+      con la superficie total de paredes a pintar.
+    </p>
+  </div>
+
+  <div className="space-y-4">
+    <h2 className="text-2xl font-black text-slate-900">
+      ¿Qué factores influyen en el precio de pintura?
+    </h2>
+
+    <ul className="list-disc pl-6 space-y-2 text-slate-600">
+      <li>Superficie total en metros cuadrados.</li>
+      <li>Trabajos interiores o exteriores.</li>
+      <li>Estado de las paredes y techos.</li>
+      <li>Necesidad de enduido o reparaciones.</li>
+      <li>Calidad y tipo de pintura utilizada.</li>
+      <li>Cantidad de manos y cobertura necesaria.</li>
+      <li>Altura y dificultad de acceso.</li>
+      <li>Ubicación de la propiedad.</li>
+    </ul>
+  </div>
+
+  <div className="space-y-4">
+    <h2 className="text-2xl font-black text-slate-900">
+      Preguntas frecuentes sobre precios de pintura
+    </h2>
+
+    <div className="space-y-6">
+      <div>
+        <h3 className="font-bold text-slate-900">
+          ¿La mano de obra incluye la pintura?
+        </h3>
+        <p className="mt-2 text-slate-600 leading-relaxed">
+          No necesariamente. Algunos presupuestos incluyen
+          materiales y otros solamente la mano de obra.
+          CuantoEs muestra ambos conceptos por separado
+          para facilitar la comparación.
+        </p>
+      </div>
+
+      <div>
+        <h3 className="font-bold text-slate-900">
+          ¿Es más caro pintar el exterior?
+        </h3>
+        <p className="mt-2 text-slate-600 leading-relaxed">
+          Puede serlo, especialmente cuando se requieren
+          trabajos en altura, preparación adicional de
+          superficies o pinturas especiales. La calculadora
+          utiliza una tarifa de mano de obra mayor para
+          exteriores que para interiores.
+        </p>
+      </div>
+
+      <div>
+        <h3 className="font-bold text-slate-900">
+          ¿La calculadora sirve para Asunción?
+        </h3>
+        <p className="mt-2 text-slate-600 leading-relaxed">
+          Sí, permite elaborar presupuestos orientativos
+          para trabajos en Asunción y Gran Asunción.
+          El precio definitivo debe confirmarse con
+          el profesional que realizará el trabajo.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div className="bg-blue-50 border border-blue-100 rounded-2xl p-6">
+  <h3 className="font-bold text-blue-950 mb-2">
+    ¿Necesitás reparar las paredes antes de pintar?
+  </h3>
+
+  <p className="text-sm text-slate-600 leading-relaxed mb-3">
+    Si las paredes necesitan revoque o reparaciones,
+    consultá también los precios de mano de obra
+    de albañilería en Paraguay.
+  </p>
+
+  <Link
+    href="/costos/albanileria"
+    className="text-blue-700 font-bold text-sm hover:underline"
+  >
+    Consultar precios de albañilería →
+  </Link>
+</div>
+
+</section>
+
 
       {/* 3. KILLER FEATURE: ¿CUÁNTO PAGASTE? (Crowdsourcing / Moat) */}
       <section className="max-w-4xl mx-auto px-4 py-20">
