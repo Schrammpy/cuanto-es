@@ -118,7 +118,7 @@ export default function ElectricidadCostosPage() {
             <TrendingUp className="w-4 h-4" /> Precios de Referencia FAEP • {currentMonth} {currentYear}
           </div>
           <h1 className="text-4xl md:text-6xl font-[900] tracking-tighter leading-none">
-            ¿Cuánto cobra un <span className="text-blue-500 italic">electricista hoy?</span>
+            ¿Cuánto cobra un <span className="text-blue-500 italic">electricista en Paraguay?</span>
           </h1>
           <p className="text-slate-400 text-sm md:text-base font-medium max-w-2xl leading-relaxed">
             Tarifas referenciales basadas en normas técnicas y mano de obra profesional en Paraguay.
@@ -222,6 +222,52 @@ export default function ElectricidadCostosPage() {
             )}
         </div>
       </section>
+
+      <section className="max-w-4xl mx-auto px-4 py-16">
+  <div className="space-y-8">
+    <div className="space-y-3">
+      <h2 className="text-3xl font-black text-slate-900">
+        Precio de mano de obra eléctrica en Paraguay
+      </h2>
+
+      <p className="text-slate-600 leading-relaxed">
+        El costo de un trabajo eléctrico depende del tipo de
+        instalación, la cantidad de puntos, el estado del cableado,
+        la ubicación y la complejidad de la tarea. Los valores
+        publicados son orientativos y deben confirmarse mediante
+        un presupuesto profesional.
+      </p>
+    </div>
+
+    <div className="space-y-3">
+      <h2 className="text-2xl font-black text-slate-900">
+        ¿Cuánto cuesta una boca de electricidad?
+      </h2>
+
+      <p className="text-slate-600 leading-relaxed">
+        Una boca eléctrica puede corresponder a un tomacorriente,
+        interruptor o punto de iluminación. La calculadora utiliza
+        como referencia Gs. 87.000 por boca para estimar la
+        mano de obra. Este importe no constituye una tarifa
+        oficial y puede variar según el trabajo.
+      </p>
+    </div>
+
+    <div className="space-y-3">
+      <h2 className="text-2xl font-black text-slate-900">
+        ¿Qué factores modifican el presupuesto?
+      </h2>
+
+      <ul className="list-disc pl-6 space-y-2 text-slate-600">
+        <li>Cantidad de bocas o puntos eléctricos.</li>
+        <li>Instalación nueva o reparación existente.</li>
+        <li>Necesidad de canalizaciones o cableado adicional.</li>
+        <li>Materiales incluidos o suministrados por el cliente.</li>
+        <li>Ubicación, desplazamiento y urgencia del servicio.</li>
+      </ul>
+    </div>
+  </div>
+</section>
       
       {/* 3. CROWDSOURCING: ¿CUÁNTO PAGASTE? */}
 <section className="max-w-4xl mx-auto px-4 py-20">
