@@ -243,68 +243,7 @@ export default function AlbanileriaCostosPage() {
         </div>
       </section>
 
-      {/* 3. CROWDSOURCING */}
-      <section className="max-w-4xl mx-auto px-4 py-20">
-        <div className="bg-blue-50 rounded-[3rem] p-8 md:p-12 flex flex-col md:flex-row gap-8 items-center border border-blue-100">
-          <div className="flex-1 space-y-3 text-center md:text-left">
-            <h3 className="text-2xl font-black uppercase text-blue-950 tracking-tight">¿Hiciste una reforma o muralla hace poco?</h3>
-            <p className="text-xs text-blue-900/70 font-medium leading-relaxed">
-              Tu aporte anónimo ayuda a miles de paraguayos a saber cuánto es lo justo pagar por metro de albañilería.
-            </p>
-          </div>
-          <button 
-            onClick={() => setShowReportModal(true)}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-black px-8 py-4 rounded-2xl shadow-lg active:scale-95 transition-all text-xs uppercase tracking-widest shrink-0"
-          >
-            Aportar mi precio
-          </button>
-        </div>
-      </section>
-
-      {/* 4. METODOLOGÍA */}
-      <section className="max-w-4xl mx-auto px-4 pb-16">
-        <div className="border-t border-slate-100 pt-8 space-y-3">
-          <div className="flex items-center gap-2 text-slate-400">
-            <Info className="w-4 h-4" />
-            <h4 className="text-[10px] font-black uppercase tracking-widest">Metodología de este cálculo</h4>
-          </div>
-          <p className="text-[11px] text-slate-400 leading-relaxed font-medium">
-            Los valores consideran cuadrillas de oficial albañil y ayudante en Gran Asunción. Las murallas incluyen zanja de cimiento de 40cm, viga de encadenado inferior y pilares cada 3 metros. No incluye demolición previa de murallas viejas, contenedores de escombros ni revoque fino de la muralla (el cual se cotiza por separado).
-          </p>
-        </div>
-      </section>
-
-      {/* MODAL LEAD */}
-      {showForm && (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 animate-in fade-in duration-200">
-          <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={() => setShowForm(false)}></div>
-          <div className="bg-white rounded-[3rem] p-8 w-full max-w-sm relative z-10 shadow-2xl text-slate-700">
-            <button onClick={() => setShowForm(false)} className="absolute top-6 right-6 text-slate-300"><X /></button>
-            {leadSent ? (
-              <div className="text-center py-8 space-y-3">
-                <CheckCircle2 className="w-12 h-12 text-emerald-500 mx-auto" />
-                <p className="font-black text-slate-800 uppercase text-lg">¡Solicitud Recibida!</p>
-                <p className="text-xs text-slate-400 font-medium">Conectaremos tu obra con contratistas verificados.</p>
-              </div>
-            ) : (
-              <form onSubmit={handleLeadSubmit} className="space-y-4">
-                <h3 className="text-lg font-black text-slate-900 uppercase tracking-tight text-center">Pedir Contratista</h3>
-                <div className="space-y-2">
-                  <input name="nombre" required placeholder="Tu Nombre" className="w-full bg-slate-50 p-3.5 rounded-2xl text-xs font-bold outline-none border focus:border-blue-500" />
-                  <input name="telefono" required type="tel" placeholder="WhatsApp (ej: 0981...)" className="w-full bg-slate-50 p-3.5 rounded-2xl text-xs font-bold outline-none border focus:border-blue-500" />
-                  <input name="ciudad" required placeholder="Ciudad o Barrio (ej: Luque, Capiatá)" className="w-full bg-slate-50 p-3.5 rounded-2xl text-xs font-bold outline-none border focus:border-blue-500" />
-                </div>
-                <button disabled={formLoading} className="w-full bg-blue-600 text-white font-black py-4 rounded-2xl text-xs uppercase tracking-widest active:scale-95 transition-all">
-                  {formLoading ? "Enviando..." : "Pedir Presupuestos"}
-                </button>
-              </form>
-            )}
-          </div>
-        </div>
-      )}
-
-      
-{/* GUIA SEO DE PRECIOS DE ALBANILERIA */}
+      {/* GUIA SEO DE PRECIOS DE ALBANILERIA */}
 <section className="max-w-4xl mx-auto px-4 py-16 space-y-10">
 
   <div className="space-y-4">
@@ -438,6 +377,69 @@ export default function AlbanileriaCostosPage() {
   </div>
 
 </section>
+
+      {/* 3. CROWDSOURCING */}
+      <section className="max-w-4xl mx-auto px-4 py-20">
+        <div className="bg-blue-50 rounded-[3rem] p-8 md:p-12 flex flex-col md:flex-row gap-8 items-center border border-blue-100">
+          <div className="flex-1 space-y-3 text-center md:text-left">
+            <h3 className="text-2xl font-black uppercase text-blue-950 tracking-tight">¿Hiciste una reforma o muralla hace poco?</h3>
+            <p className="text-xs text-blue-900/70 font-medium leading-relaxed">
+              Tu aporte anónimo ayuda a miles de paraguayos a saber cuánto es lo justo pagar por metro de albañilería.
+            </p>
+          </div>
+          <button 
+            onClick={() => setShowReportModal(true)}
+            className="bg-blue-600 hover:bg-blue-700 text-white font-black px-8 py-4 rounded-2xl shadow-lg active:scale-95 transition-all text-xs uppercase tracking-widest shrink-0"
+          >
+            Aportar mi precio
+          </button>
+        </div>
+      </section>
+
+      {/* 4. METODOLOGÍA */}
+      <section className="max-w-4xl mx-auto px-4 pb-16">
+        <div className="border-t border-slate-100 pt-8 space-y-3">
+          <div className="flex items-center gap-2 text-slate-400">
+            <Info className="w-4 h-4" />
+            <h4 className="text-[10px] font-black uppercase tracking-widest">Metodología de este cálculo</h4>
+          </div>
+          <p className="text-[11px] text-slate-400 leading-relaxed font-medium">
+            Los valores consideran cuadrillas de oficial albañil y ayudante en Gran Asunción. Las murallas incluyen zanja de cimiento de 40cm, viga de encadenado inferior y pilares cada 3 metros. No incluye demolición previa de murallas viejas, contenedores de escombros ni revoque fino de la muralla (el cual se cotiza por separado).
+          </p>
+        </div>
+      </section>
+
+      {/* MODAL LEAD */}
+      {showForm && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 animate-in fade-in duration-200">
+          <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={() => setShowForm(false)}></div>
+          <div className="bg-white rounded-[3rem] p-8 w-full max-w-sm relative z-10 shadow-2xl text-slate-700">
+            <button onClick={() => setShowForm(false)} className="absolute top-6 right-6 text-slate-300"><X /></button>
+            {leadSent ? (
+              <div className="text-center py-8 space-y-3">
+                <CheckCircle2 className="w-12 h-12 text-emerald-500 mx-auto" />
+                <p className="font-black text-slate-800 uppercase text-lg">¡Solicitud Recibida!</p>
+                <p className="text-xs text-slate-400 font-medium">Conectaremos tu obra con contratistas verificados.</p>
+              </div>
+            ) : (
+              <form onSubmit={handleLeadSubmit} className="space-y-4">
+                <h3 className="text-lg font-black text-slate-900 uppercase tracking-tight text-center">Pedir Contratista</h3>
+                <div className="space-y-2">
+                  <input name="nombre" required placeholder="Tu Nombre" className="w-full bg-slate-50 p-3.5 rounded-2xl text-xs font-bold outline-none border focus:border-blue-500" />
+                  <input name="telefono" required type="tel" placeholder="WhatsApp (ej: 0981...)" className="w-full bg-slate-50 p-3.5 rounded-2xl text-xs font-bold outline-none border focus:border-blue-500" />
+                  <input name="ciudad" required placeholder="Ciudad o Barrio (ej: Luque, Capiatá)" className="w-full bg-slate-50 p-3.5 rounded-2xl text-xs font-bold outline-none border focus:border-blue-500" />
+                </div>
+                <button disabled={formLoading} className="w-full bg-blue-600 text-white font-black py-4 rounded-2xl text-xs uppercase tracking-widest active:scale-95 transition-all">
+                  {formLoading ? "Enviando..." : "Pedir Presupuestos"}
+                </button>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
+
+      
+
 
 
       {/* MODAL CROWDSOURCING */}
