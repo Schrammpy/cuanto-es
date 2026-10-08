@@ -225,6 +225,192 @@ export default function FletesCostosPage() {
         </div>
       </section>
 
+      
+{/* GUIA SEO DE FLETES Y MUDANZAS */}
+<section className="max-w-4xl mx-auto px-4 py-16 space-y-10">
+
+  <div className="space-y-4">
+    <h2 className="text-3xl font-black text-slate-900">
+      Precios de fletes y mudanzas en Paraguay
+    </h2>
+
+    <p className="text-slate-600 leading-relaxed">
+      El precio de un flete en Paraguay depende del volumen
+      de la carga, la distancia del recorrido y la cantidad
+      de personas necesarias para realizar el traslado.
+      En Asunción y Gran Asunción, un flete pequeño puede
+      tener un costo muy diferente al de una mudanza
+      completa de una casa o departamento.
+    </p>
+
+    <p className="text-slate-600 leading-relaxed">
+      La calculadora de CuantoEs permite obtener un
+      presupuesto orientativo en guaraníes según el tipo
+      de traslado, la distancia y los ayudantes.
+      El precio final debe confirmarse con el transportista.
+    </p>
+  </div>
+
+  <div className="space-y-4">
+    <h2 className="text-2xl font-black text-slate-900">
+      ¿Cuánto cuesta un flete en Paraguay?
+    </h2>
+
+    <div className="overflow-x-auto rounded-2xl border border-slate-200">
+      <table className="w-full text-sm text-left">
+        <thead className="bg-slate-900 text-white">
+          <tr>
+            <th className="p-4">Tipo de traslado</th>
+            <th className="p-4">Precio base</th>
+          </tr>
+        </thead>
+
+        <tbody className="divide-y divide-slate-100">
+          <tr>
+            <td className="p-4">
+              Flete pequeño: un mueble o electrodoméstico
+            </td>
+            <td className="p-4 font-semibold">
+              Gs. 150.000
+            </td>
+          </tr>
+
+          <tr className="bg-slate-50">
+            <td className="p-4">
+              Casa o departamento estándar
+            </td>
+            <td className="p-4 font-semibold">
+              Gs. 350.000
+            </td>
+          </tr>
+
+          <tr>
+            <td className="p-4">
+              Casa grande u oficina
+            </td>
+            <td className="p-4 font-semibold">
+              Gs. 650.000
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p className="text-xs text-slate-500">
+      Son precios base orientativos del vehículo y el
+      traslado local. Los ayudantes y los suplementos
+      por distancia se suman por separado.
+    </p>
+  </div>
+
+  <div className="space-y-4">
+    <h2 className="text-2xl font-black text-slate-900">
+      ¿Cuánto cuesta una mudanza en Asunción?
+    </h2>
+
+    <p className="text-slate-600 leading-relaxed">
+      Para una mudanza de casa o departamento estándar,
+      la calculadora utiliza un precio base de Gs. 350.000.
+      Si el traslado es local y se necesita un ayudante,
+      la estimación asciende a Gs. 450.000.
+    </p>
+
+    <p className="text-slate-600 leading-relaxed">
+      Para una casa grande u oficina, el precio base
+      utilizado es de Gs. 650.000. Con dos ayudantes y
+      un traslado local, la estimación sería de
+      Gs. 850.000.
+    </p>
+  </div>
+
+  <div className="space-y-4">
+    <h2 className="text-2xl font-black text-slate-900">
+      ¿Cómo influye la distancia en el precio del flete?
+    </h2>
+
+    <p className="text-slate-600 leading-relaxed">
+      Los recorridos más largos pueden requerir
+      combustible adicional, mayor tiempo de trabajo
+      y otros gastos de transporte.
+    </p>
+
+    <div className="overflow-x-auto rounded-2xl border border-slate-200">
+      <table className="w-full text-sm text-left">
+        <thead className="bg-slate-900 text-white">
+          <tr>
+            <th className="p-4">Distancia</th>
+            <th className="p-4">Adicional estimado</th>
+          </tr>
+        </thead>
+
+        <tbody className="divide-y divide-slate-100">
+          <tr>
+            <td className="p-4">Hasta 10 km</td>
+            <td className="p-4">Sin adicional</td>
+          </tr>
+          <tr className="bg-slate-50">
+            <td className="p-4">De 10 a 25 km</td>
+            <td className="p-4">Gs. 80.000</td>
+          </tr>
+          <tr>
+            <td className="p-4">De 25 a 60 km</td>
+            <td className="p-4">Gs. 220.000</td>
+          </tr>
+          <tr className="bg-slate-50">
+            <td className="p-4">Más de 100 km</td>
+            <td className="p-4">Gs. 550.000</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p className="text-xs text-slate-500">
+      La calculadora utiliza suplementos por tramos
+      de distancia, no una tarifa fija por kilómetro.
+      Los recorridos de 60 a 100 km requieren una
+      cotización específica.
+    </p>
+  </div>
+
+  <div className="space-y-4">
+    <h2 className="text-2xl font-black text-slate-900">
+      ¿Cuánto cuesta trasladar una heladera o un mueble?
+    </h2>
+
+    <p className="text-slate-600 leading-relaxed">
+      Para el traslado local de un mueble o electrodoméstico,
+      la calculadora considera Gs. 150.000 de precio base.
+      Si se necesita un ayudante para cargar o descargar,
+      se agregan Gs. 100.000, alcanzando una estimación
+      de Gs. 250.000.
+    </p>
+
+    <p className="text-slate-600 leading-relaxed">
+      El costo puede aumentar si se necesitan más
+      ayudantes, protección especial, subir escaleras
+      o realizar maniobras de carga complejas.
+    </p>
+  </div>
+
+  <div className="space-y-4">
+    <h2 className="text-2xl font-black text-slate-900">
+      ¿Qué factores modifican el costo de una mudanza?
+    </h2>
+
+    <ul className="list-disc pl-6 space-y-2 text-slate-600">
+      <li>Cantidad y volumen de muebles o cajas.</li>
+      <li>Distancia entre origen y destino.</li>
+      <li>Cantidad de ayudantes necesarios.</li>
+      <li>Acceso a ascensores, escaleras o estacionamiento.</li>
+      <li>Necesidad de desmontar o embalar muebles.</li>
+      <li>Peajes y gastos adicionales del recorrido.</li>
+      <li>Fragilidad y características de la carga.</li>
+    </ul>
+  </div>
+
+</section>
+
+
       {/* 3. CROWDSOURCING: ¿CUÁNTO PAGASTE POR TU MUDANZA? */}
       <section className="max-w-4xl mx-auto px-4 py-20">
         <div className="bg-blue-50 rounded-[3rem] p-8 md:p-12 flex flex-col md:flex-row gap-8 items-center border border-blue-100">
