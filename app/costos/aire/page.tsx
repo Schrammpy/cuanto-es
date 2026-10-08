@@ -724,7 +724,7 @@ export default function AireCostosPage() {
 
             <span className="text-blue-500 italic">
 
-              aire en Paraguay?
+              aire acondicionadoen Paraguay?
 
             </span>
 
@@ -1413,6 +1413,288 @@ export default function AireCostosPage() {
         </div>
 
       </section>
+
+      
+{/* =====================================================
+    GUIA SEO - PRECIOS DE AIRE ACONDICIONADO
+===================================================== */}
+<section className="max-w-4xl mx-auto px-4 py-16 space-y-10">
+
+  <div className="space-y-4">
+    <h2 className="text-3xl font-black text-slate-900">
+      Precios de aire acondicionado en Paraguay
+    </h2>
+
+    <p className="text-slate-600 leading-relaxed">
+      El precio de instalar un aire acondicionado en
+      Paraguay depende de la capacidad del equipo,
+      la distancia entre las unidades interior y
+      exterior, la longitud de las cañerías y las
+      condiciones del lugar donde será instalado.
+    </p>
+
+    <p className="text-slate-600 leading-relaxed">
+      En CuantoEs podés consultar precios orientativos
+      para instalación de equipos split, limpieza,
+      mantenimiento y otros servicios técnicos en
+      Asunción y Gran Asunción.
+    </p>
+  </div>
+
+  <div className="space-y-4">
+    <h2 className="text-2xl font-black text-slate-900">
+      ¿Cuánto cuesta instalar un aire acondicionado?
+    </h2>
+
+    <p className="text-slate-600 leading-relaxed">
+      Los equipos split de 12.000, 18.000 y 24.000 BTU
+      pueden tener costos de instalación diferentes.
+      CuantoEs muestra rangos de referencia para
+      cada capacidad según las tarifas disponibles.
+    </p>
+
+    {preciosLoading ? (
+      <p className="text-sm text-slate-500">
+        Cargando precios de referencia...
+      </p>
+    ) : (
+      <div className="overflow-x-auto rounded-2xl border border-slate-200">
+        <table className="w-full text-sm text-left">
+          <thead className="bg-slate-900 text-white">
+            <tr>
+              <th className="p-4">Servicio</th>
+              <th className="p-4">Precio mínimo</th>
+              <th className="p-4">Precio máximo</th>
+            </tr>
+          </thead>
+
+          <tbody className="divide-y divide-slate-100">
+            {[
+              { codigo: "instalacion_12k", nombre: "Split 12.000 BTU" },
+              { codigo: "instalacion_18k", nombre: "Split 18.000 BTU" },
+              { codigo: "instalacion_24k", nombre: "Split 24.000 BTU" },
+              { codigo: "mantenimiento_preventivo", nombre: "Mantenimiento preventivo" }
+            ].map((item) => {
+              const precio = buscarPrecio(item.codigo);
+
+              if (!precio) return null;
+
+              return (
+                <tr key={item.codigo}>
+                  <td className="p-4 font-medium">
+                    {item.nombre}
+                  </td>
+                  <td className="p-4">
+                    Gs. {formatGs(Number(precio.precio_min))}
+                  </td>
+                  <td className="p-4">
+                    Gs. {formatGs(Number(precio.precio_max))}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    )}
+
+    <p className="text-xs text-slate-500">
+      Rangos orientativos por unidad, obtenidos desde
+      los precios de referencia de CuantoEs.
+      Materiales adicionales, distancias, trabajos
+      en altura y modificaciones eléctricas pueden
+      cambiar el presupuesto final.
+    </p>
+  </div>
+
+  
+{/* INSTALACION DE AIRE SPLIT */}
+<div className="space-y-4">
+  <h2 className="text-2xl font-black text-slate-900">
+    Precio de instalación de aire split de 12.000,
+    18.000 y 24.000 BTU
+  </h2>
+
+  <p className="text-slate-600 leading-relaxed">
+    La instalación de un aire acondicionado split
+    requiere colocar las unidades interior y exterior,
+    conectar las cañerías de refrigeración, realizar
+    las conexiones correspondientes y comprobar
+    el funcionamiento del equipo.
+  </p>
+
+  <p className="text-slate-600 leading-relaxed">
+    El presupuesto depende de la capacidad del equipo,
+    los metros de cañería necesarios y las condiciones
+    de instalación. Una instalación que requiere
+    soportes especiales, trabajos en altura o nuevas
+    conexiones eléctricas puede tener costos adicionales.
+  </p>
+</div>
+
+{/* LIMPIEZA Y MANTENIMIENTO */}
+<div className="space-y-4">
+  <h2 className="text-2xl font-black text-slate-900">
+    ¿Cuánto cuesta limpiar un aire acondicionado?
+  </h2>
+
+  <p className="text-slate-600 leading-relaxed">
+    El precio de la limpieza de un aire acondicionado
+    depende del estado del equipo, su accesibilidad
+    y el tipo de mantenimiento necesario.
+  </p>
+
+  <p className="text-slate-600 leading-relaxed">
+    Un mantenimiento preventivo puede incluir limpieza
+    de filtros, revisión del drenaje, limpieza de
+    componentes y comprobaciones generales de
+    funcionamiento, según el alcance contratado.
+  </p>
+
+  <p className="text-slate-600 leading-relaxed">
+    Antes de contratar, consultá si el precio incluye
+    la limpieza de la unidad interior, la exterior
+    y los materiales de limpieza utilizados.
+  </p>
+</div>
+
+{/* REPARACIONES */}
+<div className="space-y-4">
+  <h2 className="text-2xl font-black text-slate-900">
+    Precio de reparación de aire acondicionado
+    en Paraguay
+  </h2>
+
+  <p className="text-slate-600 leading-relaxed">
+    El costo de reparar un aire acondicionado varía
+    según el diagnóstico y los componentes afectados.
+    Algunas fallas pueden resolverse mediante limpieza
+    o ajustes, mientras que otras requieren repuestos
+    o reparaciones del circuito de refrigeración.
+  </p>
+
+  <p className="text-slate-600 leading-relaxed">
+    La calculadora de CuantoEs contempla servicios
+    adicionales como visita técnica, desmontaje,
+    traslado y corrección de fugas con refrigerantes
+    específicos, cuando tienen tarifas disponibles.
+  </p>
+
+  <p className="text-slate-600 leading-relaxed">
+    La carga de refrigerante no debe considerarse
+    una solución automática cuando el equipo enfría
+    poco. Un técnico debe diagnosticar primero
+    la causa del problema y verificar si existen fugas.
+  </p>
+</div>
+
+{/* FACTORES DE PRECIO */}
+<div className="space-y-4">
+  <h2 className="text-2xl font-black text-slate-900">
+    ¿Qué factores influyen en el costo del servicio?
+  </h2>
+
+  <ul className="list-disc pl-6 space-y-2 text-slate-600">
+    <li>Capacidad del equipo en BTU.</li>
+    <li>Instalación nueva o mantenimiento existente.</li>
+    <li>Longitud de las cañerías de refrigeración.</li>
+    <li>Ubicación y acceso a la unidad exterior.</li>
+    <li>Trabajos adicionales de electricidad.</li>
+    <li>Estado y antigüedad del equipo.</li>
+    <li>Repuestos y materiales necesarios.</li>
+    <li>Ciudad y distancia de desplazamiento del técnico.</li>
+  </ul>
+</div>
+
+{/* PREGUNTAS FRECUENTES */}
+<div className="space-y-6">
+  <h2 className="text-2xl font-black text-slate-900">
+    Preguntas frecuentes sobre aire acondicionado
+  </h2>
+
+  <div>
+    <h3 className="font-bold text-slate-900">
+      ¿La instalación incluye las cañerías?
+    </h3>
+    <p className="mt-2 text-slate-600 leading-relaxed">
+      Depende del presupuesto. Algunos servicios
+      incluyen una longitud determinada de cañerías
+      y otros cobran los materiales por separado.
+      Confirmá qué incluye la cotización.
+    </p>
+  </div>
+
+  <div>
+    <h3 className="font-bold text-slate-900">
+      ¿Cada cuánto conviene limpiar un aire?
+    </h3>
+    <p className="mt-2 text-slate-600 leading-relaxed">
+      Depende de la frecuencia de uso, el polvo,
+      la humedad y las recomendaciones del fabricante.
+      Los filtros deben revisarse periódicamente
+      y el mantenimiento técnico debe ajustarse
+      a las condiciones del equipo.
+    </p>
+  </div>
+
+  <div>
+    <h3 className="font-bold text-slate-900">
+      ¿Cuándo necesita carga de gas un aire?
+    </h3>
+    <p className="mt-2 text-slate-600 leading-relaxed">
+      Un circuito de refrigeración correctamente
+      sellado no necesita recargas periódicas por
+      el simple uso. Si falta refrigerante, es
+      importante verificar si existe una fuga
+      antes de realizar la reparación.
+    </p>
+  </div>
+
+  <div>
+    <h3 className="font-bold text-slate-900">
+      ¿Se puede calcular el precio de varios equipos?
+    </h3>
+    <p className="mt-2 text-slate-600 leading-relaxed">
+      Sí. CuantoEs permite seleccionar la cantidad
+      de unidades para estimar el presupuesto del
+      servicio elegido. El precio definitivo puede
+      variar según las condiciones de cada equipo.
+    </p>
+  </div>
+</div>
+
+
+<div className="bg-blue-50 border border-blue-100 rounded-2xl p-6 space-y-4">
+  <h3 className="text-lg font-bold text-blue-950">
+    Otros costos relacionados con la instalación
+  </h3>
+
+  <p className="text-sm text-slate-600 leading-relaxed">
+    Algunas instalaciones pueden necesitar trabajos
+    complementarios que se presupuestan por separado.
+  </p>
+
+  <div className="space-y-3">
+    <a
+      href="/costos/electricidad"
+      className="block text-sm font-bold text-blue-700 hover:underline"
+    >
+      Consultar precios de instalaciones eléctricas →
+    </a>
+
+    <a
+      href="/costos/albanileria"
+      className="block text-sm font-bold text-blue-700 hover:underline"
+    >
+      Consultar precios de albañilería y reparaciones →
+    </a>
+  </div>
+</div>
+
+
+
+</section>
+
 
 
 
