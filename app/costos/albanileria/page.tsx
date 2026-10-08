@@ -303,6 +303,143 @@ export default function AlbanileriaCostosPage() {
         </div>
       )}
 
+      
+{/* GUIA SEO DE PRECIOS DE ALBANILERIA */}
+<section className="max-w-4xl mx-auto px-4 py-16 space-y-10">
+
+  <div className="space-y-4">
+    <h2 className="text-3xl font-black text-slate-900">
+      Precio de mano de obra de albañilería en Paraguay
+    </h2>
+
+    <p className="text-slate-600 leading-relaxed">
+      El precio de la mano de obra de albañilería depende
+      del tipo de trabajo, los metros a construir, los
+      materiales necesarios y las condiciones de la obra.
+      En Paraguay, los presupuestos pueden calcularse por
+      metro cuadrado, metro lineal o por trabajo completo.
+    </p>
+
+    <p className="text-slate-600 leading-relaxed">
+      Estos valores son referencias orientativas utilizadas
+      por la calculadora de CuantoEs para estimar trabajos
+      de albañilería en Asunción y Gran Asunción.
+      No representan tarifas oficiales ni presupuestos
+      definitivos.
+    </p>
+  </div>
+
+  <div className="space-y-4">
+    <h2 className="text-2xl font-black text-slate-900">
+      ¿Cuánto cuesta el metro de albañilería?
+    </h2>
+
+    <div className="overflow-x-auto rounded-2xl border border-slate-200">
+      <table className="w-full text-sm text-left">
+        <thead className="bg-slate-900 text-white">
+          <tr>
+            <th className="p-4">Trabajo</th>
+            <th className="p-4">Mano de obra</th>
+            <th className="p-4">Materiales estimados</th>
+          </tr>
+        </thead>
+
+        <tbody className="divide-y divide-slate-100">
+          <tr>
+            <td className="p-4">Muralla de 2 m / metro lineal</td>
+            <td className="p-4">Gs. 220.000</td>
+            <td className="p-4">Gs. 160.000</td>
+          </tr>
+
+          <tr className="bg-slate-50">
+            <td className="p-4">Contrapiso y carpeta / m²</td>
+            <td className="p-4">Gs. 32.000</td>
+            <td className="p-4">Gs. 35.000</td>
+          </tr>
+
+          <tr>
+            <td className="p-4">Revoque grueso y fino / m²</td>
+            <td className="p-4">Gs. 28.000</td>
+            <td className="p-4">Gs. 18.000</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p className="text-xs text-slate-500">
+      Valores de referencia usados en la calculadora.
+      Pueden variar según la ciudad, materiales, dificultad
+      y características de cada trabajo.
+    </p>
+  </div>
+
+  <div className="space-y-4">
+    <h2 className="text-2xl font-black text-slate-900">
+      ¿Cuánto cuesta levantar una muralla en Paraguay?
+    </h2>
+
+    <p className="text-slate-600 leading-relaxed">
+      Para una muralla de aproximadamente dos metros de
+      altura, la calculadora considera Gs. 220.000 por
+      metro lineal de mano de obra y Gs. 160.000 por
+      metro lineal de materiales.
+    </p>
+
+    <p className="text-slate-600 leading-relaxed">
+      Por ejemplo, una muralla de 10 metros lineales
+      tendría una estimación de Gs. 2.200.000 de mano
+      de obra, o Gs. 3.800.000 incluyendo los materiales
+      contemplados en el cálculo. No incluye trabajos
+      adicionales fuera del alcance definido.
+    </p>
+  </div>
+
+  <div className="space-y-4">
+    <h2 className="text-2xl font-black text-slate-900">
+      ¿Cuánto cuesta hacer un contrapiso por m²?
+    </h2>
+
+    <p className="text-slate-600 leading-relaxed">
+      El costo orientativo de mano de obra para contrapiso
+      y carpeta es de Gs. 32.000 por metro cuadrado.
+      El valor de materiales estimado por la calculadora
+      es de Gs. 35.000 adicionales por m².
+    </p>
+  </div>
+
+  <div className="space-y-4">
+    <h2 className="text-2xl font-black text-slate-900">
+      ¿Cuánto cuesta el revoque por metro cuadrado?
+    </h2>
+
+    <p className="text-slate-600 leading-relaxed">
+      Para revoque grueso y fino, la calculadora utiliza
+      una referencia de Gs. 28.000 por m² de mano de obra
+      y Gs. 18.000 por m² de materiales.
+      El presupuesto final depende del estado de las
+      superficies y las terminaciones requeridas.
+    </p>
+  </div>
+
+  <div className="space-y-4">
+    <h2 className="text-2xl font-black text-slate-900">
+      ¿Qué factores influyen en el precio?
+    </h2>
+
+    <ul className="list-disc pl-6 space-y-2 text-slate-600">
+      <li>Superficie o longitud total del trabajo.</li>
+      <li>Estado del terreno o superficie existente.</li>
+      <li>Necesidad de cimientos y refuerzos.</li>
+      <li>Tipo y calidad de los materiales.</li>
+      <li>Ubicación, acceso y transporte.</li>
+      <li>Demoliciones y retiro de escombros.</li>
+      <li>Complejidad y terminaciones solicitadas.</li>
+    </ul>
+  </div>
+
+</section>
+
+
       {/* MODAL CROWDSOURCING */}
       {showReportModal && (
         <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 animate-in fade-in duration-200">
