@@ -1,7 +1,7 @@
 
 import "server-only";
 
-import { createClient } from "@supabase/supabase-js";
+import { supabase } from "@/lib/supabase";
 
 export type BusinessHour = {
   weekday: number;
