@@ -13,6 +13,10 @@ type PageProps = {
   params: Promise<{ slug: string }>;
 };
 
+// ============================================================
+// METADATA DINAMICA POR COMERCIO
+// ============================================================
+
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
@@ -22,11 +26,15 @@ export async function generateMetadata({
   if (!business) {
     return {
       title: "Comercio no encontrado | CuantoEs",
-      robots: { index: false, follow: false },
+      robots: {
+        index: false,
+        follow: false,
+      },
     };
   }
 
   const title = `${business.name} | Calificá tu experiencia`;
+
   const description =
     `Contanos cómo estuvo tu experiencia con ${business.name}. ` +
     "Tu opinión nos ayuda a mejorar.";
@@ -37,10 +45,12 @@ export async function generateMetadata({
   return {
     title,
     description,
+
     robots: {
       index: false,
       follow: true,
     },
+
     openGraph: {
       title,
       description,
@@ -52,13 +62,20 @@ export async function generateMetadata({
   };
 }
 
+// ============================================================
+// PAGINA DE CALIFICACION DEL COMERCIO
+// ============================================================
+
 export default async function CalificaPage({
   params,
 }: PageProps) {
   const { slug } = await params;
+
   const business = await getCalificaBusiness(slug);
 
-  if (!business) notFound();
+  if (!business) {
+    notFound();
+  }
 
   const status = getBusinessStatus(business);
 
@@ -84,7 +101,6 @@ export default async function CalificaPage({
         {/* IDENTIDAD DEL COMERCIO */}
         <header className="flex flex-col items-center text-center gap-3">
           {business.logo_url ? (
-            // img permite logos externos sin modificar next.config
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={business.logo_url}
@@ -115,9 +131,11 @@ export default async function CalificaPage({
         {!business.is_active ? (
           <div className="rounded-2xl bg-amber-500/10 border border-amber-500/20 p-5 text-center">
             <ShieldCheck className="mx-auto mb-3 h-8 w-8 text-amber-400" />
+
             <h2 className="text-lg font-bold text-amber-300">
               Página en preparación
             </h2>
+
             <p className="mt-2 text-sm text-slate-300">
               Estamos preparando el servicio de calificaciones
               para este comercio.
@@ -132,9 +150,11 @@ export default async function CalificaPage({
         ) : !status.isOpen ? (
           <div className="rounded-2xl bg-slate-800 p-5 text-center">
             <Clock3 className="mx-auto mb-3 h-8 w-8 text-orange-400" />
+
             <h2 className="text-xl font-bold">
               Estamos fuera del horario de atención
             </h2>
+
             <p className="mt-2 text-sm text-slate-300">
               Podrás calificar durante el horario habilitado
               de este comercio.
@@ -165,36 +185,42 @@ export default async function CalificaPage({
           </div>
         )}
 
-        {/* HORARIOS */}
-        <div className="mt-8">
-          <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
-            <Clock3 className="h-4 w-4 text-orange-400" />
-            Horarios de atención
-          </h3>
+        {/* HORARIOS: SOLO SI EL COMERCIO NO ESTA ABIERTO */}
+        {!status.isOpen && (
+          <div className="mt-8">
+            <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
+              <Clock3 className="h-4 w-4 text-orange-400" />
+              Horarios de atención
+            </h3>
 
-          <div className="space-y-2 text-sm">
-            {hours.map((hour) => (
-              <div
-                key={hour.weekday}
-                className="flex justify-between gap-3 text-slate-300"
-              >
-                <span>{weekdays[hour.weekday - 1]}</span>
-                <span>
-                  {hour.is_closed
-                    ? "Cerrado"
-                    : `${formatTime(hour.opens_at)} - ${formatTime(hour.closes_at)}`}
-                </span>
-              </div>
-            ))}
+            <div className="space-y-2 text-sm">
+              {hours.map((hour) => (
+                <div
+                  key={hour.weekday}
+                  className="flex justify-between gap-3 text-slate-300"
+                >
+                  <span>
+                    {weekdays[hour.weekday - 1]}
+                  </span>
+
+                  <span>
+                    {hour.is_closed
+                      ? "Cerrado"
+                      : `${formatTime(hour.opens_at)} - ${formatTime(hour.closes_at)}`}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            <p className="text-xs text-slate-500 mt-3">
+              Horario local de Paraguay. Las calificaciones
+              pueden contar con un período adicional después
+              del cierre.
+            </p>
           </div>
+        )}
 
-          <p className="text-xs text-slate-500 mt-3">
-            Horario local de Paraguay. Las calificaciones
-            pueden contar con un período adicional después
-            del cierre.
-          </p>
-        </div>
-
+        {/* PIE DE PAGINA */}
         <footer className="mt-8 pt-5 border-t border-white/10 text-center">
           <p className="text-xs text-slate-500">
             Servicio proporcionado por{" "}
@@ -206,6 +232,7 @@ export default async function CalificaPage({
             </a>
           </p>
         </footer>
+
       </section>
     </main>
   );
