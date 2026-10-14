@@ -16,13 +16,26 @@ type Props = {
 export default function CalificaForm({ slug }: Props) {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
-  const [contactRequested, setContactRequested] =
-    useState(false);
+  const [contactRequested, setContactRequested] = useState(false);
   const [customerPhone, setCustomerPhone] = useState("");
 
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
+
+  const isNegative = rating >= 1 && rating <= 3;
+
+  function selectRating(value: number) {
+    setRating(value);
+    setError("");
+
+    // Si selecciona 4 o 5 estrellas,
+    // eliminamos cualquier solicitud de contacto anterior.
+    if (value >= 4) {
+      setContactRequested(false);
+      setCustomerPhone("");
+    }
+  }
 
   async function submitRating(
     event: React.FormEvent<HTMLFormElement>
@@ -30,49 +43,53 @@ export default function CalificaForm({ slug }: Props) {
     event.preventDefault();
     setError("");
 
+    if (loading) return;
+
     if (rating < 1 || rating > 5) {
-      setError("Seleccioná una calificación");
+      setError("Seleccioná una calificación.");
       return;
     }
 
-    if (rating <= 3 && !comment.trim()) {
-      setError("Contanos qué pasó antes de enviar");
+    if (isNegative && !comment.trim()) {
+      setError("Contanos qué pasó antes de enviar.");
       return;
     }
 
-    if (contactRequested && !customerPhone.trim()) {
-      setError("Ingresá tu número de WhatsApp");
+    if (
+      isNegative &&
+      contactRequested &&
+      !customerPhone.trim()
+    ) {
+      setError("Ingresá tu número de WhatsApp.");
       return;
     }
 
     setLoading(true);
 
     try {
-      const response = await fetch(
-        "/api/califica/ratings",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            slug,
-            rating,
-            comment: comment.trim(),
-            contactRequested,
-            customerPhone: contactRequested
+      const response = await fetch("/api/califica/ratings", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          slug,
+          rating,
+          comment: comment.trim(),
+          contactRequested: isNegative && contactRequested,
+          customerPhone:
+            isNegative && contactRequested
               ? customerPhone.trim()
               : null,
-          }),
-        }
-      );
+        }),
+      });
 
       const result = await response.json();
 
       if (!response.ok || !result.success) {
         throw new Error(
           result.message ||
-          "No pudimos registrar tu opinión"
+          "No pudimos registrar tu calificación."
         );
       }
 
@@ -81,7 +98,7 @@ export default function CalificaForm({ slug }: Props) {
       setError(
         err instanceof Error
           ? err.message
-          : "No pudimos enviar tu opinión"
+          : "Ocurrió un error al enviar tu opinión."
       );
     } finally {
       setLoading(false);
@@ -94,15 +111,15 @@ export default function CalificaForm({ slug }: Props) {
         <CheckCircle2 className="h-14 w-14 text-emerald-400" />
 
         <h2 className="text-2xl font-bold text-white">
-          ¡Muchas gracias!
+          ¡Gracias por tu opinión!
         </h2>
 
         <p className="text-sm leading-relaxed text-slate-300">
-          Tu calificación fue registrada correctamente.
-          Tu opinión nos ayuda a mejorar.
+          Registramos tu experiencia correctamente.
+          Tus comentarios nos ayudan a mejorar.
         </p>
 
-        <div className="flex gap-2">
+        <div className="flex justify-center gap-2">
           {[1, 2, 3, 4, 5].map((star) => (
             <Star
               key={star}
@@ -114,6 +131,13 @@ export default function CalificaForm({ slug }: Props) {
             />
           ))}
         </div>
+
+        {isNegative && contactRequested && (
+          <p className="text-sm text-slate-300">
+            También registramos tu solicitud de contacto
+            para que el comercio pueda darle seguimiento.
+          </p>
+        )}
       </div>
     );
   }
@@ -129,25 +153,22 @@ export default function CalificaForm({ slug }: Props) {
         </h2>
 
         <p className="mt-2 text-sm text-slate-400">
-          Calificá tu experiencia en menos de un minuto.
+          Tu opinión nos ayuda a mejorar.
         </p>
       </div>
 
-      {/* ESTRELLAS */}
+      {/* CALIFICACION */}
       <div
         className="flex justify-center gap-2"
         role="group"
-        aria-label="Calificación de una a cinco estrellas"
+        aria-label="Seleccioná tu calificación"
       >
         {[1, 2, 3, 4, 5].map((value) => (
           <button
             key={value}
             type="button"
             disabled={loading}
-            onClick={() => {
-              setRating(value);
-              setError("");
-            }}
+            onClick={() => selectRating(value)}
             aria-label={`${value} ${
               value === 1 ? "estrella" : "estrellas"
             }`}
@@ -165,7 +186,7 @@ export default function CalificaForm({ slug }: Props) {
         ))}
       </div>
 
-      {!rating && (
+      {rating === 0 && (
         <p className="text-center text-xs text-slate-500">
           Tocá una estrella para comenzar.
         </p>
@@ -174,9 +195,9 @@ export default function CalificaForm({ slug }: Props) {
       {rating > 0 && (
         <>
           <p className="text-center text-sm text-slate-300">
-            {rating <= 3
-              ? "Lamentamos que tu experiencia no haya sido la esperada."
-              : "¡Nos alegra saber de tu experiencia!"}
+            {isNegative
+              ? "Queremos saber qué podemos mejorar."
+              : "¡Nos alegra que hayas tenido una buena experiencia!"}
           </p>
 
           {/* COMENTARIO */}
@@ -187,7 +208,7 @@ export default function CalificaForm({ slug }: Props) {
             >
               Tu comentario{" "}
               <span className="text-slate-400">
-                {rating <= 3
+                {isNegative
                   ? "(obligatorio)"
                   : "(opcional)"}
               </span>
@@ -200,71 +221,78 @@ export default function CalificaForm({ slug }: Props) {
                 setComment(event.target.value)
               }
               maxLength={2000}
-              rows={4}
-              required={rating <= 3}
+              rows={isNegative ? 4 : 3}
+              required={isNegative}
               disabled={loading}
-              placeholder="Contanos cómo fue tu experiencia..."
+              placeholder={
+                isNegative
+                  ? "Contanos qué sucedió..."
+                  : "¿Qué fue lo que más te gustó?"
+              }
               className="w-full resize-none rounded-xl border border-slate-700 bg-slate-800 px-4 py-3 text-sm text-white outline-none placeholder:text-slate-500 focus:border-amber-400 disabled:opacity-60"
             />
           </div>
 
-          {/* SOLICITUD DE CONTACTO */}
-          <div className="rounded-xl border border-slate-700 bg-slate-800/60 p-4">
-            <label className="flex cursor-pointer items-start gap-3">
-              <input
-                type="checkbox"
-                checked={contactRequested}
-                disabled={loading}
-                onChange={(event) => {
-                  setContactRequested(event.target.checked);
-
-                  if (!event.target.checked) {
-                    setCustomerPhone("");
-                  }
-                }}
-                className="mt-1 h-4 w-4 accent-amber-400"
-              />
-
-              <span className="text-sm text-slate-300">
-                Quiero que el comercio se comunique conmigo.
-              </span>
-            </label>
-
-            {contactRequested && (
-              <div className="mt-4 space-y-2">
-                <label
-                  htmlFor="califica-phone"
-                  className="block text-sm text-slate-300"
-                >
-                  Tu número de WhatsApp
-                </label>
-
+          {/* CONTACTO: SOLO PARA 1, 2 O 3 ESTRELLAS */}
+          {isNegative && (
+            <div className="rounded-xl border border-slate-700 bg-slate-800/60 p-4">
+              <label className="flex cursor-pointer items-start gap-3">
                 <input
-                  id="califica-phone"
-                  type="tel"
-                  inputMode="tel"
-                  autoComplete="tel"
-                  value={customerPhone}
-                  onChange={(event) =>
-                    setCustomerPhone(event.target.value)
-                  }
-                  required
-                  maxLength={25}
+                  type="checkbox"
+                  checked={contactRequested}
                   disabled={loading}
-                  placeholder="Ej.: 0981 123456"
-                  className="w-full rounded-xl border border-slate-700 bg-slate-900 px-4 py-3 text-sm text-white outline-none focus:border-amber-400"
+                  onChange={(event) => {
+                    setContactRequested(event.target.checked);
+
+                    if (!event.target.checked) {
+                      setCustomerPhone("");
+                    }
+                  }}
+                  className="mt-1 h-4 w-4 accent-amber-400"
                 />
 
-                <p className="text-xs leading-relaxed text-slate-400">
-                  Al solicitar contacto, autorizás a que
-                  compartamos este número con el comercio
-                  para responder a tu experiencia.
-                </p>
-              </div>
-            )}
-          </div>
+                <span className="text-sm text-slate-300">
+                  Me gustaría que el comercio se comunique conmigo
+                  para conversar sobre lo ocurrido.
+                </span>
+              </label>
 
-          {/* ERROR */}
+              {contactRequested && (
+                <div className="mt-4 space-y-2">
+                  <label
+                    htmlFor="califica-phone"
+                    className="block text-sm text-slate-300"
+                  >
+                    Tu número de WhatsApp
+                  </label>
+
+                  <input
+                    id="califica-phone"
+                    type="tel"
+                    inputMode="tel"
+                    autoComplete="tel"
+                    value={customerPhone}
+                    onChange={(event) =>
+                      setCustomerPhone(event.target.value)
+                    }
+                    maxLength={25}
+                    required
+                    disabled={loading}
+                    placeholder="Ej.: 0981 123456"
+                    className="w-full rounded-xl border border-slate-700 bg-slate-900 px-4 py-3 text-sm text-white outline-none focus:border-amber-400"
+                  />
+
+                  <p className="text-xs leading-relaxed text-slate-400">
+                    Al marcar esta opción, autorizás a compartir
+                    tu número con este comercio para que pueda
+                    responder a tu experiencia.
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* MENSAJE DE ERROR */}
           {error && (
             <div
               role="alert"
@@ -275,13 +303,17 @@ export default function CalificaForm({ slug }: Props) {
             </div>
           )}
 
-          {/* ENVIO */}
+          {/* BOTON DE ENVIO */}
           <button
             type="submit"
             disabled={
               loading ||
-              (rating <= 3 && !comment.trim()) ||
-              (contactRequested && !customerPhone.trim())
+              (isNegative && !comment.trim()) ||
+              (
+                isNegative &&
+                contactRequested &&
+                !customerPhone.trim()
+              )
             }
             className="flex w-full items-center justify-center gap-2 rounded-xl bg-amber-500 px-5 py-3.5 font-bold text-slate-950 transition-colors hover:bg-amber-400 disabled:cursor-not-allowed disabled:opacity-50"
           >
@@ -304,8 +336,8 @@ export default function CalificaForm({ slug }: Props) {
       )}
 
       <p className="text-center text-xs text-slate-500">
-        Tu opinión se comparte de forma privada con el
-        comercio. No es necesario registrarte.
+        Tu opinión será compartida de forma privada
+        con el comercio. No necesitás registrarte.
       </p>
     </form>
   );
