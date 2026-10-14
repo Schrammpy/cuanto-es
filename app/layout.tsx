@@ -1,8 +1,9 @@
+
 import type { Metadata } from "next";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/react";
 import Script from "next/script";
-import Navbar from "@/components/Navbar";
+import ConditionalNavbar from "@/components/ConditionalNavbar";
 
 export const metadata: Metadata = {
   // Dominio base oficial del sitio
@@ -77,7 +78,8 @@ export default function RootLayout({
           `}
         </Script>
 
-        <Navbar />
+        {/* NAVBAR: VISIBLE EXCEPTO EN CALIFICA */}
+        <ConditionalNavbar />
 
         {children}
 
