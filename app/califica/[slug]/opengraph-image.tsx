@@ -3,22 +3,24 @@ import { ImageResponse } from "next/og";
 import { getCalificaBusiness } from "@/lib/califica";
 
 // ============================================================
-// CUANTOES CALIFICA - OPEN GRAPH DINAMICO
-// Una imagen personalizada para cada comercio.
-// Logo obtenido desde Supabase Storage.
+// CUANTOES CALIFICA - OPEN GRAPH OPTIMIZADO
+//
+// - Imagen personalizada para cada comercio
+// - Logo grande desde Supabase Storage
+// - Nombre del comercio destacado
+// - Diseno optimizado para miniaturas de WhatsApp
 // ============================================================
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-export const alt = "Calificá tu experiencia con este comercio";
+export const alt = "Calificá tu experiencia";
+export const contentType = "image/png";
 
 export const size = {
   width: 1200,
   height: 630,
 };
-
-export const contentType = "image/png";
 
 type Props = {
   params: Promise<{
@@ -27,7 +29,7 @@ type Props = {
 };
 
 // ============================================================
-// OBTENER LOGO DEL COMERCIO
+// DESCARGAR LOGO DESDE SUPABASE STORAGE
 // ============================================================
 
 async function getBusinessLogo(
@@ -38,8 +40,7 @@ async function getBusinessLogo(
   try {
     const url = new URL(logoUrl);
 
-    // Solo admitimos archivos publicos de nuestro
-    // proyecto Supabase Storage.
+    // Solo aceptar imagenes publicas de nuestro Supabase.
     if (
       url.protocol !== "https:" ||
       url.hostname !== "ysrdherlhfzjgvbovmrp.supabase.co" ||
@@ -49,13 +50,13 @@ async function getBusinessLogo(
     }
 
     const response = await fetch(url.toString(), {
-      signal: AbortSignal.timeout(5000),
       cache: "no-store",
+      signal: AbortSignal.timeout(5000),
     });
 
     if (!response.ok) {
       console.error(
-        "Califica OG - No se pudo descargar el logo:",
+        "Califica OG - Error al descargar logo:",
         response.status
       );
       return null;
@@ -77,15 +78,6 @@ async function getBusinessLogo(
       return null;
     }
 
-    const contentLength = Number(
-      response.headers.get("content-length") || 0
-    );
-
-    // Evitar descargar logos demasiado grandes.
-    if (contentLength > 2 * 1024 * 1024) {
-      return null;
-    }
-
     const buffer = await response.arrayBuffer();
 
     if (
@@ -95,17 +87,18 @@ async function getBusinessLogo(
       return null;
     }
 
-    const base64 = Buffer.from(buffer).toString("base64");
-
-    return `data:${imageType};base64,${base64}`;
+    return (
+      `data:${imageType};base64,` +
+      Buffer.from(buffer).toString("base64")
+    );
   } catch (error) {
-    console.error("Califica OG - Error de logo:", error);
+    console.error("Califica OG - Logo:", error);
     return null;
   }
 }
 
 // ============================================================
-// GENERAR IMAGEN OPEN GRAPH POR COMERCIO
+// GENERAR IMAGEN PERSONALIZADA
 // ============================================================
 
 export default async function OpenGraphImage({
@@ -115,19 +108,18 @@ export default async function OpenGraphImage({
 
   const business = await getCalificaBusiness(slug);
 
-  const businessName =
-    business?.name || "CuantoEs Califica";
+  const name = business?.name || "CuantoEs Califica";
 
-  const logo = business
-    ? await getBusinessLogo(business.logo_url)
-    : null;
+  const logo = await getBusinessLogo(
+    business?.logo_url ?? null
+  );
 
-  const nameFontSize =
-    businessName.length > 45
-      ? 42
-      : businessName.length > 30
-        ? 50
-        : 62;
+  const fontSize =
+    name.length > 45
+      ? 48
+      : name.length > 28
+        ? 60
+        : 76;
 
   return new ImageResponse(
     (
@@ -136,113 +128,103 @@ export default async function OpenGraphImage({
           width: "100%",
           height: "100%",
           display: "flex",
-          flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
           backgroundColor: "#0f172a",
           color: "#ffffff",
-          padding: "45px 65px",
           position: "relative",
+          padding: 45,
         }}
       >
-        {/* LOGO DEL COMERCIO */}
+        {/* TARJETA CENTRAL */}
         <div
           style={{
-            width: 160,
-            height: 160,
-            borderRadius: 28,
-            backgroundColor: "#ffffff",
+            width: "100%",
+            height: "100%",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            overflow: "hidden",
-            padding: 12,
+            flexDirection: "column",
+            backgroundColor: "#111c32",
+            border: "2px solid #263550",
+            borderRadius: 36,
+            padding: 30,
           }}
         >
-          {logo ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={logo}
-              alt=""
-              width={136}
-              height={136}
-              style={{
-                width: 136,
-                height: 136,
-                objectFit: "contain",
-              }}
-            />
-          ) : (
-            <div
-              style={{
-                display: "flex",
-                fontSize: 90,
-                color: "#f59e0b",
-              }}
-            >
-              ★
-            </div>
-          )}
-        </div>
+          {/* LOGO DEL COMERCIO */}
+          <div
+            style={{
+              width: 310,
+              height: 310,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: "#ffffff",
+              borderRadius: 36,
+              padding: 14,
+              overflow: "hidden",
+            }}
+          >
+            {logo ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={logo}
+                alt=""
+                width={282}
+                height={282}
+                style={{
+                  width: 282,
+                  height: 282,
+                  objectFit: "contain",
+                }}
+              />
+            ) : (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "#f59e0b",
+                  fontSize: 185,
+                }}
+              >
+                ★
+              </div>
+            )}
+          </div>
 
-        {/* NOMBRE DEL COMERCIO */}
-        <div
-          style={{
-            display: "flex",
-            marginTop: 24,
-            maxWidth: 1060,
-            fontSize: nameFontSize,
-            fontWeight: 700,
-            textAlign: "center",
-            justifyContent: "center",
-            lineHeight: 1.2,
-            overflowWrap: "anywhere",
-          }}
-        >
-          {businessName}
-        </div>
+          {/* NOMBRE DEL COMERCIO */}
+          <div
+            style={{
+              display: "flex",
+              marginTop: 25,
+              maxWidth: 1030,
+              alignItems: "center",
+              justifyContent: "center",
+              textAlign: "center",
+              fontSize,
+              fontWeight: 700,
+              lineHeight: 1.1,
+              overflowWrap: "anywhere",
+            }}
+          >
+            {name}
+          </div>
 
-        {/* INVITACION A CALIFICAR */}
-        <div
-          style={{
-            display: "flex",
-            marginTop: 22,
-            fontSize: 36,
-            color: "#e2e8f0",
-            textAlign: "center",
-          }}
-        >
-          ¿Cómo estuvo tu pedido?
-        </div>
-
-        <div
-          style={{
-            display: "flex",
-            marginTop: 16,
-            fontSize: 27,
-            color: "#fbbf24",
-            textAlign: "center",
-          }}
-        >
-          Tu opinión nos ayuda a mejorar
-        </div>
-
-        {/* IDENTIDAD DISCRETA DE CUANTOES */}
-        <div
-          style={{
-            display: "flex",
-            position: "absolute",
-            bottom: 22,
-            fontSize: 20,
-            color: "#94a3b8",
-          }}
-        >
-          CuantoEs Califica
+          {/* IDENTIDAD DISCRETA */}
+          <div
+            style={{
+              display: "flex",
+              marginTop: 14,
+              fontSize: 22,
+              color: "#94a3b8",
+            }}
+          >
+            CuantoEs Califica
+          </div>
         </div>
       </div>
     ),
-    {
-      ...size,
-    }
+    size
   );
 }
