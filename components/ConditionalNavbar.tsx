@@ -1,4 +1,3 @@
-
 "use client";
 
 import { usePathname } from "next/navigation";
@@ -7,15 +6,14 @@ import Navbar from "@/components/Navbar";
 export default function ConditionalNavbar() {
   const pathname = usePathname();
 
-  // Ocultar el encabezado en todas las rutas de Califica.
   const isCalifica =
     pathname === "/califica" ||
-    pathname.startsWith("/califica/");
+    pathname.startsWith("/califica/") ||
+    pathname === "/admin/califica" ||
+    pathname.startsWith("/admin/califica/");
 
-  if (isCalifica) {
-    return null;
-  }
+  if (isCalifica) return null;
 
-  // Mantener el encabezado original en CuantoEs.
+  // Conservar intacta la navegación del resto de CuantoEs.
   return <Navbar />;
 }
