@@ -3,10 +3,17 @@
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import {
   ArrowLeft,
+  AlertTriangle,
+  CalendarClock,
+  Image as ImageIcon,
+  ListChecks,
+  MessageCircle,
+  Link2,
   CheckCircle2,
   ClipboardCopy,
   ExternalLink,
   FileSpreadsheet,
+  BadgeCheck,
   LogOut,
   Plus,
   RefreshCw,
@@ -157,6 +164,36 @@ function statusText(business: Business) {
     return { text: "Vencido", className: "bg-red-100 text-red-800" };
   }
   return { text: "Activo", className: "bg-emerald-100 text-emerald-800" };
+}
+
+type ReadinessSource = Pick<Business, "logo_url" | "google_sheet_id" | "is_active" | "subscription_expires_at" | "hours">;
+
+type ReadinessItem = { name: string; ok: boolean; hint: string };
+
+function readinessFor(business: ReadinessSource) {
+  const checks: ReadinessItem[] = [
+    { name: "Logo", ok: Boolean(business.logo_url?.trim()), hint: "Subir a Storage y asociar su URL pública." },
+    { name: "Google Sheets", ok: Boolean(business.google_sheet_id?.trim()), hint: "Crear una planilla exclusiva para este comercio." },
+    { name: "Siete horarios", ok: business.hours.length === 7 && business.hours.some((h) => !h.is_closed), hint: "Cargar los siete días y al menos un horario abierto." },
+    { name: "Suscripción vigente", ok: Boolean(business.subscription_expires_at && new Date(business.subscription_expires_at).getTime() > Date.now()), hint: "Revisar el vencimiento del plan." },
+    { name: "Perfil activo", ok: business.is_active, hint: "Activar solo después de las pruebas de envío y sincronización." },
+  ];
+  return { checks, count: checks.filter((item) => item.ok).length, ready: checks.every((item) => item.ok) };
+}
+
+function ownerDeliveryMessage(business: Business) {
+  const url = `${SITE}/califica/${business.slug}`;
+  const ends = business.subscription_expires_at
+    ? localDateInParaguay(new Date(business.subscription_expires_at))
+    : "por confirmar";
+  return `¡Hola! 👋 Ya está preparado el perfil de ${business.name} en CuantoEs Califica.\n\n` +
+    `🔗 Enlace para compartir después de cada compra o entrega:\n${url}\n\n` +
+    `📅 Plan: ${planText(business.subscription_plan)} · Vigencia hasta: ${ends}\n` +
+    `📊 La planilla privada de resultados se entrega por separado en modo lectura.\n\n` +
+    `Podés enviar el enlace a tus clientes junto a un mensaje de agradecimiento. ` +
+    `El servicio recibe opiniones privadas; no verifica compras ni publica reseñas en Google.\n\n` +
+    `Te adjunto por separado las condiciones del servicio y la información sobre privacidad y soporte. ` +
+    `Cualquier consulta, quedo a disposición.`;
 }
 
 async function apiJson(url: string, init?: RequestInit) {
@@ -458,6 +495,7 @@ export default function CalificaAdminPage() {
                 {filteredBusinesses.map((business) => {
                   const status = statusText(business);
                   const url = `${SITE}/califica/${business.slug}`;
+                  const readiness = readinessFor(business);
                   return (
                     <article key={business.id} className="rounded-xl border border-slate-200 p-4">
                       <div className="flex flex-wrap items-start justify-between gap-3">
@@ -471,18 +509,38 @@ export default function CalificaAdminPage() {
                             <div className="mt-2 flex flex-wrap items-center gap-2">
                               <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${status.className}`}>{status.text}</span>
                               <span className="text-xs text-slate-500">{planText(business.subscription_plan)} · Vence {business.subscription_expires_at ? localDateInParaguay(new Date(business.subscription_expires_at)) : "Sin fecha"}</span>
+                              <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${readiness.ready ? "bg-emerald-100 text-emerald-800" : "bg-amber-100 text-amber-800"}`}>
+                                Datos {readiness.count}/5
+                              </span>
                             </div>
                           </div>
                         </div>
                         <button type="button" className={primary} onClick={() => editBusiness(business)}>Gestionar</button>
                       </div>
+                      {!readiness.ready && (
+                        <p className="mt-3 flex items-start gap-2 text-xs text-amber-800">
+                          <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
+                          Para preparar la entrega: {readiness.checks.filter((item) => !item.ok).map((item) => item.name.toLowerCase()).join(", ")}.
+                        </p>
+                      )}
                       <div className="mt-4 flex flex-wrap gap-2 border-t border-slate-100 pt-3">
                         <button type="button" className={secondary} onClick={() => void copy(url, "Enlace copiado.")}>
                           <ClipboardCopy className="h-4 w-4" /> Copiar enlace
                         </button>
-                        <button type="button" className={secondary} onClick={() => void copy(whatsappMessage(business), "Mensaje de WhatsApp copiado.")}>
-                          <ClipboardCopy className="h-4 w-4" /> Mensaje WhatsApp
+                        <button type="button" className={secondary} onClick={() => void copy(whatsappMessage(business), "Mensaje para clientes copiado.")}>
+                          <MessageCircle className="h-4 w-4" /> Mensaje para clientes
                         </button>
+                        <button type="button" className={secondary} disabled={!readiness.ready}
+                          title={!readiness.ready ? "Completá primero los cinco datos de configuración." : "Copiar mensaje de entrega al propietario"}
+                          onClick={() => void copy(ownerDeliveryMessage(business), "Mensaje de entrega copiado. Adjuntá condiciones y privacidad por separado.")}>
+                          <ClipboardCopy className="h-4 w-4" /> Entregar al comercio
+                        </button>
+                        {business.google_sheet_id && /^[a-zA-Z0-9_-]{20,200}$/.test(business.google_sheet_id) && (
+                          <a className={secondary} href={`https://docs.google.com/spreadsheets/d/${business.google_sheet_id}/edit`}
+                            target="_blank" rel="noopener noreferrer">
+                            <FileSpreadsheet className="h-4 w-4" /> Abrir planilla
+                          </a>
+                        )}
                         <a className={secondary} href={url} target="_blank" rel="noopener noreferrer">
                           <ExternalLink className="h-4 w-4" /> Ver perfil
                         </a>
@@ -505,6 +563,40 @@ export default function CalificaAdminPage() {
               </div>
               <button type="submit" className={primary} disabled={busy}><Save className="h-4 w-4" /> {busy ? "Guardando..." : "Guardar comercio"}</button>
             </div>
+
+            <section className="rounded-2xl border border-blue-200 bg-white p-5 shadow-sm">
+              <div className="mb-4 flex flex-wrap items-center gap-3">
+                <div className="rounded-xl bg-blue-50 p-2 text-blue-700"><ListChecks className="h-5 w-5" /></div>
+                <div>
+                  <h3 className="text-lg font-bold">Preparación comercial</h3>
+                  <p className="text-sm text-slate-500">Comprobación orientativa de datos del perfil. Las pruebas y documentos se confirman por separado.</p>
+                </div>
+              </div>
+              {(() => {
+                const current = readinessFor({
+                  logo_url: form.logo_url, google_sheet_id: form.google_sheet_id, is_active: form.is_active,
+                  subscription_expires_at: `${form.expiration_date}T23:59:59-03:00`, hours: form.hours,
+                });
+                return (
+                  <>
+                    <p className="mb-3 text-sm font-semibold">Datos completos: {current.count} de 5</p>
+                    <div className="grid gap-2 sm:grid-cols-2">
+                      {current.checks.map((item) => (
+                        <div key={item.name} className="flex items-start gap-2 rounded-lg bg-slate-50 p-3 text-sm">
+                          {item.ok ? <BadgeCheck className="mt-0.5 h-4 w-4 shrink-0 text-emerald-700" /> : <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" />}
+                          <div><p className="font-semibold">{item.name}</p>{!item.ok && <p className="mt-1 text-xs text-slate-500">{item.hint}</p>}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                );
+              })()}
+              <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-950">
+                <p className="font-semibold">Validaciones manuales antes de entregar</p>
+                <p className="mt-1">Confirmá que el logo se ve en WhatsApp, la cuenta sincronizadora puede editar el Sheet, el propietario tiene acceso de Lector y una opinión de prueba llegó exclusivamente a la planilla correcta.</p>
+                <p className="mt-2">Entregá también las condiciones de suscripción, soporte y privacidad. Este panel <strong>no registra aún la aceptación contractual</strong> ni puede verificar automáticamente esos controles externos.</p>
+              </div>
+            </section>
 
             <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
               <h3 className="mb-4 text-lg font-bold">1. Información general</h3>
@@ -616,6 +708,34 @@ export default function CalificaAdminPage() {
                 {form.google_sheet_id && (
                   <p className="flex items-center gap-2 text-xs text-blue-700"><FileSpreadsheet className="h-4 w-4" /> Asegurate de que el Apps Script central tenga permiso de edición.</p>
                 )}
+              </div>
+            </section>
+
+            <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+              <h3 className="mb-2 text-lg font-bold">5. Entrega y seguimiento</h3>
+              <p className="mb-4 text-sm text-slate-600">Después de guardar y verificar el comercio, desde el listado vas a poder copiar el mensaje de entrega y abrir la planilla. Los botones se habilitan cuando los cinco datos básicos están completos.</p>
+              <div className="grid gap-3 md:grid-cols-2">
+                <div className="flex gap-3 rounded-xl bg-slate-50 p-4">
+                  <Link2 className="h-5 w-5 shrink-0 text-blue-700" />
+                  <div><p className="text-sm font-semibold">Enlace permanente</p><p className="mt-1 break-all text-xs text-slate-600">{SITE}/califica/{form.slug || "identificador"}</p></div>
+                </div>
+                <div className="flex gap-3 rounded-xl bg-slate-50 p-4">
+                  <CalendarClock className="h-5 w-5 shrink-0 text-blue-700" />
+                  <div><p className="text-sm font-semibold">Vigencia</p><p className="mt-1 text-xs text-slate-600">{planText(form.subscription_plan)} · {form.expiration_date || "Sin definir"}</p></div>
+                </div>
+                <div className="flex gap-3 rounded-xl bg-slate-50 p-4">
+                  <ImageIcon className="h-5 w-5 shrink-0 text-blue-700" />
+                  <div><p className="text-sm font-semibold">Miniatura de WhatsApp</p>
+                    <a className="mt-1 inline-flex gap-1 text-xs text-blue-700 underline" target="_blank" rel="noopener noreferrer"
+                      href={`${SITE}/califica/${form.slug || "identificador"}/opengraph-image`}>Ver Open Graph <ExternalLink className="h-3 w-3" /></a>
+                  </div>
+                </div>
+                <div className="flex gap-3 rounded-xl bg-slate-50 p-4">
+                  <FileSpreadsheet className="h-5 w-5 shrink-0 text-blue-700" />
+                  <div><p className="text-sm font-semibold">Indicadores en Google Sheets</p>
+                    <p className="mt-1 text-xs text-slate-600">Se instalan con el Apps Script central incluido en esta versión. No modifican las calificaciones existentes.</p>
+                  </div>
+                </div>
               </div>
             </section>
 
