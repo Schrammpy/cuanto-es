@@ -1,8 +1,8 @@
 import { MetadataRoute } from 'next'
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://www.cuantoes.com.py'
-  
+  const baseUrl = 'https://cuantoes.com.py'
+
   return [
     { url: baseUrl, lastModified: new Date(), priority: 1 },
     { url: `${baseUrl}/multas`, lastModified: new Date(), priority: 0.8 },
@@ -20,5 +20,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${baseUrl}/costos/mantenimiento-auto`, lastModified: new Date(), priority: 0.9 },
     { url: `${baseUrl}/costos/electrodomesticos`, lastModified: new Date(), priority: 0.9 },
     { url: `${baseUrl}/costos/reparacion-celulares`, lastModified: new Date(), priority: 0.9 },
+    // Landing comercial: indexable, a diferencia de las paginas por comercio.
+    { url: 'https://www.cuantoes.com.py/califica', lastModified: new Date(), priority: 0.7 },
   ]
 }
