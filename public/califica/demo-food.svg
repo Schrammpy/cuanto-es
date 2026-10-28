@@ -1,0 +1,63 @@
+<svg width="900" height="560" viewBox="0 0 900 560" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+<title id="title">Pizza y hamburguesa</title><desc id="desc">Ilustracion decorativa original de una pizza con pepperoni y una hamburguesa con queso.</desc>
+<defs>
+  <linearGradient id="board" x1="152" y1="148" x2="703" y2="519" gradientUnits="userSpaceOnUse"><stop stop-color="#ad7045"/><stop offset="1" stop-color="#61402c"/></linearGradient>
+  <radialGradient id="crust" cx="0" cy="0" r="1" gradientTransform="translate(330 238) rotate(67) scale(213)"><stop stop-color="#f6b84c"/><stop offset=".78" stop-color="#d98b35"/><stop offset="1" stop-color="#9d5a25"/></radialGradient>
+  <radialGradient id="cheese" cx="0" cy="0" r="1" gradientTransform="translate(327 220) rotate(80) scale(183)"><stop stop-color="#ffe69d"/><stop offset="1" stop-color="#f8af3c"/></radialGradient>
+  <linearGradient id="bunTop" x1="603" y1="186" x2="612" y2="299"><stop stop-color="#ffd985"/><stop offset=".55" stop-color="#e7a045"/><stop offset="1" stop-color="#ba6c2e"/></linearGradient>
+  <linearGradient id="bunBottom" x1="612" y1="360" x2="603" y2="412"><stop stop-color="#f7c876"/><stop offset="1" stop-color="#b76b32"/></linearGradient>
+  <linearGradient id="patty" x1="485" y1="333" x2="741" y2="371"><stop stop-color="#693823"/><stop offset=".5" stop-color="#462619"/><stop offset="1" stop-color="#734326"/></linearGradient>
+  <filter id="blur"><feGaussianBlur stdDeviation="24"/></filter>
+  <filter id="shadow" x="-30%" y="-30%" width="160%" height="170%"><feDropShadow dx="0" dy="14" stdDeviation="16" flood-color="#06251c" flood-opacity=".48"/></filter>
+  <clipPath id="pizzaClip"><circle cx="313" cy="292" r="165"/></clipPath>
+</defs>
+<g opacity=".3" filter="url(#blur)"><ellipse cx="414" cy="439" rx="355" ry="69" fill="#000"/></g>
+<g filter="url(#shadow)">
+  <rect x="88" y="122" width="687" height="347" rx="48" transform="rotate(-6 88 122)" fill="url(#board)"/>
+  <rect x="101" y="133" width="662" height="323" rx="40" transform="rotate(-6 101 133)" stroke="#e4aa73" stroke-opacity=".4" stroke-width="3"/>
+  <path d="M153 428C275 402 552 378 714 357" stroke="#e7a46a" stroke-opacity=".18" stroke-width="6" stroke-linecap="round"/>
+  <path d="M145 164C284 148 512 144 700 125" stroke="#ffdfa3" stroke-opacity=".12" stroke-width="5" stroke-linecap="round"/>
+</g>
+<!-- Pizza -->
+<g filter="url(#shadow)" transform="rotate(-10 313 292)">
+  <circle cx="313" cy="292" r="186" fill="#754729"/>
+  <circle cx="313" cy="292" r="183" fill="url(#crust)"/>
+  <circle cx="313" cy="292" r="165" fill="#b83327"/>
+  <circle cx="313" cy="292" r="157" fill="url(#cheese)"/>
+  <g clip-path="url(#pizzaClip)">
+    <g stroke="#eda03d" stroke-width="5" opacity=".85">
+      <path d="M313 292L310 116"/><path d="M313 292L447 180"/><path d="M313 292L490 298"/><path d="M313 292L431 416"/><path d="M313 292L302 472"/><path d="M313 292L174 410"/><path d="M313 292L140 280"/><path d="M313 292L180 167"/>
+    </g>
+    <g fill="#e9563e" stroke="#af3426" stroke-width="5">
+      <circle cx="292" cy="168" r="29"/><circle cx="382" cy="207" r="26"/><circle cx="428" cy="301" r="31"/>
+      <circle cx="380" cy="371" r="28"/><circle cx="280" cy="403" r="29"/><circle cx="209" cy="337" r="28"/>
+      <circle cx="210" cy="241" r="27"/><circle cx="305" cy="274" r="30"/>
+    </g>
+    <g fill="#fff1b0" opacity=".6">
+      <circle cx="279" cy="154" r="5"/><circle cx="372" cy="194" r="5"/><circle cx="423" cy="287" r="6"/>
+      <circle cx="372" cy="358" r="5"/><circle cx="269" cy="390" r="6"/><circle cx="201" cy="324" r="6"/>
+      <circle cx="201" cy="227" r="5"/><circle cx="295" cy="263" r="6"/>
+    </g>
+    <g fill="#246b3c"><path d="M329 219c-22-15-27-40-10-51 16 12 22 31 10 51Z"/><path d="M347 219c1-25 18-38 35-34-1 20-16 31-35 34Z"/><path d="M360 332c-8-24 2-39 18-45 10 17 3 32-18 45Z"/><path d="M239 299c-21-6-31-23-25-40 21 3 31 16 25 40Z"/><path d="M263 348c0-26 15-42 32-43 4 21-8 36-32 43Z"/><path d="M391 261c11-19 30-25 44-14-7 18-20 23-44 14Z"/></g>
+    <g fill="#fff2ae" opacity=".85"><circle cx="351" cy="162" r="6"/><circle cx="264" cy="214" r="5"/><circle cx="412" cy="345" r="5"/><circle cx="252" cy="371" r="4"/><circle cx="346" cy="406" r="6"/></g>
+  </g>
+  <circle cx="313" cy="292" r="176" stroke="#ffdd8e" stroke-width="5" stroke-opacity=".38"/>
+</g>
+<!-- Burger -->
+<g filter="url(#shadow)">
+  <ellipse cx="614" cy="410" rx="151" ry="25" fill="#462b1d" opacity=".6"/>
+  <path d="M480 367C478 352 488 346 508 347L716 348C741 348 747 356 741 370L731 386C716 400 517 398 496 386L480 367Z" fill="url(#bunBottom)" stroke="#9b5d2e" stroke-width="3"/>
+  <path d="M475 351C472 330 492 327 508 328H723C742 328 752 335 743 357C707 366 513 365 475 351Z" fill="url(#patty)"/>
+  <path d="M476 321C503 310 510 320 536 319S573 307 596 321S631 310 657 319S707 311 741 321L730 342C705 337 694 350 668 341S620 353 592 342S546 350 522 341S492 348 476 338Z" fill="#ffb33e"/>
+  <path d="M476 308C498 301 523 301 541 305S578 305 599 300S640 309 665 304S714 300 741 309L746 327C726 326 713 341 687 333S648 342 627 335S590 345 569 333S527 342 505 331S479 336 476 330Z" fill="#70a64a"/>
+  <path d="M482 290C513 278 520 289 544 285C570 280 583 289 607 286C638 280 649 291 682 286C713 283 723 290 739 291L738 310C710 315 681 309 662 313C639 319 615 308 598 313C576 317 555 308 534 315C515 319 495 310 483 313Z" fill="#b93d2d"/>
+  <path d="M474 291C475 216 530 169 609 168C686 168 743 215 747 292C703 302 514 304 474 291Z" fill="url(#bunTop)" stroke="#a76930" stroke-width="3"/>
+  <path d="M484 265C500 209 551 181 609 180C673 180 718 207 736 267" stroke="#ffe8a4" stroke-opacity=".58" stroke-width="6" stroke-linecap="round"/>
+  <g fill="#fff0bc" transform="rotate(-7 608 235)">
+    <ellipse cx="544" cy="220" rx="7" ry="3"/><ellipse cx="592" cy="203" rx="7" ry="3"/><ellipse cx="634" cy="231" rx="8" ry="3"/><ellipse cx="676" cy="218" rx="7" ry="3"/><ellipse cx="704" cy="249" rx="6" ry="3"/><ellipse cx="563" cy="248" rx="6" ry="3"/><ellipse cx="609" cy="259" rx="7" ry="3"/><ellipse cx="510" cy="260" rx="6" ry="3"/><ellipse cx="649" cy="273" rx="5" ry="3"/>
+  </g>
+</g>
+<!-- Herbs and colorful details -->
+<g fill="#65a75b" opacity=".9"><path d="M145 445c-22-17-25-35-14-43 15 5 20 20 14 43Z"/><path d="M151 442c4-23 19-35 31-30-1 18-12 29-31 30Z"/><path d="M735 421c-10-20-4-37 10-44 12 14 8 27-10 44Z"/><path d="M748 426c7-22 23-32 36-25-5 15-17 24-36 25Z"/></g>
+<circle cx="809" cy="139" r="7" fill="#fac35a" opacity=".8"/><circle cx="128" cy="102" r="9" fill="#a2c57c" opacity=".6"/>
+</svg>
