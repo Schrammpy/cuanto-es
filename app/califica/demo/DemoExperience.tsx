@@ -217,7 +217,7 @@ export default function DemoExperience({ contactHref, whatsappEnabled }: Props) 
             <div className={styles.heroChecks}>
               <span><Check size={16} /> Sin instalar nada</span>
               <span><Check size={16} /> Menos de 1 minuto</span>
-              <span><Check size={16} /> Sin datos reales</span>
+              <span><Check size={16} /> Sin registrarte</span>
             </div>
           </div>
           <div className={styles.heroVisual}>

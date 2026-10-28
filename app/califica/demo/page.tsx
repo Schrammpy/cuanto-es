@@ -6,7 +6,7 @@ const demoUrl = "https://www.cuantoes.com.py/califica/demo";
 export const metadata: Metadata = {
   title: "Demo interactiva | CuantoEs Califica",
   description:
-    "Prob\u00e1 c\u00f3mo un cliente califica un pedido y mir\u00e1 c\u00f3mo el comercio recibe sus opiniones privadas. Demostraci\u00f3n sin datos reales.",
+    "Prob\u00e1 c\u00f3mo un cliente califica un pedido y mir\u00e1 c\u00f3mo el comercio recibe sus opiniones privadas. Demostraci\u00f3n sin registro.",
   alternates: { canonical: demoUrl },
   robots: { index: false, follow: true },
   openGraph: {
